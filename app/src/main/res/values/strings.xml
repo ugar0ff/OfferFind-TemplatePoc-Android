@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">OfferFind Template Poc</string>
+    <string name="facebook_app_id">470520513147982</string>
+
+    <string name="ok">Ok</string>
+    <string name="facebook_authentication_error">Facebook authentication error</string>
+</resources>
