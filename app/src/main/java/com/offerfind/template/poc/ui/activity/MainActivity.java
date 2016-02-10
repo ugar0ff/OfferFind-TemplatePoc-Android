@@ -1,37 +1,56 @@
 package com.offerfind.template.poc.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.offerfind.template.poc.R;
 import com.offerfind.template.poc.ui.activity.base.BaseActivity;
-import com.offerfind.template.poc.ui.fragment.BasicFragment;
-import com.offerfind.template.poc.ui.fragment.LoginFragment;
-import com.offerfind.template.poc.utils.PreferencesUtils;
+import com.offerfind.template.poc.ui.fragment.AccountFragment;
+import com.offerfind.template.poc.ui.fragment.MessagingFragment;
+import com.offerfind.template.poc.ui.fragment.NewOrdersFragment;
+import com.offerfind.template.poc.ui.fragment.OrdersFragment;
+
+import timber.log.Timber;
 
 /**
- * A login screen that offers login via email/password.
+ * Created by ugar on 10.02.16.
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        if (PreferencesUtils.getFbId(this) == null) {
-            switchFragment(LoginFragment.newInstance(), false, null);
-        } else {
-            switchFragment(BasicFragment.newInstance(), false, null);
+        Timber.i("onCreate");
+        setContentView(R.layout.activity_main);
+        if (savedInstanceState == null) {
+            swichOrdersFragment();
         }
+        findViewById(R.id.btn_orders).setOnClickListener(this);
+        findViewById(R.id.btn_messaging).setOnClickListener(this);
+        findViewById(R.id.btn_account).setOnClickListener(this);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        fragment.onActivityResult(requestCode, resultCode, data);
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_orders:
+                swichOrdersFragment();
+                break;
+            case R.id.btn_messaging:
+                switchFragment(MessagingFragment.newInstance(), false, null);
+                break;
+            case R.id.btn_account:
+                switchFragment(AccountFragment.newInstance(), false, null);
+                break;
+        }
     }
 
-
+    private void swichOrdersFragment() {
+        int size = 1; //TODO: orders count
+        if (size > 0) {
+            switchFragment(OrdersFragment.newInstance(), false, null);
+        } else {
+            switchFragment(NewOrdersFragment.newInstance(), false, null);
+        }
+    }
 }
-

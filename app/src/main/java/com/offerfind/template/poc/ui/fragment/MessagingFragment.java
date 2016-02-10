@@ -2,29 +2,26 @@ package com.offerfind.template.poc.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.FacebookSdk;
 import com.offerfind.template.poc.R;
+import com.offerfind.template.poc.ui.fragment.base.BaseFragment;
 
 /**
  * Created by ugar on 09.02.16.
  */
-public class BasicFragment extends Fragment {
+public class MessagingFragment extends BaseFragment {
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
+    public static MessagingFragment newInstance() {
+        return new MessagingFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FacebookSdk.sdkInitialize(getActivity());
-        View view = inflater.inflate(R.layout.fragment_basic, container, false);
+        View view = inflater.inflate(R.layout.fragment_messaging, container, false);
         return view;
     }
-
 }

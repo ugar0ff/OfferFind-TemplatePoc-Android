@@ -1,12 +1,8 @@
-package com.offerfind.template.poc.ui.fragment;
+package com.offerfind.template.poc.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -17,7 +13,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.offerfind.template.poc.R;
-import com.offerfind.template.poc.ui.fragment.base.BaseFragment;
+import com.offerfind.template.poc.ui.activity.base.BaseActivity;
 import com.offerfind.template.poc.utils.PreferencesUtils;
 
 import org.json.JSONObject;
@@ -25,31 +21,33 @@ import org.json.JSONObject;
 import timber.log.Timber;
 
 /**
- * Created by ugar on 09.02.16.
+ * A login screen that offers login via email/password.
  */
-public class LoginFragment extends BaseFragment {
+public class LoginActivity extends BaseActivity {
 
     private CallbackManager callbackManager;
     private LoginButton loginButton;
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
-    }
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FacebookSdk.sdkInitialize(getActivity());
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-        loginButton = (LoginButton) view.findViewById(R.id.login_button);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Timber.i("onCreate");
+        if (savedInstanceState == null) {
+            if (PreferencesUtils.getFbId(this) == null) {
+            } else {
+                startMainActivity();
+            }
+        }
+        FacebookSdk.sdkInitialize(this);
+        callbackManager = CallbackManager.Factory.create();
+        setContentView(R.layout.activity_login);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
         authFacebook();
-        return view;
     }
 
     private void authFacebook() {
-        loginButton.setReadPermissions("user_friends");
-        loginButton.setFragment(this);
-        callbackManager = CallbackManager.Factory.create();
+        Timber.i("authFacebook");
+        loginButton.setReadPermissions("public_profile");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -68,9 +66,9 @@ public class LoginFragment extends BaseFragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        if (id != null && getActivity() != null) {
-                            Timber.i("id = '%s%s%s", id, ", androidId = ", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
-                            PreferencesUtils.setFbId(getActivity(), id);
+                        if (id != null) {
+                            Timber.i("id = '%s%s%s", id, ", androidId = ", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+                            PreferencesUtils.setFbId(LoginActivity.this, id);
                         }
                     }
                 });
@@ -78,6 +76,7 @@ public class LoginFragment extends BaseFragment {
                 parameters.putString("fields", "id, name");
                 request.setParameters(parameters);
                 request.executeAsync();
+                startMainActivity();
             }
 
             @Override
@@ -94,8 +93,15 @@ public class LoginFragment extends BaseFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.i("onActivityResult");
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
+    private void startMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+    }
+
 }
+
