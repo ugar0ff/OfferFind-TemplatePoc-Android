@@ -3,6 +3,9 @@ package com.offerfind.template.poc.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -10,6 +13,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.offerfind.template.poc.R;
@@ -18,15 +22,16 @@ import com.offerfind.template.poc.utils.PreferencesUtils;
 
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import timber.log.Timber;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private CallbackManager callbackManager;
-    private LoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +46,13 @@ public class LoginActivity extends BaseActivity {
         FacebookSdk.sdkInitialize(this);
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
-        loginButton = (LoginButton) findViewById(R.id.login_button);
-        authFacebook();
+        findViewById(R.id.facebook_button).setOnClickListener(this);
     }
 
     private void authFacebook() {
         Timber.i("authFacebook");
-        loginButton.setReadPermissions("public_profile");
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Timber.i("onSuccess");
@@ -103,5 +107,13 @@ public class LoginActivity extends BaseActivity {
         finish();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.facebook_button:
+                authFacebook();
+                break;
+        }
+    }
 }
 

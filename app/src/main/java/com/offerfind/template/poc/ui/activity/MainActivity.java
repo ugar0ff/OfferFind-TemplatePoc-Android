@@ -1,56 +1,55 @@
 package com.offerfind.template.poc.ui.activity;
 
 import android.os.Bundle;
-import android.view.View;
+import android.support.v4.view.ViewPager;
 
 import com.offerfind.template.poc.R;
 import com.offerfind.template.poc.ui.activity.base.BaseActivity;
-import com.offerfind.template.poc.ui.fragment.AccountFragment;
-import com.offerfind.template.poc.ui.fragment.MessagingFragment;
-import com.offerfind.template.poc.ui.fragment.NewOrdersFragment;
-import com.offerfind.template.poc.ui.fragment.OrdersFragment;
+import com.offerfind.template.poc.ui.adapter.TabAdapter;
+import com.offerfind.template.poc.ui.model.TabModel;
+import com.offerfind.template.poc.ui.view.smarttablayout.SmartTabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
 /**
  * Created by ugar on 10.02.16.
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.i("onCreate");
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            swichOrdersFragment();
-        }
-        findViewById(R.id.btn_orders).setOnClickListener(this);
-        findViewById(R.id.btn_messaging).setOnClickListener(this);
-        findViewById(R.id.btn_account).setOnClickListener(this);
-    }
+        List<TabModel> pageList = new ArrayList<>();
+//        pageList.add(new TabModel(3, R.drawable.icon_accounts));
+        pageList.add(new TabModel(1, R.drawable.icon_orders_press));
+        pageList.add(new TabModel(2, R.drawable.icon_messaging));
+        pageList.add(new TabModel(3, R.drawable.icon_accounts));
+//        pageList.add(new TabModel(1, R.drawable.icon_orders_press));
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager(), pageList, 0); //TODO: orders count
+        viewPager.setAdapter(tabAdapter);
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_orders:
-                swichOrdersFragment();
-                break;
-            case R.id.btn_messaging:
-                switchFragment(MessagingFragment.newInstance(), false, null);
-                break;
-            case R.id.btn_account:
-                switchFragment(AccountFragment.newInstance(), false, null);
-                break;
-        }
-    }
+        final SmartTabLayout tabLayout = (SmartTabLayout) findViewById(R.id.viewpager_tab);
+        tabLayout.setViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
-    private void swichOrdersFragment() {
-        int size = 1; //TODO: orders count
-        if (size > 0) {
-            switchFragment(OrdersFragment.newInstance(), false, null);
-        } else {
-            switchFragment(NewOrdersFragment.newInstance(), false, null);
-        }
+            @Override
+            public void onPageSelected(int position) {
+                tabLayout.getTabAt(position).setSelected(true);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
     }
 }

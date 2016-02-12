@@ -8,13 +8,39 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_weight="1"
+        android:background="@color/colorWhite"
+        android:elevation="4dp" />
 
-    <TextView
+    <LinearLayout
         android:id="@+id/add_orders"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_height="@dimen/button_order_height"
+        android:layout_marginBottom="@dimen/button_order_height"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:background="@drawable/background_accept_button"
         android:gravity="center"
-        android:text="orders"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/order"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_20" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/press_here_to_claim"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_14" />
+
+    </LinearLayout>
 </LinearLayout>
