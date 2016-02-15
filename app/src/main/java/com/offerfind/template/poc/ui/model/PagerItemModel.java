@@ -11,9 +11,9 @@ public class PagerItemModel implements Parcelable {
     private int id;
     private String title;
     private String description;
-    private String imageUrl;
+    private int imageUrl;
 
-    public PagerItemModel(int id, String title, String description, String imageUrl) {
+    public PagerItemModel(int id, String title, String description, int imageUrl) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -44,11 +44,11 @@ public class PagerItemModel implements Parcelable {
         this.description = description;
     }
 
-    public String getImageUrl() {
+    public int getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
+    public void setImageUrl(int imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -62,14 +62,14 @@ public class PagerItemModel implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.title);
         dest.writeString(this.description);
-        dest.writeString(this.imageUrl);
+        dest.writeInt(this.imageUrl);
     }
 
     private PagerItemModel(Parcel in) {
         this.id = in.readInt();
         this.title = in.readString();
         this.description = in.readString();
-        this.imageUrl = in.readString();
+        this.imageUrl = in.readInt();
     }
 
     public static final Parcelable.Creator<PagerItemModel> CREATOR = new Parcelable.Creator<PagerItemModel>() {

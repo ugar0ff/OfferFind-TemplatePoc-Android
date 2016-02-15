@@ -48,7 +48,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
             listView.post(new Runnable() {
                 @Override
                 public void run() {
-                    adapterList.add(new ProposalItemModel(1, "reree", "", view.getBottom() - view.getTop()));
+                    adapterList.add(new ProposalItemModel(1, "reree", "asrfewagqgeqw", view.getBottom() - view.getTop(), null, 100));
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -58,7 +58,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
             public void onClick(View v) {
                 float itemsHeight = (adapterList.size() * (getResources().getDimension(R.dimen.proposal_item_height) + listView.getDividerHeight()));
                 itemsHeight = itemsHeight % 0 == 0 ? itemsHeight : itemsHeight - 1;
-                adapterList.add(new ProposalItemModel(1, "reree", "", getFooterHeight((int) itemsHeight)));
+                adapterList.add(new ProposalItemModel(1, "reree", "qerfgdsgshtjtreaqetf afgeqfvefvqefqev efqeqfreqrsdafa", getFooterHeight((int) itemsHeight), null, 100));
                 adapter.notifyDataSetChanged();
             }
         });

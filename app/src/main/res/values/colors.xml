@@ -7,4 +7,10 @@
     <color name="colorBlack">#FF000000</color>
     <color name="colorTab">#47484a</color>
     <color name="colorTransparent">#00000000</color>
+    <color name="colorCardBackground">#f3f5f7</color>
+    <color name="colorLoginStatusBar">#f2f2f2</color>
+    <color name="colorMainStatusBar">#303131</color>
+    <color name="colorProposalItem">#f1f2f3</color>
+    <color name="colorGreen">#16be00</color>
+    <color name="colorRed">#f70909</color>
 </resources>

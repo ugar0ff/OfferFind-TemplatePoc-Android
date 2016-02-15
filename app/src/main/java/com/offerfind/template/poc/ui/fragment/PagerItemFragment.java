@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.offerfind.template.poc.R;
@@ -46,5 +47,6 @@ public class PagerItemFragment extends BaseFragment {
     private void setViewData(View view) {
         ((TextView) view.findViewById(R.id.title)).setText(itemModel.getTitle());
         ((TextView) view.findViewById(R.id.description)).setText(itemModel.getDescription());
+        ((ImageView) view.findViewById(R.id.picture)).setImageResource(itemModel.getImageUrl());
     }
 }

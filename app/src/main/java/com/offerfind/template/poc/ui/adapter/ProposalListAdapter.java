@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.offerfind.template.poc.R;
 import com.offerfind.template.poc.ui.model.ProposalItemModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -22,10 +24,12 @@ public class ProposalListAdapter extends BaseAdapter {
 
     private final LayoutInflater mInflater;
     private List<ProposalItemModel> list;
+    private Context context;
 
     public ProposalListAdapter(Context context, List<ProposalItemModel> list) {
         mInflater = LayoutInflater.from(context);
         this.list = list;
+        this.context = context;
     }
 
     @Override
@@ -44,7 +48,8 @@ public class ProposalListAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        public TextView title;
+        public TextView title, description, price;
+        public ImageView picture;
     }
 
     public class FooterViewHolder {
@@ -59,6 +64,9 @@ public class ProposalListAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(R.layout.item_proposal, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.title = (TextView) convertView.findViewById(R.id.title);
+                viewHolder.description = (TextView) convertView.findViewById(R.id.description);
+                viewHolder.price = (TextView) convertView.findViewById(R.id.price);
+                viewHolder.picture = (ImageView) convertView.findViewById(R.id.picture);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -66,6 +74,13 @@ public class ProposalListAdapter extends BaseAdapter {
 
             if (list != null) {
                 viewHolder.title.setText(list.get(position).getTitle());
+                viewHolder.description.setText(list.get(position).getDescription());
+                viewHolder.price.setText(String.format("$ %s", list.get(position).getPrice()));
+                if (list.get(position).getTitleUrl() != null) {
+                    Picasso.with(context).load(list.get(position).getTitleUrl()).into(viewHolder.picture);
+                } else {
+                    Picasso.with(context).load(R.drawable.icon_proposal_complite).into(viewHolder.picture);
+                }
             }
         } else {
             FooterViewHolder viewHolder;
