@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@null"
+            android:transitionName="picture"
             android:scaleType="centerCrop" />
 
         <LinearLayout
@@ -39,6 +40,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:transitionName="title"
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/text_size_16"
                     android:gravity="center_vertical" />
@@ -48,6 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textColor="@color/colorGreen"
+                    android:transitionName="price"
                     android:gravity="center_vertical"
                     android:textSize="@dimen/text_size_16" />
             </LinearLayout>
@@ -56,6 +59,7 @@
                 android:id="@+id/accept"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:transitionName="accept"
                 android:background="@drawable/background_accept_button"
                 android:gravity="center"
                 android:text="@string/accept"

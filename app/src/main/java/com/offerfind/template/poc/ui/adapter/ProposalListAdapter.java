@@ -1,6 +1,7 @@
 package com.offerfind.template.poc.ui.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,7 @@ public class ProposalListAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        public TextView title, description, price;
+        public TextView title, description, price, accept;
         public ImageView picture;
     }
 
@@ -67,6 +68,7 @@ public class ProposalListAdapter extends BaseAdapter {
                 viewHolder.description = (TextView) convertView.findViewById(R.id.description);
                 viewHolder.price = (TextView) convertView.findViewById(R.id.price);
                 viewHolder.picture = (ImageView) convertView.findViewById(R.id.picture);
+                viewHolder.accept = (TextView) convertView.findViewById(R.id.accept);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -79,7 +81,13 @@ public class ProposalListAdapter extends BaseAdapter {
                 if (list.get(position).getTitleUrl() != null) {
                     Picasso.with(context).load(list.get(position).getTitleUrl()).into(viewHolder.picture);
                 } else {
-                    Picasso.with(context).load(R.drawable.icon_proposal_complite).into(viewHolder.picture);
+                    Picasso.with(context).load(R.drawable.placeholder_proposal_item).into(viewHolder.picture);
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    viewHolder.title.setTransitionName(String.format("title%s", list.get(position).getId()));
+                    viewHolder.price.setTransitionName(String.format("price%s", list.get(position).getId()));
+                    viewHolder.accept.setTransitionName(String.format("accept%s", list.get(position).getId()));
+                    viewHolder.picture.setTransitionName(String.format("picture%s", list.get(position).getId()));
                 }
             }
         } else {

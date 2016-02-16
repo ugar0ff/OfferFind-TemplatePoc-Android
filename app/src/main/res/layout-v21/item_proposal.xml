@@ -13,7 +13,8 @@
         android:background="@color/colorProposalItem"
         android:contentDescription="@null"
         android:elevation="2dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:transitionName="picture" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,19 +22,20 @@
         android:background="@color/colorProposalItem"
         android:elevation="2dp"
         android:orientation="vertical"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        android:paddingStart="10dp"
+        android:paddingBottom="10dp"
         android:paddingEnd="10dp"
-        android:paddingBottom="10dp">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            android:transitionName="title" />
 
         <TextView
             android:id="@+id/description"
@@ -56,7 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/colorGreen"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_16"
+                android:transitionName="price" />
 
             <TextView
                 android:id="@+id/accept"
@@ -66,7 +69,8 @@
                 android:gravity="center"
                 android:text="@string/accept"
                 android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_16"
+                android:transitionName="accept" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -36,7 +36,6 @@
             android:theme="@style/ProposalTheme">
         </activity>
 
-
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider470520513147982"

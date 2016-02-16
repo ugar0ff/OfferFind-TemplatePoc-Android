@@ -17,6 +17,4 @@ public class ProposalActivity extends BaseActivity {
         setContentView(R.layout.activity_proposal);
         switchFragment(ProposalListFragment.newInstance(), false, null);
     }
-
-
 }

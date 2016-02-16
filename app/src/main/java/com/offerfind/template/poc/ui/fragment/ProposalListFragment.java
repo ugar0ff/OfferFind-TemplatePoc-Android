@@ -1,12 +1,18 @@
 package com.offerfind.template.poc.ui.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.offerfind.template.poc.R;
 import com.offerfind.template.poc.ui.adapter.ProposalListAdapter;
@@ -48,7 +54,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
             listView.post(new Runnable() {
                 @Override
                 public void run() {
-                    adapterList.add(new ProposalItemModel(1, "reree", "asrfewagqgeqw", view.getBottom() - view.getTop(), null, 100));
+                    adapterList.add(new ProposalItemModel(1, "Reree", "asrfewagqgeqw", view.getBottom() - view.getTop() - (int)(2*getResources().getDimension(R.dimen.proposal_list_divider_height)), null, 100));
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -56,9 +62,11 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
         view.findViewById(R.id.plus).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float itemsHeight = (adapterList.size() * (getResources().getDimension(R.dimen.proposal_item_height) + listView.getDividerHeight()));
+                float itemsHeight = (adapterList.size() * (getResources().getDimension(R.dimen.proposal_item_height) + 2*getResources().getDimension(R.dimen.proposal_list_divider_height)))
+                        + 2*getResources().getDimension(R.dimen.proposal_list_divider_height);
                 itemsHeight = itemsHeight % 0 == 0 ? itemsHeight : itemsHeight - 1;
-                adapterList.add(new ProposalItemModel(1, "reree", "qerfgdsgshtjtreaqetf afgeqfvefvqefqev efqeqfreqrsdafa", getFooterHeight((int) itemsHeight), null, 100));
+                adapterList.add(0, new ProposalItemModel(adapterList.size() + 1, "Geree" + (adapterList.size() + 1), "qerfgdsgshtjtreaqetf afgeqfvefvqefqev efqeqfreqrsdafa", getFooterHeight((int) itemsHeight), null, 100));
+                adapterList.get(adapterList.size() - 1).setFooterHeight(getFooterHeight((int) itemsHeight));
                 adapter.notifyDataSetChanged();
             }
         });
@@ -68,7 +76,8 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
                 if (adapterList.size() > 1) {
                     adapterList.remove(0);
                 }
-                float itemsHeight = ((adapterList.size() - 1) * (getResources().getDimension(R.dimen.proposal_item_height) + listView.getDividerHeight()));
+                float itemsHeight = ((adapterList.size() - 1) * (getResources().getDimension(R.dimen.proposal_item_height) + 2*getResources().getDimension(R.dimen.proposal_list_divider_height)))
+                        + 2*getResources().getDimension(R.dimen.proposal_list_divider_height);
                 itemsHeight = itemsHeight % 0 == 0 ? itemsHeight : itemsHeight - 1;
                 adapterList.get(adapterList.size() - 1).setFooterHeight(getFooterHeight((int) itemsHeight));
                 adapter.notifyDataSetChanged();
@@ -96,7 +105,33 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         for (ProposalItemModel itemModel : adapterList) {
             if (itemModel.getId() == id) {
-                switchFragmentListener.switchFragment(ProposalFragment.newInstance(itemModel), true, null);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Transition changeTransform = TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_transform);
+                    Transition explodeTransform = TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade);
+                    setSharedElementReturnTransition(changeTransform);
+                    setExitTransition(explodeTransform);
+
+                    ProposalFragment proposalFragment = ProposalFragment.newInstance(itemModel);
+
+                    proposalFragment.setSharedElementEnterTransition(changeTransform);
+                    proposalFragment.setEnterTransition(explodeTransform);
+
+                    ImageView picture = (ImageView) view.findViewById(R.id.picture);
+                    TextView title = (TextView) view.findViewById(R.id.title);
+                    TextView price = (TextView) view.findViewById(R.id.price);
+                    TextView accept = (TextView) view.findViewById(R.id.accept);
+
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.addToBackStack("transaction");
+                    ft.replace(R.id.container, proposalFragment);
+                    ft.addSharedElement(picture, String.format("picture%s", itemModel.getId()));
+                    ft.addSharedElement(title, String.format("title%s", itemModel.getId()));
+                    ft.addSharedElement(price, String.format("price%s", itemModel.getId()));
+                    ft.addSharedElement(accept, String.format("accept%s", itemModel.getId()));
+                    ft.commit();
+                } else {
+                    switchFragmentListener.switchFragment(ProposalFragment.newInstance(itemModel), true, null);
+                }
                 break;
             }
         }
