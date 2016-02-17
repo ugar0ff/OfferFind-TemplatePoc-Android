@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#007ee5</color>
     <color name="colorPrimaryDark">#006bc3</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#007ee5</color>
     <color name="colorWhite">#FFFFFFFF</color>
     <color name="colorBlack">#FF000000</color>
     <color name="colorTab">#47484a</color>
@@ -13,4 +13,10 @@
     <color name="colorProposalItem">#f1f2f3</color>
     <color name="colorGreen">#16be00</color>
     <color name="colorRed">#f70909</color>
+    <color name="colorGrey">#414141</color>
+    <color name="colorInputHint">#666666</color>
+    <color name="colorInputText">#333333</color>
+    <color name="colorCancel">#b8b8b8</color>
+    <color name="colorDivider">#949494</color>
+    <color name="croup_transparent_background">#73000000</color>
 </resources>

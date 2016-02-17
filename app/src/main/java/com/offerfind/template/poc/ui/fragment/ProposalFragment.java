@@ -51,7 +51,7 @@ public class ProposalFragment extends BaseFragment {
         if (itemModel.getTitleUrl() != null) {
             Picasso.with(getActivity()).load(itemModel.getTitleUrl()).into(picture);
         } else {
-            Picasso.with(getActivity()).load(R.drawable.placeholder_proposal_item).into(picture);
+            Picasso.with(getActivity()).load(R.color.colorGrey).into(picture);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             title.setTransitionName(String.format("title%s", itemModel.getId()));

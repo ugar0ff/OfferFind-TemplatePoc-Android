@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.offerfind.template.poc.R;
 import com.offerfind.template.poc.ui.fragment.AccountFragment;
+import com.offerfind.template.poc.ui.fragment.AccountRootFragment;
 import com.offerfind.template.poc.ui.fragment.MessagingFragment;
 import com.offerfind.template.poc.ui.fragment.NewOrdersFragment;
 import com.offerfind.template.poc.ui.fragment.OrdersFragment;
@@ -49,7 +50,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
         } else if (position == 1) {
             return MessagingFragment.newInstance();
         } else {
-            return AccountFragment.newInstance();
+            return AccountRootFragment.newInstance();
         }
     }
 

@@ -13,7 +13,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
         android:background="@color/colorGrey"
-        android:contentDescription="@null" />
+        android:contentDescription="@null"
+        android:transitionName="avatar" />
 
     <TextView
         android:id="@+id/name"
@@ -23,40 +24,44 @@
         android:gravity="center"
         android:text="Name"
         android:textColor="@color/colorInputText"
-        android:textSize="@dimen/text_size_18" />
+        android:textSize="@dimen/text_size_18"
+        android:transitionName="name" />
 
     <TextView
         android:id="@+id/location_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ADDRESS"
+        android:text="@string/address_upper"
         android:textColor="@color/colorInputHint"
-        android:textSize="@dimen/text_size_12" />
+        android:textSize="@dimen/text_size_12"
+        android:transitionName="location_hint" />
 
     <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Location"
         android:layout_marginTop="5dp"
+        android:text="Location"
         android:textColor="@color/colorInputText"
-        android:textSize="@dimen/text_size_16" />
+        android:textSize="@dimen/text_size_16"
+        android:transitionName="location" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginTop="20dp"
         android:background="@color/colorInputHint" />
 
     <TextView
         android:id="@+id/email_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="EMAIL"
         android:layout_marginBottom="5dp"
+        android:text="@string/email_upper"
         android:textColor="@color/colorInputHint"
-        android:textSize="@dimen/text_size_12" />
+        android:textSize="@dimen/text_size_12"
+        android:transitionName="email_hint" />
 
     <TextView
         android:id="@+id/email"
@@ -64,23 +69,25 @@
         android:layout_height="wrap_content"
         android:text="email"
         android:textColor="@color/colorInputText"
-        android:textSize="@dimen/text_size_16" />
+        android:textSize="@dimen/text_size_16"
+        android:transitionName="email" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginTop="20dp"
         android:background="@color/colorInputHint" />
 
     <TextView
         android:id="@+id/banking_info_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BANK INFO"
         android:layout_marginBottom="5dp"
+        android:text="@string/banking_info_upper"
         android:textColor="@color/colorInputHint"
-        android:textSize="@dimen/text_size_12" />
+        android:textSize="@dimen/text_size_12"
+        android:transitionName="banking_info_hint" />
 
     <TextView
         android:id="@+id/banking_info"
@@ -89,7 +96,8 @@
         android:layout_weight="1"
         android:text="Bank info"
         android:textColor="@color/colorInputText"
-        android:textSize="@dimen/text_size_16" />
+        android:textSize="@dimen/text_size_16"
+        android:transitionName="banking_info" />
 
     <TextView
         android:id="@+id/edit"

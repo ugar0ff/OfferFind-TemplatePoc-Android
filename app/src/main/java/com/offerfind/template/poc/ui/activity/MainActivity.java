@@ -25,11 +25,9 @@ public class MainActivity extends BaseActivity {
         Timber.i("onCreate");
         setContentView(R.layout.activity_main);
         List<TabModel> pageList = new ArrayList<>();
-//        pageList.add(new TabModel(3, R.drawable.icon_accounts));
         pageList.add(new TabModel(1, R.drawable.icon_orders_press));
         pageList.add(new TabModel(2, R.drawable.icon_messaging));
         pageList.add(new TabModel(3, R.drawable.icon_accounts));
-//        pageList.add(new TabModel(1, R.drawable.icon_orders_press));
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager(), pageList, 0); //TODO: orders count
         viewPager.setAdapter(tabAdapter);

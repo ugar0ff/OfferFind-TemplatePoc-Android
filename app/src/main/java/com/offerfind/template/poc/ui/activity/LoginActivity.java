@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -15,10 +13,13 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.offerfind.template.poc.R;
+import com.offerfind.template.poc.core.api.strongloop.User;
+import com.offerfind.template.poc.core.api.strongloop.UserRepository;
 import com.offerfind.template.poc.ui.activity.base.BaseActivity;
 import com.offerfind.template.poc.utils.PreferencesUtils;
+import com.strongloop.android.loopback.AccessToken;
+import com.strongloop.android.loopback.RestAdapter;
 
 import org.json.JSONObject;
 
@@ -73,6 +74,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         if (id != null) {
                             Timber.i("id = '%s%s%s", id, ", androidId = ", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
                             PreferencesUtils.setFbId(LoginActivity.this, id);
+                            strongLoop();
                         }
                     }
                 });
@@ -114,6 +116,41 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 authFacebook();
                 break;
         }
+    }
+
+    private void strongLoop() {
+//        RestAdapter restAdapter = new RestAdapter(getApplicationContext(), "http://178.62.252.200:3000/api/Users/login");
+////        UserRepository userRepo = restAdapter.createRepository(UserRepository.class);
+//
+//        UserRepository<User> userRepo = new UserRepository<>("email@example.com", User.class);
+//        userRepo.setAdapter(restAdapter);
+////        ApiOfferFind.User user = userRepo.createUser("name@example.com", "password");
+//
+//        userRepo.loginUser("email@example.com", "password-test", new UserRepository.LoginCallback() {
+//            @Override
+//            public void onSuccess(AccessToken token, Object currentUser) {
+//                Timber.i(String.format("onSuccess token.getUserId()=%s, currentUser.getId()=%s", token.getUserId(), currentUser.toString()));
+//            }
+//
+//            @Override
+//            public void onError(Throwable t) {
+//                Timber.e(String.format("onError Throwable: %s", t));
+//            }
+//        });
+
+        final RestAdapter restAdapter = new RestAdapter(getApplicationContext(), "http://178.62.252.200:3000/api/Users/login");
+        final UserRepository userRepo = restAdapter.createRepository(UserRepository.class);
+        userRepo.loginUser("email@example.com" , "password-test" , new UserRepository.LoginCallback() {
+            @Override
+            public void onSuccess(AccessToken token, User currentUser) {
+                Timber.i(String.format("onSuccess token.getUserId()=%s, currentUser.getId()=%s", token.getUserId(), currentUser.toString()));
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Timber.e(String.format("onError Throwable: %s", t));
+            }
+        });
     }
 }
 

@@ -14,4 +14,16 @@
     <string name="you_like_us_to_clean_for_you">You\'d like us to clean for you.\nBasic cleaning will make your home sparkle</string>
     <string name="move_in_or_move_out">A move-in or move-out cleaning is a great way to ease the stress of packing and moving</string>
     <string name="accept">Accept</string>
-</resources>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="banking_info">Banking info</string>
+    <string name="email">Email</string>
+    <string name="location">Location</string>
+    <string name="banking_info_upper">BANKING INFO</string>
+    <string name="email_upper">EMAIL</string>
+    <string name="address_upper">ADDRESS</string>
+    <string name="name">Name</string>
+    <string name="use_device_location">Use device location</string>
+    <string name="bad_file_format">Bad file format</string>
+    </resources>
