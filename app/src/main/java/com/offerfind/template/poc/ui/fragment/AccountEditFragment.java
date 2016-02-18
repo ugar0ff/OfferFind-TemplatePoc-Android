@@ -1,6 +1,5 @@
 package com.offerfind.template.poc.ui.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -79,9 +78,30 @@ public class AccountEditFragment extends BaseFragment implements View.OnClickLis
                 getParentFragment().getChildFragmentManager().popBackStack();
                 break;
             case R.id.avatar:
-                startCroup();
+                showAttachDialog();
                 break;
         }
+    }
+
+    private void showAttachDialog() {
+        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_attach_layout, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(dialogView).create();
+        final AlertDialog dialog = builder.show();
+        dialogView.findViewById(R.id.attach_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                startCroup(StaticKeys.ATTACH_IMAGE_REQUEST_CODE);
+            }
+        });
+        dialogView.findViewById(R.id.make_photo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                startCroup(StaticKeys.MAKE_PHOTO_REQUEST_CODE);
+            }
+        });
     }
 
     private void startCroup(int attach) {
@@ -117,9 +137,10 @@ public class AccountEditFragment extends BaseFragment implements View.OnClickLis
             return;
 
         try {
-            startActivityForResult(intent, attach);
-            cropStart = true;
+            getParentFragment().startActivityForResult(intent, attach);
+//            cropStart = true;
         } catch (android.content.ActivityNotFoundException e) {
+            e.printStackTrace();
             Toast.makeText(getActivity(), "No handler App for this type of file.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -190,7 +211,7 @@ public class AccountEditFragment extends BaseFragment implements View.OnClickLis
                     }
                     intent = new Intent(getActivity(), CropActivity.class);
                     intent.putExtra(StaticKeys.CROP_IMAGE_URI, filePath);
-                    startActivityForResult(intent, StaticKeys.CROUP_REQUEST_CODE);
+                    getParentFragment().startActivityForResult(intent, StaticKeys.CROUP_REQUEST_CODE);
                 } else if (resultCode == MainActivity.RESULT_CANCELED) {
                     Timber.i("Funded sale canceled");
                 }

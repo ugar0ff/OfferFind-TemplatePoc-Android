@@ -18,5 +18,6 @@
     <color name="colorInputText">#333333</color>
     <color name="colorCancel">#b8b8b8</color>
     <color name="colorDivider">#949494</color>
-    <color name="croup_transparent_background">#73000000</color>
+    <color name="colorMaskCrop">#80000000</color>
+    <color name="colorDialogDivider">#dfe1e3</color>
 </resources>

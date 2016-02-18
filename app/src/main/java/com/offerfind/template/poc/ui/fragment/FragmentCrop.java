@@ -58,10 +58,8 @@ public class FragmentCrop extends BaseFragment implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
 
         View view = inflater.inflate(R.layout.fragment_crop, container, false);
-//        View btnBack = view.findViewById(R.id.btn_cancel_crop);
-//        btnBack.setOnClickListener(this);
-//        View btnOk = view.findViewById(R.id.btn_ready_crop);
-//        btnOk.setOnClickListener(this);
+        view.findViewById(R.id.cancel).setOnClickListener(this);
+        view.findViewById(R.id.save).setOnClickListener(this);
         image = (ImageView) view.findViewById(R.id.cp_img);
         image.setOnTouchListener(this);
         imageTemplate = (ImageView) view.findViewById(R.id.cp_face_template);
@@ -135,7 +133,6 @@ public class FragmentCrop extends BaseFragment implements View.OnClickListener, 
         if (rotation != 0) {
             matrix.preRotate(rotationInDegrees);
         }
-        matrix.preRotate(-90);
         if (photoImg != null) {
             photoImg = Bitmap.createBitmap(photoImg, 0, 0, photoImg.getWidth(), photoImg.getHeight(), matrix, true);
         }
@@ -156,42 +153,42 @@ public class FragmentCrop extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.btn_ready_crop:
-//                File path = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getActivity().getPackageName());
-//                if (!path.mkdirs()) {
-//                    path.mkdirs();
-//                }
-//                File newFile;
-//                if (filePatch.contains(getActivity().getPackageName())) {
-//                    newFile = new File(filePatch);
-//                } else {
-//                    String photoName = String.valueOf(System.currentTimeMillis());
-//                    newFile = new File(path.getPath() + File.separator + photoName + ".jpg");
-//                }
-//
-//                try {
-//                    FileOutputStream out = new FileOutputStream(newFile);
-//                    image.buildDrawingCache(true);
-//                    image.setDrawingCacheEnabled(true);
-//                    imageTemplate.buildDrawingCache(true);
-//                    imageTemplate.setDrawingCacheEnabled(true);
-//                    cropImage(image.getDrawingCache(true), imageTemplate.getDrawingCache(true)).compress(Bitmap.CompressFormat.JPEG, 100, out);
-//                    out.flush();
-//                    out.close();
-//                    photoImg.recycle();
-//                } catch (Exception e) {
-//                    Timber.i("catch onClick");
-//                    e.printStackTrace();
-//                }
-//                Intent intent = new Intent();
-//                intent.putExtra(StaticKeys.CROP_IMAGE_URI, newFile.getAbsolutePath());
-//                getActivity().setResult(getActivity().RESULT_OK, intent);
-//                getActivity().finish();
-//                break;
-//            case R.id.btn_cancel_crop:
-//                getActivity().onBackPressed();
-//                photoImg.recycle();
-//                break;
+            case R.id.save:
+                File path = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getActivity().getPackageName());
+                if (!path.mkdirs()) {
+                    path.mkdirs();
+                }
+                File newFile;
+                if (filePatch.contains(getActivity().getPackageName())) {
+                    newFile = new File(filePatch);
+                } else {
+                    String photoName = String.valueOf(System.currentTimeMillis());
+                    newFile = new File(path.getPath() + File.separator + photoName + ".jpg");
+                }
+
+                try {
+                    FileOutputStream out = new FileOutputStream(newFile);
+                    image.buildDrawingCache(true);
+                    image.setDrawingCacheEnabled(true);
+                    imageTemplate.buildDrawingCache(true);
+                    imageTemplate.setDrawingCacheEnabled(true);
+                    cropImage(image.getDrawingCache(true), imageTemplate.getDrawingCache(true)).compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.flush();
+                    out.close();
+                    photoImg.recycle();
+                } catch (Exception e) {
+                    Timber.i("catch onClick");
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent();
+                intent.putExtra(StaticKeys.CROP_IMAGE_URI, newFile.getAbsolutePath());
+                getActivity().setResult(getActivity().RESULT_OK, intent);
+                getActivity().finish();
+                break;
+            case R.id.cancel:
+                photoImg.recycle();
+                getActivity().finish();
+                break;
         }
     }
 

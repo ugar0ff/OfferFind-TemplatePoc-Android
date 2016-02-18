@@ -1,5 +1,6 @@
 package com.offerfind.template.poc.ui.fragment;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -134,6 +135,16 @@ public class AccountRootFragment extends BaseFragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (getChildFragmentManager().findFragmentById(R.id.container) instanceof AccountEditFragment) {
+            AccountEditFragment editFragment = (AccountEditFragment)getChildFragmentManager().findFragmentById(R.id.container);
+            editFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

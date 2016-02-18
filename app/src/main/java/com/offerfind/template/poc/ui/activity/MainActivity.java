@@ -1,11 +1,14 @@
 package com.offerfind.template.poc.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import com.offerfind.template.poc.R;
 import com.offerfind.template.poc.ui.activity.base.BaseActivity;
 import com.offerfind.template.poc.ui.adapter.TabAdapter;
+import com.offerfind.template.poc.ui.fragment.AccountEditFragment;
+import com.offerfind.template.poc.ui.fragment.AccountRootFragment;
 import com.offerfind.template.poc.ui.model.TabModel;
 import com.offerfind.template.poc.ui.view.smarttablayout.SmartTabLayout;
 
@@ -19,6 +22,9 @@ import timber.log.Timber;
  */
 public class MainActivity extends BaseActivity {
 
+    private ViewPager viewPager;
+    private TabAdapter tabAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,8 +34,8 @@ public class MainActivity extends BaseActivity {
         pageList.add(new TabModel(1, R.drawable.icon_orders_press));
         pageList.add(new TabModel(2, R.drawable.icon_messaging));
         pageList.add(new TabModel(3, R.drawable.icon_accounts));
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager(), pageList, 0); //TODO: orders count
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        tabAdapter = new TabAdapter(getSupportFragmentManager(), pageList, 0); //TODO: orders count
         viewPager.setAdapter(tabAdapter);
 
         final SmartTabLayout tabLayout = (SmartTabLayout) findViewById(R.id.viewpager_tab);
@@ -48,6 +54,14 @@ public class MainActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (viewPager.getCurrentItem() == 2) {
+            AccountRootFragment fragment = (AccountRootFragment)tabAdapter.getItem(2);
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

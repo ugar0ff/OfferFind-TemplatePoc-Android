@@ -38,6 +38,12 @@ public class BaseFragment extends Fragment {
         hideKeyboard();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideKeyboard();
+    }
+
     public void hideKeyboard() {
         if (getActivity() != null && getActivity().getCurrentFocus() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

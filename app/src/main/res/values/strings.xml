@@ -26,4 +26,6 @@
     <string name="name">Name</string>
     <string name="use_device_location">Use device location</string>
     <string name="bad_file_format">Bad file format</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="take_photo">Take photo</string>
     </resources>

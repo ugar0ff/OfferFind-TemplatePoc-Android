@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorCardBackground">
+    android:background="@color/colorProposalItem"
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,14 +21,25 @@
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_horizontal_margin">
 
-            <ImageView
-                android:id="@+id/avatar"
-                android:layout_width="156dp"
-                android:layout_height="156dp"
+            <FrameLayout
+                android:layout_width="@dimen/photo_size"
+                android:layout_height="@dimen/photo_size"
                 android:layout_gravity="center_horizontal"
-                android:background="@color/colorGrey"
-                android:contentDescription="@null"
-                android:layout_marginBottom="50dp"/>
+                android:layout_marginBottom="50dp">
+
+                <ImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorGrey"
+                    android:contentDescription="@null" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:src="@drawable/mask_avatar" />
+            </FrameLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -45,12 +56,12 @@
                 android:background="@drawable/background_input"
                 android:inputType="textImeMultiLine"
                 android:maxLines="1"
-                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingEnd="10dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="14dp"
+                android:paddingTop="14dp"
                 android:textColor="@color/colorInputText" />
 
             <TextView
@@ -69,12 +80,12 @@
                 android:background="@drawable/background_input"
                 android:inputType="textImeMultiLine"
                 android:maxLines="1"
-                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingEnd="10dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="14dp"
+                android:paddingTop="14dp"
                 android:textColor="@color/colorInputText" />
 
             <TextView
@@ -93,12 +104,12 @@
                 android:background="@drawable/background_input"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingEnd="10dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="14dp"
+                android:paddingTop="14dp"
                 android:textColor="@color/colorInputText" />
 
             <TextView
@@ -115,20 +126,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_input"
-                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingEnd="10dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="14dp"
+                android:paddingTop="14dp"
                 android:textColor="@color/colorInputText" />
 
             <CheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/use_device_location"/>
+                android:layout_marginTop="12dp"
+                android:text="@string/use_device_location" />
 
         </LinearLayout>
     </ScrollView>

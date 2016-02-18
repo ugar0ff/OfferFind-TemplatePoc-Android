@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorCardBackground"
+    android:background="@color/colorProposalItem"
     android:orientation="vertical">
 
     <ScrollView
@@ -21,15 +21,26 @@
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_horizontal_margin">
 
-            <ImageView
-                android:id="@+id/avatar"
-                android:layout_width="156dp"
-                android:layout_height="156dp"
+            <FrameLayout
+                android:layout_width="@dimen/photo_size"
+                android:layout_height="@dimen/photo_size"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="50dp"
-                android:background="@color/colorGrey"
-                android:contentDescription="@null"
-                android:transitionName="avatar" />
+                android:layout_marginBottom="50dp">
+
+                <ImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorGrey"
+                    android:contentDescription="@null"
+                    android:transitionName="avatar" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:src="@drawable/mask_avatar" />
+            </FrameLayout>
 
             <TextView
                 android:layout_width="match_parent"

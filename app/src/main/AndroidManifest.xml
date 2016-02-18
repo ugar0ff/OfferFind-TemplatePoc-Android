@@ -3,16 +3,22 @@
     package="com.offerfind.template.poc">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".core.AppOfferFind"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activity.LoginActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/LoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,25 +34,28 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/MainTheme">
-        </activity>
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainTheme"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".ui.activity.ProposalActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/ProposalTheme">
-        </activity>
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/ProposalTheme"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".ui.activity.CropActivity"
-            android:label="@string/app_name">
-        </activity>
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider470520513147982"
-            android:exported="true"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:exported="true" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

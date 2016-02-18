@@ -9,6 +9,7 @@
     <dimen name="button_order_height">67dp</dimen>
     <dimen name="proposal_list_divider_height">5dp</dimen>
     <dimen name="proposal_header_height">120dp</dimen>
+    <dimen name="photo_size">156dp</dimen>
 
 
     <dimen name="text_size_12">12sp</dimen>
