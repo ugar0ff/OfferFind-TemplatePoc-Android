@@ -14,12 +14,13 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.offerfind.template.poc.R;
+import com.offerfind.template.poc.core.AppOfferFind;
+import com.offerfind.template.poc.core.api.strongloop.RestAdapter;
 import com.offerfind.template.poc.core.api.strongloop.User;
 import com.offerfind.template.poc.core.api.strongloop.UserRepository;
 import com.offerfind.template.poc.ui.activity.base.BaseActivity;
 import com.offerfind.template.poc.utils.PreferencesUtils;
 import com.strongloop.android.loopback.AccessToken;
-import com.strongloop.android.loopback.RestAdapter;
 
 import org.json.JSONObject;
 
@@ -105,8 +106,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void startMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        strongLoop();
     }
 
     @Override
@@ -119,36 +119,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void strongLoop() {
-//        RestAdapter restAdapter = new RestAdapter(getApplicationContext(), "http://178.62.252.200:3000/api/Users/login");
-////        UserRepository userRepo = restAdapter.createRepository(UserRepository.class);
-//
-//        UserRepository<User> userRepo = new UserRepository<>("email@example.com", User.class);
-//        userRepo.setAdapter(restAdapter);
-////        ApiOfferFind.User user = userRepo.createUser("name@example.com", "password");
-//
-//        userRepo.loginUser("email@example.com", "password-test", new UserRepository.LoginCallback() {
-//            @Override
-//            public void onSuccess(AccessToken token, Object currentUser) {
-//                Timber.i(String.format("onSuccess token.getUserId()=%s, currentUser.getId()=%s", token.getUserId(), currentUser.toString()));
-//            }
-//
-//            @Override
-//            public void onError(Throwable t) {
-//                Timber.e(String.format("onError Throwable: %s", t));
-//            }
-//        });
-
-        final RestAdapter restAdapter = new RestAdapter(getApplicationContext(), "http://178.62.252.200:3000/api/Users/login");
-        final UserRepository userRepo = restAdapter.createRepository(UserRepository.class);
-        userRepo.loginUser("email@example.com" , "password-test" , new UserRepository.LoginCallback() {
+        final UserRepository userRepo = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(UserRepository.class);
+        userRepo.createContract();
+        userRepo.user("q@example.com", "q", new UserRepository.UserCallback() {
             @Override
-            public void onSuccess(AccessToken token, User currentUser) {
-                Timber.i(String.format("onSuccess token.getUserId()=%s, currentUser.getId()=%s", token.getUserId(), currentUser.toString()));
+            public void onSuccess(User user) {
+                Timber.i("onSuccess response=%s", user.toString());
+                PreferencesUtils.setUserId(LoginActivity.this, user.getUserId());
+                PreferencesUtils.setUserToken(LoginActivity.this, user.getId());
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
             }
 
             @Override
             public void onError(Throwable t) {
-                Timber.e(String.format("onError Throwable: %s", t));
+                Timber.e("onError Throwable: %s", t.toString());
             }
         });
     }
