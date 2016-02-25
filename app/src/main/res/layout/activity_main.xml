@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context=".ui.activity.LoginActivity">
 
-    <com.offerfind.template.poc.ui.view.smarttablayout.SmartTabLayout
+    <com.dddev.market.place.ui.view.smarttablayout.SmartTabLayout
         android:id="@+id/viewpager_tab"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tab_height"

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 'Google Inc.:Google APIs:23'
     buildToolsVersion "23.0.2"
-//    useLibrary  'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId "com.offerfind.template.poc"
+        applicationId "com.dddev.market.place"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
@@ -31,4 +31,5 @@ dependencies {
     compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.google.android.gms:play-services-gcm:8.3.0'
 }
