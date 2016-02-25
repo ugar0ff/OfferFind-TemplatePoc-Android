@@ -5,7 +5,7 @@
     android:background="@color/colorProposalItem"
     android:orientation="vertical">
 
-    <com.offerfind.template.poc.ui.views.CardViewPagerLayout
+    <com.dddev.market.place.ui.views.CardViewPagerLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_viewpager_card">
@@ -20,7 +20,7 @@
             android:layout_marginStart="13dp"
             android:layout_marginBottom="30dp"
             android:layout_height="match_parent" />
-    </com.offerfind.template.poc.ui.views.CardViewPagerLayout>
+    </com.dddev.market.place.ui.views.CardViewPagerLayout>
 
     <LinearLayout
         android:id="@+id/add_orders"

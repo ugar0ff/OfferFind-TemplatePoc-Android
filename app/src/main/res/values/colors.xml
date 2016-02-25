@@ -19,5 +19,9 @@
     <color name="colorCancel">#b8b8b8</color>
     <color name="colorDivider">#949494</color>
     <color name="colorMaskCrop">#80000000</color>
+    <color name="colorShadow">#40000000</color>
     <color name="colorDialogDivider">#dfe1e3</color>
+    <color name="colorStateGreen">#16be00</color>
+    <color name="colorStateRed">#ff4049</color>
+    <color name="colorStateYellow">#ffbe21</color>
 </resources>

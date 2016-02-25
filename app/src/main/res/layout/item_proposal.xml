@@ -12,14 +12,12 @@
         android:layout_height="@dimen/proposal_item_height"
         android:background="@color/colorProposalItem"
         android:contentDescription="@null"
-        android:elevation="2dp"
         android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/proposal_item_height"
         android:background="@color/colorProposalItem"
-        android:elevation="2dp"
         android:orientation="vertical"
         android:paddingTop="5dp"
         android:paddingRight="10dp"

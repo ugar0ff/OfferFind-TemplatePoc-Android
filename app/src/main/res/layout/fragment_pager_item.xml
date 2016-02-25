@@ -5,10 +5,10 @@
     android:background="@drawable/background_card_fragment"
     android:orientation="vertical">
 
-    <com.offerfind.template.poc.ui.views.CardViewImageLayout
+    <com.dddev.market.place.ui.views.CardViewImageLayout
         android:id="@+id/picture"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:scaleType="fitCenter"/>
 
     <TextView

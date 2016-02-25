@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorProposalItem"
@@ -9,12 +10,23 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:divider="@color/colorTransparent"
+        android:dividerHeight="0dp"
+        android:footerDividersEnabled="false" />
 
     <TextView
         android:id="@+id/new_orders"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="New Orders"/>
+        android:layout_height="45dp"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:background="@drawable/background_accept_button"
+        android:gravity="center"
+        android:text="@string/new_order"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_size_16" />
 </LinearLayout>
