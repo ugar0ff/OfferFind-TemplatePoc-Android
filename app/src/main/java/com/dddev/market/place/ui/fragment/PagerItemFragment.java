@@ -52,7 +52,7 @@ public class PagerItemFragment extends BaseFragment {
         if (itemModel.getImageUrl() != null && itemModel.getImageUrl().length() > 5) {
             Picasso.with(getActivity()).load(itemModel.getImageUrl()).into(picture);
         } else {
-            Picasso.with(getActivity()).load(R.drawable.placeholder_proposal_item).into(picture);
+            Picasso.with(getActivity()).load(R.drawable.icon_view_pager).into(picture);
         }
     }
 }

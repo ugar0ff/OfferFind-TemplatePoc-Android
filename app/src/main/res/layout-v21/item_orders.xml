@@ -2,83 +2,82 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:orientation="horizontal"
-    android:padding="@dimen/proposal_list_divider_height">
+    android:padding="@dimen/proposal_list_divider_height"
+    android:clipToPadding="false">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="77dp"
-        android:layout_weight="1"
-        android:background="@color/colorProposalItem"
-        android:elevation="2dp"
-        android:orientation="vertical"
-        android:paddingBottom="9dp"
-        android:paddingEnd="9dp"
-        android:paddingLeft="9dp"
-        android:paddingRight="9dp"
-        android:paddingStart="9dp"
-        android:paddingTop="5dp">
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Title"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_size_18" />
-
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:text="13/12/2016"
-            android:textSize="@dimen/text_size_12" />
-
-        <TextView
-            android:id="@+id/see_proposal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:text="See proposal"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/text_size_14" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorProposalItem"
+        android:orientation="horizontal"
         android:elevation="2dp"
-        android:gravity="center"
-        android:orientation="vertical"
         android:paddingBottom="9dp"
         android:paddingEnd="9dp"
         android:paddingLeft="9dp"
         android:paddingRight="9dp"
         android:paddingStart="9dp"
-        android:paddingTop="5dp">
+        android:paddingTop="5dp"
+        android:background="@color/colorProposalItem">
 
-        <ImageView
-            android:id="@+id/image_state"
-            android:layout_width="42dp"
-            android:layout_height="0dp"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="77dp"
             android:layout_weight="1"
-            android:contentDescription="@null"
-            android:scaleType="centerInside"
-            android:src="@drawable/icon_proposal_selecting" />
+            android:orientation="vertical"
+            android:paddingEnd="9dp"
+            android:paddingRight="9dp">
 
-        <TextView
-            android:id="@+id/text_state"
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Title"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_18" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:text="13/12/2016"
+                android:textSize="@dimen/text_size_12" />
+
+            <TextView
+                android:id="@+id/see_proposal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:text="See proposal"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size_14" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:text="selected"
-            android:textColor="@color/colorStateYellow"
-            android:textSize="@dimen/text_size_12" />
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_state"
+                android:layout_width="42dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_proposal_selecting" />
+
+            <TextView
+                android:id="@+id/text_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:text="selected"
+                android:textColor="@color/colorStateYellow"
+                android:textSize="@dimen/text_size_12" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

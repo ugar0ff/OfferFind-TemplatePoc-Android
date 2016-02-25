@@ -68,8 +68,8 @@ public class CacheHelper extends SQLiteOpenHelper {
 
     private void setCategory(SQLiteDatabase db) {
         db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (1, 'Basic (regular)\ncleaning', 'You d like us to clean for you.\nBasic cleaning will make your home sparkle', null);");
-        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (1, 'Move-in or move-out\ncleaning', 'A move-in or move-out cleaning is a great way to ease the stress of packing and moving', null);");
-        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (1, 'Construction\nclean-up', 'When your contractor has left your home in what the industry calls a broom clean state', null);");
+        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (2, 'Move-in or move-out\ncleaning', 'A move-in or move-out cleaning is a great way to ease the stress of packing and moving', null);");
+        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (3, 'Construction\nclean-up', 'When your contractor has left your home in what the industry calls a broom clean state', null);");
     }
 
 }

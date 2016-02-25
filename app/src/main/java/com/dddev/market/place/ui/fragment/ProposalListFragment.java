@@ -70,10 +70,18 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
         listView.post(new Runnable() {
             @Override
             public void run() {
-                float itemsHeight = ((adapterList.size() - 1) * (getResources().getDimension(R.dimen.proposal_item_height) + 2 * getResources().getDimension(R.dimen.proposal_list_divider_height))) + 2 * getResources().getDimension(R.dimen.proposal_list_divider_height);
-                itemsHeight = itemsHeight % 0 == 0 ? itemsHeight : itemsHeight - 1;
-                adapterList.get(adapterList.size() - 1).setFooterHeight(getFooterHeight((int) itemsHeight));
-                adapter.notifyDataSetChanged();
+                if (adapterList.size() == 0) {
+                    Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0);
+                    adapterList.add(modelBids);
+                }
+                try {
+                    float itemsHeight = ((adapterList.size() - 1) * (getResources().getDimension(R.dimen.proposal_item_height) + 2 * getResources().getDimension(R.dimen.proposal_list_divider_height))) + 2 * getResources().getDimension(R.dimen.proposal_list_divider_height);
+                    itemsHeight = itemsHeight % 0 == 0 ? itemsHeight : itemsHeight - 1;
+                    adapterList.get(adapterList.size() - 1).setFooterHeight(getFooterHeight((int) itemsHeight));
+                    adapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 

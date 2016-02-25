@@ -1,8 +1,8 @@
 package com.dddev.market.place.ui.fragment;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -13,16 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
-import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.R;
+import com.dddev.market.place.core.AppOfferFind;
+import com.dddev.market.place.core.api.strongloop.Opportunities;
+import com.dddev.market.place.core.api.strongloop.OpportunityGetRepository;
+import com.dddev.market.place.core.api.strongloop.OpportunityPostRepository;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
-import com.dddev.market.place.utils.StaticKeys;
-import com.facebook.FacebookSdk;
-import com.dddev.market.place.R;
+import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.ViewPagerAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.model.PagerItemModel;
+import com.dddev.market.place.utils.StaticKeys;
+import com.facebook.FacebookSdk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +73,7 @@ public class NewOrdersFragment extends BaseFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_orders:
-                ProposalActivity.launch(getActivity());
+                createNewOrders();
                 break;
         }
     }
@@ -164,7 +168,24 @@ public class NewOrdersFragment extends BaseFragment implements View.OnClickListe
                         model.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
                         adapterList.add(model);
                     } while (cursor.moveToNext());
+                    //copy last element to first position
+                    cursor.moveToLast();
+                    PagerItemModel modelLast = new PagerItemModel();
+                    modelLast.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
+                    modelLast.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)));
+                    modelLast.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)));
+                    modelLast.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
+                    adapterList.add(0, modelLast);
+                    //copy first element to last position
+                    cursor.moveToFirst();
+                    PagerItemModel modelFirst = new PagerItemModel();
+                    modelFirst.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
+                    modelFirst.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)));
+                    modelFirst.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)));
+                    modelFirst.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
+                    adapterList.add(modelFirst);
                 }
+
                 pagerAdapter.notifyDataSetChanged();
                 break;
         }
@@ -173,5 +194,38 @@ public class NewOrdersFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Timber.i("onLoaderReset");
+    }
+
+    private void createNewOrders() {
+        final OpportunityPostRepository repository = AppOfferFind.getRestAdapter(getActivity()).createRepository(OpportunityPostRepository.class);
+        repository.createContract();
+        repository.opportunities(adapterList.get(viewPager.getCurrentItem()).getTitle(),
+                adapterList.get(viewPager.getCurrentItem()).getDescription(),
+                new OpportunityPostRepository.OpportunityCallback() {
+                    @Override
+                    public void onSuccess(Opportunities.ModelOpportunity opportunity) {
+                        Timber.i("onSuccess response=%s", opportunity.toString());
+                        if (opportunity != null) {
+                            ContentValues values = new ContentValues();
+                            values.put(CacheHelper.OPPORTUNITIES_ID, opportunity.getId());
+                            values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunity.getTitle());
+                            values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunity.getDescription());
+                            values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getAccountId());
+                            values.put(CacheHelper.OPPORTUNITIES_DATE, opportunity.getCreateAt());
+                            values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getCategoryId());
+                            getActivity().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
+                            ProposalActivity.launch(getActivity());
+                            if (getActivity() instanceof NewOrdersActivity) {
+                                getActivity().finish();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Timber.e("onError Throwable: %s", t.toString());
+                        showDialog(getString(R.string.server_connect_failure));
+                    }
+                });
     }
 }

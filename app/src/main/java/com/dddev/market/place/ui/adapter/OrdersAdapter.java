@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
-import com.dddev.market.place.ui.model.OrdersItemModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -70,8 +69,8 @@ public class OrdersAdapter extends BaseAdapter {
             if (list.get(position).getTitle() != null) {
                 viewHolder.title.setText(list.get(position).getTitle());
             }
-            viewHolder.date.setText(String.valueOf(list.get(position).getDate()));
-            switch (list.get(position).getStatus()) {
+            viewHolder.date.setText(String.valueOf(list.get(position).getCreateAt()));
+            switch (list.get(position).getCategoryId()) {
                 case 0:
                     viewHolder.state.setText(context.getString(R.string.awarded));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateRed));

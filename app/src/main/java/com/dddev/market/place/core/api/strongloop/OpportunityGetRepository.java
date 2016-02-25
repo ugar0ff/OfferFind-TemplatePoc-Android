@@ -11,7 +11,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 19.02.16.
  */
-public class OpportunityRepository extends com.strongloop.android.loopback.ModelRepository<Opportunities> {
+public class OpportunityGetRepository extends com.strongloop.android.loopback.ModelRepository<Opportunities> {
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
@@ -19,13 +19,12 @@ public class OpportunityRepository extends com.strongloop.android.loopback.Model
         return contract;
     }
 
-    public OpportunityRepository() {
+    public OpportunityGetRepository() {
         super("Opportunities", "Accounts", Opportunities.class);
     }
 
     public void opportunities(final OpportunityCallback callback) {
-        invokeStaticMethod("opportunities", ImmutableMap.of("filter", "{\"include\":\"bids\"}",
-                "access_token", PreferencesUtils.getUserToken(getApplicationContext())), new Adapter.Callback() {
+        invokeStaticMethod("opportunities", ImmutableMap.of("filter", "{\"include\":\"bids\"}"), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

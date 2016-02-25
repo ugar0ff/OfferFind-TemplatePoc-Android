@@ -27,8 +27,7 @@ public class InstallationRepository extends com.strongloop.android.loopback.Mode
         invokeStaticMethod("install", ImmutableMap.of("userId", PreferencesUtils.getUserEmail(getApplicationContext()),
                 "deviceToken", token,
                 "deviceType", "android",
-                "appId", PreferencesUtils.getAppId(getApplicationContext()),
-                "access_token", PreferencesUtils.getUserToken(getApplicationContext())), new Adapter.Callback() {
+                "appId", PreferencesUtils.getAppId(getApplicationContext())), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

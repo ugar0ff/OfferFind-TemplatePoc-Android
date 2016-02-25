@@ -101,8 +101,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         Opportunities.ModelOpportunity model = new Opportunities.ModelOpportunity();
                         model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
                         model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
-                        model.setDate(cursor.getLong(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
-                        model.setDate(cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS)));
+                        model.setCreateAt(cursor.getLong(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
+                        model.setCreateAt(cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS)));
                         opportunityList.add(model);
                     } while (cursor.moveToNext());
                 }

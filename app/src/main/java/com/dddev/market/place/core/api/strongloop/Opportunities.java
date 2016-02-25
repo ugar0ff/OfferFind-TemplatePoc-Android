@@ -42,22 +42,34 @@ public class Opportunities extends Model {
         private int accountId;
         @SerializedName("bids")
         private ArrayList<Bids.ModelBids> bids;
-        @SerializedName("date")
-        private long date;
-        @SerializedName("status")
-        private int status;
+        @SerializedName("createAt")
+        private long createAt;
+        @SerializedName("categoryId")
+        private int categoryId;
 
         public ModelOpportunity() {
         }
 
-        public ModelOpportunity(int id, String title, String description, int accountId, ArrayList<Bids.ModelBids> bids, long date, int status) {
+        public ModelOpportunity(int id, String title, String description, int accountId, ArrayList<Bids.ModelBids> bids, long createAt, int categoryId) {
             this.id = id;
             this.title = title;
             this.description = description;
             this.accountId = accountId;
             this.bids = bids;
-            this.date = date;
-            this.status = status;
+            this.createAt = createAt;
+            this.categoryId = categoryId;
+        }
+
+        public ModelOpportunity(String jsonObject) {
+            Exclude exclude = new Exclude();
+            ModelOpportunity opportunity = new GsonBuilder().addDeserializationExclusionStrategy(exclude).addSerializationExclusionStrategy(exclude).create().fromJson(jsonObject, ModelOpportunity.class);
+            this.id = opportunity.getId();
+            this.title = opportunity.getTitle();
+            this.description = opportunity.getDescription();
+            this.accountId = opportunity.getAccountId();
+            this.bids = opportunity.getBids();
+            this.createAt = opportunity.getCreateAt();
+            this.categoryId = opportunity.getCategoryId();
         }
 
         public int getId() {
@@ -100,20 +112,20 @@ public class Opportunities extends Model {
             this.bids = bids;
         }
 
-        public long getDate() {
-            return date;
+        public long getCreateAt() {
+            return createAt;
         }
 
-        public void setDate(long date) {
-            this.date = date;
+        public void setCreateAt(long createAt) {
+            this.createAt = createAt;
         }
 
-        public int getStatus() {
-            return status;
+        public int getCategoryId() {
+            return categoryId;
         }
 
-        public void setStatus(int status) {
-            this.status = status;
+        public void setCategoryId(int categoryId) {
+            this.categoryId = categoryId;
         }
 
         @Override
@@ -124,8 +136,8 @@ public class Opportunities extends Model {
                     ", description='" + description + '\'' +
                     ", accountId=" + accountId +
                     ", bids=" + bids +
-                    ", date='" + date + '\'' +
-                    ", status=" + status +
+                    ", createAt='" + createAt + '\'' +
+                    ", categoryId=" + categoryId +
                     '}';
         }
 
@@ -141,8 +153,8 @@ public class Opportunities extends Model {
             dest.writeString(this.description);
             dest.writeInt(this.accountId);
             dest.writeTypedList(bids);
-            dest.writeLong(this.date);
-            dest.writeInt(this.status);
+            dest.writeLong(this.createAt);
+            dest.writeInt(this.categoryId);
         }
 
         protected ModelOpportunity(Parcel in) {
@@ -151,8 +163,8 @@ public class Opportunities extends Model {
             this.description = in.readString();
             this.accountId = in.readInt();
             this.bids = in.createTypedArrayList(Bids.ModelBids.CREATOR);
-            this.date = in.readLong();
-            this.status = in.readInt();
+            this.createAt = in.readLong();
+            this.categoryId = in.readInt();
         }
 
         public static final Parcelable.Creator<ModelOpportunity> CREATOR = new Parcelable.Creator<ModelOpportunity>() {

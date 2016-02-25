@@ -9,22 +9,24 @@ import com.strongloop.android.remoting.adapters.RestContractItem;
 import timber.log.Timber;
 
 /**
- * Created by ugar on 23.02.16.
+ * Created by ugar on 25.02.16.
  */
-public class FindOneRepository extends com.strongloop.android.loopback.ModelRepository<FindOne> {
+public class OpportunityPostRepository extends com.strongloop.android.loopback.ModelRepository<Opportunities> {
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
-        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/findOne", "GET"), getClassName() + ".findOne");
+        contract.addItem(new RestContractItem("/" + getNameForRestUrl(), "POST"), getClassName() + ".opportunities");
         return contract;
     }
 
-    public FindOneRepository() {
-        super("FindOne", "Applications", FindOne.class);
+    public OpportunityPostRepository() {
+        super("Opportunity", null, Opportunities.class);
     }
 
-    public void findOne(final FindOneCallback callback) {
-        invokeStaticMethod("findOne", ImmutableMap.of("filter", "{\"name\":\"" + getApplicationContext().getPackageName() + "\"}"), new Adapter.Callback() {
+    public void opportunities(String title, String description, final OpportunityCallback callback) {
+        invokeStaticMethod("opportunities", ImmutableMap.of("title", title,
+                "description", description,
+                "accountId", PreferencesUtils.getUserId(getApplicationContext())), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {
@@ -34,14 +36,14 @@ public class FindOneRepository extends com.strongloop.android.loopback.ModelRepo
 
             @Override
             public void onSuccess(String response) {
-                callback.onSuccess(new FindOne(response));
+                callback.onSuccess(new Opportunities.ModelOpportunity(response));
                 Timber.i("onSuccess response=%s", response);
             }
         });
     }
 
-    public interface FindOneCallback {
-        void onSuccess(FindOne response);
+    public interface OpportunityCallback {
+        void onSuccess(Opportunities.ModelOpportunity response);
         void onError(Throwable t);
     }
 }

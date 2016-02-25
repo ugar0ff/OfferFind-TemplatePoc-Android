@@ -8,7 +8,7 @@ import android.os.Handler;
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
-import com.dddev.market.place.core.api.strongloop.OpportunityRepository;
+import com.dddev.market.place.core.api.strongloop.OpportunityGetRepository;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.core.receiver.UpdateReceiver;
@@ -45,9 +45,9 @@ public class UpdateService extends IntentService {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                final OpportunityRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(OpportunityRepository.class);
+                final OpportunityGetRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(OpportunityGetRepository.class);
                 repository.createContract();
-                repository.opportunities(new OpportunityRepository.OpportunityCallback() {
+                repository.opportunities(new OpportunityGetRepository.OpportunityCallback() {
                     @Override
                     public void onSuccess(Opportunities opportunity) {
                         Timber.i("onSuccess response=%s", opportunity.toString());
@@ -61,8 +61,8 @@ public class UpdateService extends IntentService {
                                 values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunity.getList().get(i).getTitle());
                                 values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunity.getList().get(i).getDescription());
                                 values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getList().get(i).getAccountId());
-                                values.put(CacheHelper.OPPORTUNITIES_DATE, opportunity.getList().get(i).getDate());
-                                values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getList().get(i).getStatus());
+                                values.put(CacheHelper.OPPORTUNITIES_DATE, opportunity.getList().get(i).getCreateAt());
+                                values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getList().get(i).getCategoryId());
 
                                 updateBids(opportunity.getList().get(i).getBids());
 

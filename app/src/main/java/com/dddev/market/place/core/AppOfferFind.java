@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.dddev.market.place.BuildConfig;
 import com.dddev.market.place.core.api.strongloop.RestAdapter;
+import com.dddev.market.place.utils.PreferencesUtils;
 
 import timber.log.Timber;
 
@@ -18,6 +19,9 @@ public class AppOfferFind extends Application {
         restAdapter.getClientAdapter().removeAllHeaders();
         restAdapter.getClientAdapter().addHeader("Accept", "application/json");
         restAdapter.getClientAdapter().addHeader("Content-Type", "application/json; charset=utf-8");
+        if (PreferencesUtils.getUserToken(context) != null) {
+            restAdapter.setAccessToken(PreferencesUtils.getUserToken(context));
+        }
         return restAdapter;
     }
 
