@@ -3,6 +3,8 @@ package com.dddev.market.place.ui.fragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,6 @@ import android.widget.TextView;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
-import com.dddev.market.place.ui.model.ProposalItemModel;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -62,6 +63,23 @@ public class ProposalFragment extends BaseFragment {
             accept.setTransitionName(String.format("accept%s", itemModel.getId()));
             picture.setTransitionName(String.format("picture%s", itemModel.getId()));
         }
+        setChatFragment(itemModel.getId());
         return view;
+    }
+
+    private void setChatFragment(int id) {
+        try {
+            FragmentManager fm = getChildFragmentManager();
+            FragmentTransaction tr = fm.beginTransaction();
+            try {
+                fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            tr.replace(R.id.container, ChatFragment.newInstance(id));
+            tr.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

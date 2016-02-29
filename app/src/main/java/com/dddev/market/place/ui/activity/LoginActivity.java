@@ -202,6 +202,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void onError(Throwable t) {
                 Timber.e("onError Throwable: %s", t.toString());
+                showDialog(t.toString());
                 progressBar.setVisibility(View.GONE);
             }
         });
@@ -226,6 +227,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void onError(Throwable t) {
                 Timber.e("onError Throwable: %s", t.toString());
+                showDialog(t.toString());
                 progressBar.setVisibility(View.GONE);
             }
         });

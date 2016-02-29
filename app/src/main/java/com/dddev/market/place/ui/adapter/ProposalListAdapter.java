@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
-import com.dddev.market.place.ui.model.ProposalItemModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

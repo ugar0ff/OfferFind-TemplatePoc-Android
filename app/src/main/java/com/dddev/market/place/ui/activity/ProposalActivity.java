@@ -9,9 +9,8 @@ import android.view.inputmethod.InputMethodManager;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.ui.activity.base.BaseActivity;
+import com.dddev.market.place.ui.fragment.ProposalFragment;
 import com.dddev.market.place.ui.fragment.ProposalListFragment;
-
-import java.util.ArrayList;
 
 /**
  * Created by ugar on 10.02.16.
@@ -19,24 +18,35 @@ import java.util.ArrayList;
 public class ProposalActivity extends BaseActivity {
 
     public final static String OPPORTUNITIES_ID = "opportunities_id";
-    private long opportunitiesId;
+    public final static String IS_OPPORTUNITIES = "is_opportunities";
+    private long id;
+    private Bids.ModelBids itemModel;
 
     public static void launch(Context context) {
         context.startActivity(new Intent(context, ProposalActivity.class));
     }
 
-    public static void launch(Context context, long id) {
-        context.startActivity(new Intent(context, ProposalActivity.class).putExtra(OPPORTUNITIES_ID, id));
+    public static void launch(Context context, long id, Bids.ModelBids itemModel) {
+        context.startActivity(new Intent(context, ProposalActivity.class).putExtra(OPPORTUNITIES_ID, id).putExtra(IS_OPPORTUNITIES, itemModel));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent() != null && getIntent().hasExtra(OPPORTUNITIES_ID)) {
-            opportunitiesId = getIntent().getLongExtra(OPPORTUNITIES_ID, 0);
+        if (getIntent() != null) {
+            if (getIntent().hasExtra(OPPORTUNITIES_ID)) {
+                id = getIntent().getLongExtra(OPPORTUNITIES_ID, 0);
+            }
+            if (getIntent().hasExtra(IS_OPPORTUNITIES)) {
+                itemModel = getIntent().getParcelableExtra(IS_OPPORTUNITIES);
+            }
         }
         setContentView(R.layout.activity_container);
-        switchFragment(ProposalListFragment.newInstance(opportunitiesId), false, null);
+        if (itemModel == null) {
+            switchFragment(ProposalListFragment.newInstance(id), false, null);
+        } else {
+            switchFragment(ProposalFragment.newInstance(itemModel), false, null);
+        }
         onBackStackChanged();
     }
 

@@ -34,7 +34,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 17.02.16.
  */
-public class FragmentCrop extends BaseFragment implements View.OnClickListener, View.OnTouchListener {
+public class CropFragment extends BaseFragment implements View.OnClickListener, View.OnTouchListener {
 
     private String filePatch;
     private ImageView image, imageTemplate;
@@ -49,8 +49,8 @@ public class FragmentCrop extends BaseFragment implements View.OnClickListener, 
     private Bitmap photoImg;
     private View viewTop;
 
-    public static FragmentCrop newInstance() {
-        return new FragmentCrop();
+    public static CropFragment newInstance() {
+        return new CropFragment();
     }
 
     @Override

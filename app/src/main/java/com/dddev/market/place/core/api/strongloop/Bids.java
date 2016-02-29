@@ -52,17 +52,27 @@ public class Bids extends Model {
         @SerializedName("opportunityId")
         private int opportunityId;
         private int footerHeight;
+        @SerializedName("createAt")
+        private long createAt;
+        @SerializedName("provider")
+        private String provider;
+        @SerializedName("state")
+        private int state;
 
         public ModelBids() {
         }
 
-        public ModelBids(int id, String title, String description, String url, float price, int opportunityId) {
+        public ModelBids(int id, String title, String description, String url, float price, int opportunityId, long createAt, String provider, int state) {
+
             this.id = id;
             this.title = title;
             this.description = description;
             this.url = url;
             this.price = price;
             this.opportunityId = opportunityId;
+            this.createAt = createAt;
+            this.provider = provider;
+            this.state = state;
         }
 
         public int getId() {
@@ -121,6 +131,30 @@ public class Bids extends Model {
             this.footerHeight = footerHeight;
         }
 
+        public long getDate() {
+            return createAt;
+        }
+
+        public void setDate(long createAt) {
+            this.createAt = createAt;
+        }
+
+        public String getProvider() {
+            return provider;
+        }
+
+        public void setProvider(String provider) {
+            this.provider = provider;
+        }
+
+        public int getState() {
+            return state;
+        }
+
+        public void setState(int state) {
+            this.state = state;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -134,6 +168,10 @@ public class Bids extends Model {
             dest.writeString(this.url);
             dest.writeFloat(this.price);
             dest.writeInt(this.opportunityId);
+            dest.writeInt(this.footerHeight);
+            dest.writeLong(this.createAt);
+            dest.writeString(this.provider);
+            dest.writeInt(this.state);
         }
 
         protected ModelBids(Parcel in) {
@@ -143,6 +181,10 @@ public class Bids extends Model {
             this.url = in.readString();
             this.price = in.readFloat();
             this.opportunityId = in.readInt();
+            this.footerHeight = in.readInt();
+            this.createAt = in.readLong();
+            this.provider = in.readString();
+            this.state = in.readInt();
         }
 
         public static final Parcelable.Creator<ModelBids> CREATOR = new Parcelable.Creator<ModelBids>() {
@@ -164,6 +206,10 @@ public class Bids extends Model {
                     ", url='" + url + '\'' +
                     ", price=" + price +
                     ", opportunityId=" + opportunityId +
+                    ", footerHeight=" + footerHeight +
+                    ", date='" + createAt + '\'' +
+                    ", provider='" + provider + '\'' +
+                    ", state=" + state +
                     '}';
         }
     }

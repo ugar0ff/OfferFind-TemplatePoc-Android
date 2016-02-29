@@ -71,7 +71,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
             @Override
             public void run() {
                 if (adapterList.size() == 0) {
-                    Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0);
+                    Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0, 0, "", 0);
                     adapterList.add(modelBids);
                 }
                 try {
@@ -175,7 +175,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
                         adapterList.add(model);
                     } while (cursor.moveToNext());
                 }
-                Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0);
+                Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0, 0, "", 0);
                 adapterList.add(modelBids);
                 adapter.notifyDataSetChanged();
                 break;

@@ -9,12 +9,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.dddev.market.place.R;
+import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
 import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.OrdersAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
-import com.dddev.market.place.ui.model.OrdersItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +75,6 @@ public class OrdersFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ProposalActivity.launch(getActivity(), id);
+        ProposalActivity.launch(getActivity(), id, null);
     }
 }

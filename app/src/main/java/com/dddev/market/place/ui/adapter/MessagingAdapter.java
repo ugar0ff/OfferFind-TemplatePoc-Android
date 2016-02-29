@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.ui.model.MessagingItemModel;
+import com.dddev.market.place.core.api.strongloop.Bids;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,10 +21,10 @@ import java.util.List;
 public class MessagingAdapter extends BaseAdapter {
 
     private final LayoutInflater mInflater;
-    private List<MessagingItemModel> list;
+    private List<Bids.ModelBids> list;
     private Context context;
 
-    public MessagingAdapter(Context context, List<MessagingItemModel> list) {
+    public MessagingAdapter(Context context, List<Bids.ModelBids> list) {
         mInflater = LayoutInflater.from(context);
         this.list = list;
         this.context = context;
@@ -46,7 +46,7 @@ public class MessagingAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        public TextView title, date, state, provider;
+        public TextView title, createAt, state, provider;
         public ImageView picture;
     }
 
@@ -54,10 +54,10 @@ public class MessagingAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.item_orders, parent, false);
+            convertView = mInflater.inflate(R.layout.item_message, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.title = (TextView) convertView.findViewById(R.id.title);
-            viewHolder.date = (TextView) convertView.findViewById(R.id.date);
+            viewHolder.createAt = (TextView) convertView.findViewById(R.id.createAt);
             viewHolder.state = (TextView) convertView.findViewById(R.id.text_state);
             viewHolder.provider = (TextView) convertView.findViewById(R.id.provider);
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.image_state);
@@ -67,9 +67,13 @@ public class MessagingAdapter extends BaseAdapter {
         }
 
         if (list != null) {
-            viewHolder.title.setText(list.get(position).getTitle());
-            viewHolder.date.setText(list.get(position).getDate());
-            viewHolder.provider.setText(list.get(position).getProvider());
+            if (list.get(position).getTitle() != null) {
+                viewHolder.title.setText(list.get(position).getTitle());
+            }
+            viewHolder.createAt.setText(String.valueOf(list.get(position).getDate()));
+            if (list.get(position).getProvider() != null) {
+                viewHolder.provider.setText(list.get(position).getProvider());
+            }
             switch (list.get(position).getState()) {
                 case 0:
                     viewHolder.state.setText(context.getString(R.string.awarded));

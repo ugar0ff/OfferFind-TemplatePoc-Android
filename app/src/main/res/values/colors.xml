@@ -24,4 +24,5 @@
     <color name="colorStateGreen">#16be00</color>
     <color name="colorStateRed">#ff4049</color>
     <color name="colorStateYellow">#ffbe21</color>
+    <color name="colorHintColor">#bfbfbf</color>
 </resources>

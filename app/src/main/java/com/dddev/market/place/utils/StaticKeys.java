@@ -18,5 +18,6 @@ public class StaticKeys {
         public static final int OPPORTUNITIES_LOADER = 1;
         public static final int BIDS_LOADER = 2;
         public static final int CATEGORY_LOADER = 3;
+        public static final int ALL_BIDS_LOADER = 4;
     }
 }
