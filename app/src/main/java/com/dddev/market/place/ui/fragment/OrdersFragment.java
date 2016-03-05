@@ -129,7 +129,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements View.OnCli
                         Opportunities.ModelOpportunity model = new Opportunities.ModelOpportunity();
                         model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
                         model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
-                        model.setCreateAt(cursor.getLong(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
+                        model.setCreatedAt(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
                         model.setStatus(cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS)));
                         adapterList.add(model);
                     } while (cursor.moveToNext());

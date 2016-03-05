@@ -14,6 +14,9 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ import com.dddev.market.place.R;
 import com.dddev.market.place.ui.activity.CropActivity;
 import com.dddev.market.place.ui.activity.MainActivity;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
+import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
 
 import java.io.ByteArrayOutputStream;
@@ -31,12 +35,13 @@ import timber.log.Timber;
 /**
  * Created by ugar on 17.02.16.
  */
-public class AccountEditFragment extends BaseFragment implements View.OnClickListener {
+public class AccountEditFragment extends BaseFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private ImageView avatarView;
     private Bitmap bitmap;
     private String imageInfo;
     private Uri uri;
+    private EditText locationInput;
 
     public static AccountEditFragment newInstance() {
         return new AccountEditFragment();
@@ -56,6 +61,11 @@ public class AccountEditFragment extends BaseFragment implements View.OnClickLis
         View view = inflater.inflate(R.layout.fragment_account_edit, container, false);
         view.findViewById(R.id.save).setOnClickListener(this);
         view.findViewById(R.id.cancel).setOnClickListener(this);
+        locationInput = (EditText) view.findViewById(R.id.location);
+        locationInput.setEnabled(!PreferencesUtils.isLocaleCheckBoxEnable(getActivity()));
+        CheckBox checkBoxLocale = (CheckBox) view.findViewById(R.id.checkbox_locale);
+        checkBoxLocale.setChecked(PreferencesUtils.isLocaleCheckBoxEnable(getActivity()));
+        checkBoxLocale.setOnCheckedChangeListener(this);
         avatarView = (ImageView) view.findViewById(R.id.avatar);
         avatarView.setOnClickListener(this);
         return view;
@@ -221,4 +231,10 @@ public class AccountEditFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        PreferencesUtils.setLocaleCheckBoxState(getActivity(), isChecked);
+        locationInput.setEnabled(!isChecked);
+        //TODO: send server info by locale
+    }
 }

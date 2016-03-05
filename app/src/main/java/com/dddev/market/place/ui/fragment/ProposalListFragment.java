@@ -194,6 +194,19 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
 //                Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0, 0, "", 0);
 //                adapterList.add(modelBids);
                 adapter.notifyDataSetChanged();
+
+                Cursor cursor1 = getActivity().getContentResolver().query(CacheContentProvider.BIDS_URI, null, null, null, null);
+                if (cursor1 != null) {
+                    if (cursor1.moveToFirst()) {
+                        do {
+                            Timber.w("id %S, status %s, opportunity_id %s", cursor1.getString(cursor1.getColumnIndex(CacheHelper.BIDS_ID)),
+                                    cursor1.getInt(cursor1.getColumnIndex(CacheHelper.BIDS_STATUS)),
+                                    cursor1.getInt(cursor1.getColumnIndex(CacheHelper.BIDS_OPPORTUNITIES_ID)));
+                        } while (cursor1.moveToNext());
+                    }
+                    cursor1.close();
+                }
+
                 //TODO: add after change server request url
 //                streamMessages();
                 break;

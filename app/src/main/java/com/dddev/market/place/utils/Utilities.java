@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
 
 import timber.log.Timber;
 
@@ -16,6 +17,9 @@ import timber.log.Timber;
  * Created by ugar on 09.02.16.
  */
 public class Utilities {
+
+    public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    public static SimpleDateFormat output = new SimpleDateFormat("dd/MM/yyyy");
 
     public static void showHashKey(Context context) {
         try {

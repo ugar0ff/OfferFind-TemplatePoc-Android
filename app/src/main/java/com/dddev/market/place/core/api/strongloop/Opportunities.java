@@ -38,12 +38,12 @@ public class Opportunities extends Model {
         private String title;
         @SerializedName("description")
         private String description;
-        @SerializedName("accountId")
-        private int accountId;
+        @SerializedName("ownerId")
+        private int ownerId;
         @SerializedName("bids")
         private ArrayList<Bids.ModelBids> bids;
-        @SerializedName("createAt")
-        private long createAt;
+        @SerializedName("createdAt")
+        private String createdAt;
         @SerializedName("categoryId")
         private int categoryId;
         @SerializedName("status")
@@ -52,13 +52,13 @@ public class Opportunities extends Model {
         public ModelOpportunity() {
         }
 
-        public ModelOpportunity(int id, String title, String description, int accountId, ArrayList<Bids.ModelBids> bids, long createAt, int categoryId, int status) {
+        public ModelOpportunity(int id, String title, String description, int accountId, ArrayList<Bids.ModelBids> bids, String createAt, int categoryId, int status) {
             this.id = id;
             this.title = title;
             this.description = description;
-            this.accountId = accountId;
+            this.ownerId = accountId;
             this.bids = bids;
-            this.createAt = createAt;
+            this.createdAt = createAt;
             this.categoryId = categoryId;
             this.status = status;
         }
@@ -69,9 +69,9 @@ public class Opportunities extends Model {
             this.id = opportunity.getId();
             this.title = opportunity.getTitle();
             this.description = opportunity.getDescription();
-            this.accountId = opportunity.getAccountId();
+            this.ownerId = opportunity.getOwnerId();
             this.bids = opportunity.getBids();
-            this.createAt = opportunity.getCreateAt();
+            this.createdAt = opportunity.getCreatedAt();
             this.categoryId = opportunity.getCategoryId();
             this.status = opportunity.getStatus();
         }
@@ -100,12 +100,12 @@ public class Opportunities extends Model {
             this.description = description;
         }
 
-        public int getAccountId() {
-            return accountId;
+        public int getOwnerId() {
+            return ownerId;
         }
 
-        public void setAccountId(int accountId) {
-            this.accountId = accountId;
+        public void setOwnerId(int ownerId) {
+            this.ownerId = ownerId;
         }
 
         public ArrayList<Bids.ModelBids> getBids() {
@@ -116,12 +116,12 @@ public class Opportunities extends Model {
             this.bids = bids;
         }
 
-        public long getCreateAt() {
-            return createAt;
+        public String getCreatedAt() {
+            return createdAt;
         }
 
-        public void setCreateAt(long createAt) {
-            this.createAt = createAt;
+        public void setCreatedAt(String createdAt) {
+            this.createdAt = createdAt;
         }
 
         public int getCategoryId() {
@@ -146,9 +146,9 @@ public class Opportunities extends Model {
                     "id=" + id +
                     ", title='" + title + '\'' +
                     ", description='" + description + '\'' +
-                    ", accountId=" + accountId +
+                    ", ownerId=" + ownerId +
                     ", bids=" + bids +
-                    ", createAt='" + createAt + '\'' +
+                    ", createdAt='" + createdAt + '\'' +
                     ", categoryId=" + categoryId +
                     ", status=" + status +
                     '}';
@@ -164,9 +164,9 @@ public class Opportunities extends Model {
             dest.writeInt(this.id);
             dest.writeString(this.title);
             dest.writeString(this.description);
-            dest.writeInt(this.accountId);
+            dest.writeInt(this.ownerId);
             dest.writeTypedList(bids);
-            dest.writeLong(this.createAt);
+            dest.writeString(this.createdAt);
             dest.writeInt(this.categoryId);
             dest.writeInt(this.status);
         }
@@ -175,9 +175,9 @@ public class Opportunities extends Model {
             this.id = in.readInt();
             this.title = in.readString();
             this.description = in.readString();
-            this.accountId = in.readInt();
+            this.ownerId = in.readInt();
             this.bids = in.createTypedArrayList(Bids.ModelBids.CREATOR);
-            this.createAt = in.readLong();
+            this.createdAt = in.readString();
             this.categoryId = in.readInt();
             this.status = in.readInt();
         }

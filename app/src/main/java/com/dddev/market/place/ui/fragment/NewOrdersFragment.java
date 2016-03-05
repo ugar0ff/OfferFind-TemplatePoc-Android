@@ -209,9 +209,10 @@ public class NewOrdersFragment extends BaseFragment implements View.OnClickListe
                             values.put(CacheHelper.OPPORTUNITIES_ID, opportunity.getId());
                             values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunity.getTitle());
                             values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunity.getDescription());
-                            values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getAccountId());
-                            values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunity.getCreateAt());
-                            values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getCategoryId());
+                            values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getOwnerId());
+                            values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunity.getCreatedAt());
+                            values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getStatus());
+                            values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunity.getCategoryId());
                             getActivity().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
                             ProposalActivity.launch(getActivity());
                             if (getActivity() instanceof NewOrdersActivity) {

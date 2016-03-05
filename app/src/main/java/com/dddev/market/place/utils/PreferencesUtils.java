@@ -15,6 +15,7 @@ public class PreferencesUtils {
     public final static String APP_ID = "app_id";
     public static final String SENT_TOKEN_TO_SERVER = "sent_token_to_server";
     public static final String TIME_UPDATE = "time_update";
+    public static final String LOCALE_CHECK_BOX_STATE = "locale_check_box_state";
 
     private static String getPrefName(Context context) {
         return context.getPackageName() + "_preferences";
@@ -130,5 +131,21 @@ public class PreferencesUtils {
         }
         SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
         return sharedPref.getLong(TIME_UPDATE, 0);
+    }
+
+    public static boolean setLocaleCheckBoxState(Context context, boolean send) {
+        if (context == null) {
+            return false;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.edit().putBoolean(LOCALE_CHECK_BOX_STATE, send).commit();
+    }
+
+    public static boolean isLocaleCheckBoxEnable(Context context) {
+        if (context == null) {
+            return false;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(LOCALE_CHECK_BOX_STATE, false);
     }
 }

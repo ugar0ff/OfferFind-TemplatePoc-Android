@@ -36,8 +36,8 @@ public class Messages extends Model {
         private int id;
         @SerializedName("text")
         private String text;
-        @SerializedName("senderId")
-        private int senderId;
+        @SerializedName("ownerId")
+        private int ownerId;
         @SerializedName("bidId")
         private int bidId;
         @SerializedName("receiverId")
@@ -48,8 +48,8 @@ public class Messages extends Model {
             ModelMessages messages = new GsonBuilder().addDeserializationExclusionStrategy(exclude).addSerializationExclusionStrategy(exclude).create().fromJson(jsonObject, ModelMessages.class);
             this.id = messages.getId();
             this.text = messages.getText();
-            this.senderId = messages.getSenderId();
-            this.receiverId = messages.getSenderId();
+            this.ownerId = messages.getOwnerId();
+            this.receiverId = messages.getOwnerId();
         }
 
         public int getId() {
@@ -68,12 +68,12 @@ public class Messages extends Model {
             this.text = text;
         }
 
-        public int getSenderId() {
-            return senderId;
+        public int getOwnerId() {
+            return ownerId;
         }
 
-        public void setSenderId(int senderId) {
-            this.senderId = senderId;
+        public void setOwnerId(int ownerId) {
+            this.ownerId = ownerId;
         }
 
         public int getBidId() {
@@ -97,7 +97,7 @@ public class Messages extends Model {
             return "ModelMessages{" +
                     "id=" + id +
                     ", text='" + text + '\'' +
-                    ", senderId=" + senderId +
+                    ", ownerId=" + ownerId +
                     ", bidId=" + bidId +
                     ", receiverId=" + receiverId +
                     '}';
@@ -112,7 +112,7 @@ public class Messages extends Model {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
             dest.writeString(this.text);
-            dest.writeInt(this.senderId);
+            dest.writeInt(this.ownerId);
             dest.writeInt(this.bidId);
             dest.writeInt(this.receiverId);
         }
@@ -120,7 +120,7 @@ public class Messages extends Model {
         protected ModelMessages(Parcel in) {
             this.id = in.readInt();
             this.text = in.readString();
-            this.senderId = in.readInt();
+            this.ownerId = in.readInt();
             this.bidId = in.readInt();
             this.receiverId = in.readInt();
         }

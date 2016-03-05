@@ -52,8 +52,8 @@ public class Bids extends Model {
         @SerializedName("opportunityId")
         private int opportunityId;
 //        private int footerHeight;
-        @SerializedName("createAt")
-        private long createAt;
+        @SerializedName("createdAt")
+        private String createdAt;
         //TODO: change type provider
         @SerializedName("provider")
         private String provider;
@@ -63,7 +63,7 @@ public class Bids extends Model {
         public ModelBids() {
         }
 
-        public ModelBids(int id, String title, String description, String url, float price, int opportunityId, long createAt, String provider, int state) {
+        public ModelBids(int id, String title, String description, String url, float price, int opportunityId, String createdAt, String provider, int state) {
 
             this.id = id;
             this.title = title;
@@ -71,7 +71,7 @@ public class Bids extends Model {
             this.url = url;
             this.price = price;
             this.opportunityId = opportunityId;
-            this.createAt = createAt;
+            this.createdAt = createdAt;
             this.provider = provider;
             this.state = state;
         }
@@ -132,12 +132,12 @@ public class Bids extends Model {
 //            this.footerHeight = footerHeight;
 //        }
 
-        public long getCreateAt() {
-            return createAt;
+        public String getCreatedAt() {
+            return createdAt;
         }
 
-        public void setCreateAt(long createAt) {
-            this.createAt = createAt;
+        public void setCreatedAt(String createdAt) {
+            this.createdAt = createdAt;
         }
 
         public String getProvider() {
@@ -170,7 +170,7 @@ public class Bids extends Model {
             dest.writeFloat(this.price);
             dest.writeInt(this.opportunityId);
 //            dest.writeInt(this.footerHeight);
-            dest.writeLong(this.createAt);
+            dest.writeString(this.createdAt);
             dest.writeString(this.provider);
             dest.writeInt(this.state);
         }
@@ -183,7 +183,7 @@ public class Bids extends Model {
             this.price = in.readFloat();
             this.opportunityId = in.readInt();
 //            this.footerHeight = in.readInt();
-            this.createAt = in.readLong();
+            this.createdAt = in.readString();
             this.provider = in.readString();
             this.state = in.readInt();
         }
@@ -208,7 +208,7 @@ public class Bids extends Model {
                     ", price=" + price +
                     ", opportunityId=" + opportunityId +
 //                    ", footerHeight=" + footerHeight +
-                    ", date='" + createAt + '\'' +
+                    ", date='" + createdAt + '\'' +
                     ", provider='" + provider + '\'' +
                     ", state=" + state +
                     '}';

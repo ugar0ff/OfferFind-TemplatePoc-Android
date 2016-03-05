@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
+import com.dddev.market.place.utils.Utilities;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,7 +72,17 @@ public class OrdersAdapter extends BaseAdapter {
             if (list.get(position).getTitle() != null) {
                 viewHolder.title.setText(list.get(position).getTitle());
             }
-            viewHolder.date.setText(String.valueOf(list.get(position).getCreateAt()));
+            Date date = null;
+            try {
+                date = Utilities.sdf.parse(list.get(position).getCreatedAt());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (date != null) {
+                viewHolder.date.setText(Utilities.output.format(date));
+            } else {
+                viewHolder.date.setText("");
+            }
             switch (list.get(position).getStatus()) {
                 case 0:
                     viewHolder.state.setText(context.getString(R.string.selecting));

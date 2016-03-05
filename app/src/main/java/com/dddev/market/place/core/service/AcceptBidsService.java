@@ -31,7 +31,7 @@ public class AcceptBidsService extends IntentService {
             if (id > 0) {
                 int opportunitiesId = getOpportunitiesId(id);
                 if (opportunitiesId > 0) {
-                    changeBidsState(opportunitiesId);
+                    changeBidsState(opportunitiesId, id);
                     changeOpportunitiesState(opportunitiesId);
                 }
             }
@@ -53,8 +53,8 @@ public class AcceptBidsService extends IntentService {
         return opportunitiesId;
     }
 
-    private void changeBidsState(int id) {
-        String[] projection = new String[]{CacheHelper.BIDS_ID + " as " + CacheHelper._ID, CacheHelper.BIDS_OPPORTUNITIES_ID,
+    private void changeBidsState(int id,int bidsId) {
+        String[] projection = new String[]{CacheHelper.BIDS_ID + " as " + CacheHelper._ID, CacheHelper.BIDS_OPPORTUNITIES_ID, CacheHelper.BIDS_CREATE_AT,
                 CacheHelper.BIDS_DESCRIPTION, CacheHelper.BIDS_PRICE, CacheHelper.BIDS_STATUS, CacheHelper.BIDS_TITLE, CacheHelper.BIDS_URL};
         String selection = CacheHelper.BIDS_OPPORTUNITIES_ID + " = ? ";
         String[] selectionArg = new String[]{String.valueOf(id)};
@@ -69,9 +69,10 @@ public class AcceptBidsService extends IntentService {
                     values.put(CacheHelper.BIDS_OPPORTUNITIES_ID, cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_OPPORTUNITIES_ID)));
                     values.put(CacheHelper.BIDS_DESCRIPTION, cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_DESCRIPTION)));
                     values.put(CacheHelper.BIDS_PRICE, cursor.getFloat(cursor.getColumnIndex(CacheHelper.BIDS_PRICE)));
-                    values.put(CacheHelper.BIDS_STATUS, cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)) == id ? 1 : 0);
+                    values.put(CacheHelper.BIDS_STATUS, cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)) == bidsId ? 1 : 0);
                     values.put(CacheHelper.BIDS_TITLE, cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_TITLE)));
                     values.put(CacheHelper.BIDS_URL, cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_URL)));
+                    values.put(CacheHelper.BIDS_CREATE_AT, cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_CREATE_AT)));
                     contentValues[i] = values;
                     i++;
                 } while (cursor.moveToNext());
@@ -83,7 +84,7 @@ public class AcceptBidsService extends IntentService {
 
     private void changeOpportunitiesState(int id) {
         String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as " + CacheHelper._ID, CacheHelper.OPPORTUNITIES_TITLE, CacheHelper.OPPORTUNITIES_STATUS,
-                CacheHelper.OPPORTUNITIES_CREATE_AT, CacheHelper.OPPORTUNITIES_DESCRIPTION, CacheHelper.OPPORTUNITIES_ACCOUNT_ID};
+                CacheHelper.OPPORTUNITIES_CREATE_AT, CacheHelper.OPPORTUNITIES_DESCRIPTION, CacheHelper.OPPORTUNITIES_ACCOUNT_ID, CacheHelper.OPPORTUNITIES_CATEGORY_ID};
         String selection = CacheHelper.OPPORTUNITIES_ID + " = ? ";
         String[] selectionArg = new String[]{String.valueOf(id)};
         Cursor cursor = getContentResolver().query(CacheContentProvider.OPPORTUNITIES_URI, projection, selection, selectionArg, null);
@@ -96,6 +97,7 @@ public class AcceptBidsService extends IntentService {
                 values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, cursor.getLong(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
                 values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_DESCRIPTION)));
                 values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_ACCOUNT_ID)));
+                values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CATEGORY_ID)));
                 getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
                 sendOpportunitiesStatus(id);
             }

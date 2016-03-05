@@ -134,6 +134,7 @@ public class ProposalListAdapter extends BaseAdapter {
                 } else {
                     Picasso.with(context).load(R.drawable.placeholder_proposal_item).into(viewHolder.picture);
                 }
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     viewHolder.title.setTransitionName(String.format("title%s", list.get(position).getId()));
                     viewHolder.price.setTransitionName(String.format("price%s", list.get(position).getId()));

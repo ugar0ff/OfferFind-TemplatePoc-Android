@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.utils.Utilities;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,7 +60,7 @@ public class MessagingAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.item_message, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.title = (TextView) convertView.findViewById(R.id.title);
-            viewHolder.createAt = (TextView) convertView.findViewById(R.id.createAt);
+            viewHolder.createAt = (TextView) convertView.findViewById(R.id.createdAt);
             viewHolder.state = (TextView) convertView.findViewById(R.id.text_state);
             viewHolder.provider = (TextView) convertView.findViewById(R.id.provider);
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.image_state);
@@ -70,7 +73,17 @@ public class MessagingAdapter extends BaseAdapter {
             if (list.get(position).getTitle() != null) {
                 viewHolder.title.setText(list.get(position).getTitle());
             }
-            viewHolder.createAt.setText(String.valueOf(list.get(position).getCreateAt()));
+            Date date = null;
+            try {
+                date = Utilities.sdf.parse(list.get(position).getCreatedAt());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (date != null) {
+                viewHolder.createAt.setText(Utilities.output.format(date));
+            } else {
+                viewHolder.createAt.setText("");
+            }
             if (list.get(position).getProvider() != null) {
                 viewHolder.provider.setText(list.get(position).getProvider());
             }

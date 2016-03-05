@@ -26,6 +26,7 @@ public class OpportunityPostRepository extends com.strongloop.android.loopback.M
     public void opportunities(String title, String description, final OpportunityCallback callback) {
         invokeStaticMethod("opportunities", ImmutableMap.of("title", title,
                 "description", description,
+                "status", 0,
                 "accountId", PreferencesUtils.getUserId(getApplicationContext())), new Adapter.Callback() {
 
             @Override
