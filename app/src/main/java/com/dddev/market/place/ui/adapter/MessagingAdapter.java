@@ -70,29 +70,29 @@ public class MessagingAdapter extends BaseAdapter {
             if (list.get(position).getTitle() != null) {
                 viewHolder.title.setText(list.get(position).getTitle());
             }
-            viewHolder.createAt.setText(String.valueOf(list.get(position).getDate()));
+            viewHolder.createAt.setText(String.valueOf(list.get(position).getCreateAt()));
             if (list.get(position).getProvider() != null) {
                 viewHolder.provider.setText(list.get(position).getProvider());
             }
             switch (list.get(position).getState()) {
                 case 0:
+                    viewHolder.state.setText(context.getString(R.string.selecting));
+                    viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateYellow));
+                    Picasso.with(context).load(R.drawable.icon_proposal_selecting).into(viewHolder.picture);
+                    break;
+                case 1:
                     viewHolder.state.setText(context.getString(R.string.awarded));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateRed));
                     Picasso.with(context).load(R.drawable.icon_proposal_awarded).into(viewHolder.picture);
                     break;
-                case 1:
-                    viewHolder.state.setText(context.getString(R.string.complete));
-                    viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateYellow));
-                    Picasso.with(context).load(R.drawable.icon_proposal_complite).into(viewHolder.picture);
-                    break;
                 case 2:
-                    viewHolder.state.setText(context.getString(R.string.selecting));
+                    viewHolder.state.setText(context.getString(R.string.complete));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateGreen));
-                    Picasso.with(context).load(R.drawable.icon_proposal_selecting).into(viewHolder.picture);
+                    Picasso.with(context).load(R.drawable.icon_proposal_complite).into(viewHolder.picture);
                     break;
                 default:
                     viewHolder.state.setText(context.getString(R.string.selecting));
-                    viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateGreen));
+                    viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateYellow));
                     Picasso.with(context).load(R.drawable.icon_proposal_selecting).into(viewHolder.picture);
             }
         }

@@ -61,8 +61,9 @@ public class UpdateService extends IntentService {
                                 values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunity.getList().get(i).getTitle());
                                 values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunity.getList().get(i).getDescription());
                                 values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getList().get(i).getAccountId());
-                                values.put(CacheHelper.OPPORTUNITIES_DATE, opportunity.getList().get(i).getCreateAt());
-                                values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getList().get(i).getCategoryId());
+                                values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunity.getList().get(i).getCreateAt());
+                                values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunity.getList().get(i).getCategoryId());
+                                values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getList().get(i).getStatus());
 
                                 updateBids(opportunity.getList().get(i).getBids());
 
@@ -93,6 +94,9 @@ public class UpdateService extends IntentService {
             bidsValues.put(CacheHelper.BIDS_OPPORTUNITIES_ID, modelBids.get(j).getOpportunityId());
             bidsValues.put(CacheHelper.BIDS_PRICE, modelBids.get(j).getPrice());
             bidsValues.put(CacheHelper.BIDS_URL, modelBids.get(j).getUrl());
+            bidsValues.put(CacheHelper.BIDS_STATUS, modelBids.get(j).getState());
+            bidsValues.put(CacheHelper.BIDS_CREATE_AT, modelBids.get(j).getCreateAt());
+            //TODO: add provider model
             bidsContentValues[j] = bidsValues;
         }
         getContentResolver().bulkInsert(CacheContentProvider.BIDS_URI, bidsContentValues);

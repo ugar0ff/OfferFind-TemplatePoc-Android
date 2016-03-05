@@ -46,11 +46,13 @@ public class Opportunities extends Model {
         private long createAt;
         @SerializedName("categoryId")
         private int categoryId;
+        @SerializedName("status")
+        private int status;
 
         public ModelOpportunity() {
         }
 
-        public ModelOpportunity(int id, String title, String description, int accountId, ArrayList<Bids.ModelBids> bids, long createAt, int categoryId) {
+        public ModelOpportunity(int id, String title, String description, int accountId, ArrayList<Bids.ModelBids> bids, long createAt, int categoryId, int status) {
             this.id = id;
             this.title = title;
             this.description = description;
@@ -58,6 +60,7 @@ public class Opportunities extends Model {
             this.bids = bids;
             this.createAt = createAt;
             this.categoryId = categoryId;
+            this.status = status;
         }
 
         public ModelOpportunity(String jsonObject) {
@@ -70,6 +73,7 @@ public class Opportunities extends Model {
             this.bids = opportunity.getBids();
             this.createAt = opportunity.getCreateAt();
             this.categoryId = opportunity.getCategoryId();
+            this.status = opportunity.getStatus();
         }
 
         public int getId() {
@@ -128,6 +132,14 @@ public class Opportunities extends Model {
             this.categoryId = categoryId;
         }
 
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
         @Override
         public String toString() {
             return "ModelOpportunity{" +
@@ -138,6 +150,7 @@ public class Opportunities extends Model {
                     ", bids=" + bids +
                     ", createAt='" + createAt + '\'' +
                     ", categoryId=" + categoryId +
+                    ", status=" + status +
                     '}';
         }
 
@@ -155,6 +168,7 @@ public class Opportunities extends Model {
             dest.writeTypedList(bids);
             dest.writeLong(this.createAt);
             dest.writeInt(this.categoryId);
+            dest.writeInt(this.status);
         }
 
         protected ModelOpportunity(Parcel in) {
@@ -165,6 +179,7 @@ public class Opportunities extends Model {
             this.bids = in.createTypedArrayList(Bids.ModelBids.CREATOR);
             this.createAt = in.readLong();
             this.categoryId = in.readInt();
+            this.status = in.readInt();
         }
 
         public static final Parcelable.Creator<ModelOpportunity> CREATOR = new Parcelable.Creator<ModelOpportunity>() {

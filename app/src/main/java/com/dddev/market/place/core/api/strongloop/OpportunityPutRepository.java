@@ -8,22 +8,22 @@ import com.strongloop.android.remoting.adapters.RestContractItem;
 import timber.log.Timber;
 
 /**
- * Created by ugar on 29.02.16.
+ * Created by ugar on 04.03.16.
  */
-public class MessagesGetRepository extends com.strongloop.android.loopback.ModelRepository<Messages> {
+public class OpportunityPutRepository extends com.strongloop.android.loopback.ModelRepository<Opportunities> {
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
-        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:id/messages", "GET"), getClassName() + ".messages");
+        contract.addItem(new RestContractItem("/" + getNameForRestUrl(), "PUT"), getClassName() + ".opportunities");
         return contract;
     }
 
-    public MessagesGetRepository() {
-        super("Messages", "Bids", Messages.class);
+    public OpportunityPutRepository() {
+        super("Opportunity", null, Opportunities.class);
     }
 
-    public void messages(int id, final MessagesCallback callback) {
-        invokeStaticMethod("messages", ImmutableMap.of("id", id), new Adapter.Callback() {
+    public void opportunities(int id, int status, final OpportunityCallback callback) {
+        invokeStaticMethod("opportunities", ImmutableMap.of("id", id, "status", status), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {
@@ -33,14 +33,14 @@ public class MessagesGetRepository extends com.strongloop.android.loopback.Model
 
             @Override
             public void onSuccess(String response) {
-                callback.onSuccess(new Messages(response));
+                callback.onSuccess(new Opportunities.ModelOpportunity(response));
                 Timber.i("onSuccess response=%s", response);
             }
         });
     }
 
-    public interface MessagesCallback {
-        void onSuccess(Messages response);
+    public interface OpportunityCallback {
+        void onSuccess(Opportunities.ModelOpportunity response);
         void onError(Throwable t);
     }
 }

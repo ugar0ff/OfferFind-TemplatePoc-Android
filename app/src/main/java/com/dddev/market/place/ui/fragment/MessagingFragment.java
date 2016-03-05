@@ -6,6 +6,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,7 @@ import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.MessagingAdapter;
-import com.dddev.market.place.ui.fragment.base.BaseFragment;
-import com.dddev.market.place.ui.model.MessagingItemModel;
+import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
 import com.dddev.market.place.utils.StaticKeys;
 
 import java.util.ArrayList;
@@ -31,10 +31,11 @@ import timber.log.Timber;
 /**
  * Created by ugar on 09.02.16.
  */
-public class MessagingFragment extends BaseFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
+public class MessagingFragment extends UpdateReceiverFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
     private List<Bids.ModelBids> adapterList;
     private MessagingAdapter adapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static MessagingFragment newInstance() {
         return new MessagingFragment();
@@ -55,7 +56,10 @@ public class MessagingFragment extends BaseFragment implements View.OnClickListe
         adapter = new MessagingAdapter(getActivity(), adapterList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
-        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER, null, this);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
+        getActivity().getLoaderManager().initLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER, null, this);
         return view;
     }
 
@@ -77,7 +81,8 @@ public class MessagingFragment extends BaseFragment implements View.OnClickListe
                         CacheHelper.BIDS_TITLE,
                         CacheHelper.BIDS_DESCRIPTION,
                         CacheHelper.BIDS_URL,
-                        CacheHelper.BIDS_PRICE};
+                        CacheHelper.BIDS_PRICE,
+                        CacheHelper.BIDS_STATUS};
                 return new CursorLoader(getActivity(), CacheContentProvider.BIDS_URI, projection, null, null, null);
             default:
                 return null;
@@ -98,11 +103,11 @@ public class MessagingFragment extends BaseFragment implements View.OnClickListe
                         model.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_DESCRIPTION)));
                         model.setPrice(cursor.getFloat(cursor.getColumnIndex(CacheHelper.BIDS_PRICE)));
                         model.setUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_URL)));
+                        model.setState(cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_STATUS)));
                         adapterList.add(model);
                     } while (cursor.moveToNext());
                 }
                 adapter.notifyDataSetChanged();
-                getActivity().getLoaderManager().destroyLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER);
                 break;
         }
     }
@@ -110,7 +115,6 @@ public class MessagingFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Timber.i("onLoaderReset");
-        getActivity().getLoaderManager().destroyLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER);
     }
 
     @Override
@@ -120,6 +124,32 @@ public class MessagingFragment extends BaseFragment implements View.OnClickListe
                 ProposalActivity.launch(getActivity(), id, modelBids);
                 break;
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        startUpdateService();
+    }
+
+    @Override
+    public void onHandleServerRequest() {
+        if (getActivity() != null && mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void onHandleServerRequestError() {
+        if (getActivity() != null && mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 }

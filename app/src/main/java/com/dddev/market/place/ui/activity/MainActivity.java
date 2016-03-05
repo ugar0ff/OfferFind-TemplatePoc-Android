@@ -9,14 +9,13 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Opportunities;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.activity.base.BaseActivity;
 import com.dddev.market.place.ui.adapter.TabAdapter;
 import com.dddev.market.place.ui.fragment.AccountRootFragment;
 import com.dddev.market.place.ui.model.TabModel;
-import com.dddev.market.place.ui.view.smarttablayout.SmartTabLayout;
+import com.dddev.market.place.ui.views.smarttablayout.SmartTabLayout;
 import com.dddev.market.place.utils.StaticKeys;
 
 import java.util.ArrayList;
@@ -31,13 +30,11 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
 
     private ViewPager viewPager;
     private TabAdapter tabAdapter;
-    private ArrayList<Opportunities.ModelOpportunity> opportunityList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        opportunityList = new ArrayList<>();
         List<TabModel> pageList = new ArrayList<>();
         pageList.add(new TabModel(1, R.drawable.icon_orders_press));
         pageList.add(new TabModel(2, R.drawable.icon_messaging));
@@ -63,7 +60,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
             }
         });
 
-        getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
+        getLoaderManager().restartLoader(StaticKeys.LoaderId.TAB_LOADER, null, this);
     }
 
     @Override
@@ -79,11 +76,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Timber.i("onCreateLoader");
         switch (id) {
-            case StaticKeys.LoaderId.OPPORTUNITIES_LOADER:
-                String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as _id ",
-                        CacheHelper.OPPORTUNITIES_TITLE,
-                        CacheHelper.OPPORTUNITIES_DATE,
-                        CacheHelper.OPPORTUNITIES_STATUS,};
+            case StaticKeys.LoaderId.TAB_LOADER:
+                String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as _id "};
                 return new CursorLoader(this, CacheContentProvider.OPPORTUNITIES_URI, projection, null, null, null);
             default:
                 return null;
@@ -94,19 +88,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         Timber.i("onLoadFinished, loader.getId() = %s", loader.getId());
         switch (loader.getId()) {
-            case StaticKeys.LoaderId.OPPORTUNITIES_LOADER:
-                opportunityList.clear();
-                if (cursor.moveToFirst()) {
-                    do {
-                        Opportunities.ModelOpportunity model = new Opportunities.ModelOpportunity();
-                        model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
-                        model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
-                        model.setCreateAt(cursor.getLong(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
-                        model.setCreateAt(cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS)));
-                        opportunityList.add(model);
-                    } while (cursor.moveToNext());
-                }
-                tabAdapter.setOrdersList(opportunityList);
+            case StaticKeys.LoaderId.TAB_LOADER:
+                tabAdapter.setOrdersList(cursor.getCount() > 0);
                 break;
         }
     }

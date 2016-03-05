@@ -27,12 +27,11 @@ public class TabAdapter extends FragmentStatePagerAdapter {
             R.drawable.selector_messaging,
             R.drawable.selector_account
     };
-    private ArrayList<Opportunities.ModelOpportunity> opportunityList;
+    private boolean isOrdersFragment;
 
     public TabAdapter(FragmentManager fm, List<TabModel> list) {
         super(fm);
         this.list = list;
-        opportunityList = new ArrayList<>();
     }
 
     @Override
@@ -43,10 +42,10 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            if (opportunityList.size() == 0) {
+            if (!isOrdersFragment) {
                 return NewOrdersFragment.newInstance();
             } else {
-                return OrdersFragment.newInstance(opportunityList);
+                return OrdersFragment.newInstance();
             }
         } else if (position == 1) {
             return MessagingFragment.newInstance();
@@ -69,8 +68,8 @@ public class TabAdapter extends FragmentStatePagerAdapter {
         return ICONS[position];
     }
 
-    public void setOrdersList(ArrayList<Opportunities.ModelOpportunity> opportunityList) {
-        this.opportunityList = opportunityList;
+    public void setOrdersList(boolean isOrdersFragment) {
+        this.isOrdersFragment = isOrdersFragment;
         notifyDataSetChanged();
     }
 }

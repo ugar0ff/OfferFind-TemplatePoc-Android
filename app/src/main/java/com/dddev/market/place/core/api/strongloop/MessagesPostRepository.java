@@ -15,7 +15,7 @@ public class MessagesPostRepository extends com.strongloop.android.loopback.Mode
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
-        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:id/messages", "POST"), getClassName() + ".messages");
+        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:bidId/messages", "POST"), getClassName() + ".messages");
         return contract;
     }
 
@@ -23,11 +23,10 @@ public class MessagesPostRepository extends com.strongloop.android.loopback.Mode
         super("Messages", "Bids", Messages.class);
     }
 
-    public void messages(String text, int bidId, final MessagesCallback callback) {
-        invokeStaticMethod("messages", ImmutableMap.of("id", bidId,
-                "text", text,
+    public void messages(String text, int id, final MessagesCallback callback) {
+        invokeStaticMethod("messages", ImmutableMap.of("text", text,
                 "senderId", PreferencesUtils.getUserId(getApplicationContext()),
-                "bidId", bidId), new Adapter.Callback() {
+                "bidId", id), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

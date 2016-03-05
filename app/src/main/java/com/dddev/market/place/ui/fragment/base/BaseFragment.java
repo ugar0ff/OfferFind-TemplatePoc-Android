@@ -8,8 +8,11 @@ import android.support.v7.app.AlertDialog;
 import android.view.inputmethod.InputMethodManager;
 
 import com.dddev.market.place.R;
+import com.dddev.market.place.core.service.AcceptBidsService;
+import com.dddev.market.place.core.service.CompleteBidsService;
 import com.dddev.market.place.core.service.UpdateService;
 import com.dddev.market.place.ui.controller.SwitchFragmentListener;
+import com.dddev.market.place.utils.StaticKeys;
 
 /**
  * Created by ugar on 09.02.16.
@@ -71,7 +74,19 @@ public class BaseFragment extends Fragment {
 
     protected void startUpdateService() {
         if (getActivity() != null) {
-            getActivity().startService(new Intent(getActivity(), UpdateService.class));
+            getActivity().startService(new Intent(getActivity(), UpdateService.class).putExtra(StaticKeys.KEY_REQUEST, StaticKeys.REQUEST_START));
+        }
+    }
+
+    protected void startAcceptBidsService(int bidId) {
+        if (getActivity() != null) {
+            getActivity().startService(new Intent(getActivity(), AcceptBidsService.class).putExtra(StaticKeys.ACCEPT_BIDS_ID, bidId));
+        }
+    }
+
+    protected void startCompleteBidsService(int bidId) {
+        if (getActivity() != null) {
+            getActivity().startService(new Intent(getActivity(), CompleteBidsService.class).putExtra(StaticKeys.COMPLETE_BIDS_ID, bidId));
         }
     }
 }

@@ -2,14 +2,12 @@ package com.dddev.market.place.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
@@ -60,7 +58,7 @@ public class ChatAdapter extends BaseAdapter {
         Messages.ModelMessages chatMessage = getItem(position);
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item_message, parent, false);
+            convertView = inflater.inflate(R.layout.item_message_list, parent, false);
             holder = createViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -83,17 +81,14 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private void setAlignment(ViewHolder holder, boolean isOutgoing) {
-        if (!isOutgoing) {
-            if (holder.txtMessage != null) {
+        if (holder.txtMessage != null) {
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
+            if (!isOutgoing) {
                 holder.txtMessage.setBackgroundResource(R.drawable.dialog_white);
-                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
                 layoutParams.gravity = Gravity.LEFT;
                 holder.txtMessage.setLayoutParams(layoutParams);
-            }
-        } else {
-            if (holder.txtMessage != null) {
+            } else {
                 holder.txtMessage.setBackgroundResource(R.drawable.dialog_gray);
-                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
                 layoutParams.gravity = Gravity.RIGHT;
                 holder.txtMessage.setLayoutParams(layoutParams);
             }

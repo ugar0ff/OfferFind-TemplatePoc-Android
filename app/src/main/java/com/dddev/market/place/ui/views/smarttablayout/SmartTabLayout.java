@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.dddev.market.place.ui.view.smarttablayout;
+package com.dddev.market.place.ui.views.smarttablayout;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -72,7 +72,7 @@ public class SmartTabLayout extends HorizontalScrollView {
     private static final int TAB_VIEW_TEXT_MIN_WIDTH = 0;
     private static final boolean TAB_CLICKABLE = true;
 
-    protected final com.dddev.market.place.ui.view.smarttablayout.SmartTabStrip tabStrip;
+    protected final com.dddev.market.place.ui.views.smarttablayout.SmartTabStrip tabStrip;
     private int titleOffset;
     private int tabViewBackgroundResId;
     private boolean tabViewTextAllCaps;
@@ -160,7 +160,7 @@ public class SmartTabLayout extends HorizontalScrollView {
             setCustomTabView(customTabLayoutId, customTabTextViewId);
         }
 
-        this.tabStrip = new com.dddev.market.place.ui.view.smarttablayout.SmartTabStrip(context, attrs);
+        this.tabStrip = new com.dddev.market.place.ui.views.smarttablayout.SmartTabStrip(context, attrs);
 
         if (distributeEvenly && tabStrip.isIndicatorAlwaysInCenter()) {
             throw new UnsupportedOperationException(
@@ -188,8 +188,8 @@ public class SmartTabLayout extends HorizontalScrollView {
         if (tabStrip.isIndicatorAlwaysInCenter() && tabStrip.getChildCount() > 0) {
             View firstTab = tabStrip.getChildAt(0);
             View lastTab = tabStrip.getChildAt(getChildCount() - 1);
-            int start = (w - com.dddev.market.place.ui.view.smarttablayout.Utils.getMeasuredWidth(firstTab)) / 2 - com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginStart(firstTab);
-            int end = (w - com.dddev.market.place.ui.view.smarttablayout.Utils.getMeasuredWidth(lastTab)) / 2 - com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginEnd(lastTab);
+            int start = (w - com.dddev.market.place.ui.views.smarttablayout.Utils.getMeasuredWidth(firstTab)) / 2 - com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginStart(firstTab);
+            int end = (w - com.dddev.market.place.ui.views.smarttablayout.Utils.getMeasuredWidth(lastTab)) / 2 - com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginEnd(lastTab);
             tabStrip.setMinimumWidth(tabStrip.getMeasuredWidth());
             ViewCompat.setPaddingRelative(this, start, getPaddingTop(), end, getPaddingBottom());
             setClipToPadding(false);
@@ -423,31 +423,31 @@ public class SmartTabLayout extends HorizontalScrollView {
             return;
         }
 
-        final boolean isLayoutRtl = com.dddev.market.place.ui.view.smarttablayout.Utils.isLayoutRtl(this);
+        final boolean isLayoutRtl = com.dddev.market.place.ui.views.smarttablayout.Utils.isLayoutRtl(this);
         View selectedTab = tabStrip.getChildAt(tabIndex);
-        int widthPlusMargin = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(selectedTab) + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginHorizontally(selectedTab);
+        int widthPlusMargin = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(selectedTab) + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginHorizontally(selectedTab);
         int extraOffset = (int) (positionOffset * widthPlusMargin);
 
         if (tabStrip.isIndicatorAlwaysInCenter()) {
 
             if (0f < positionOffset && positionOffset < 1f) {
                 View nextTab = tabStrip.getChildAt(tabIndex + 1);
-                int selectHalfWidth = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(selectedTab) / 2 + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginEnd(selectedTab);
-                int nextHalfWidth = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(nextTab) / 2 + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginStart(nextTab);
+                int selectHalfWidth = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(selectedTab) / 2 + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginEnd(selectedTab);
+                int nextHalfWidth = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(nextTab) / 2 + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginStart(nextTab);
                 extraOffset = Math.round(positionOffset * (selectHalfWidth + nextHalfWidth));
             }
 
             View firstTab = tabStrip.getChildAt(0);
             int x;
             if (isLayoutRtl) {
-                int first = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(firstTab) + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginEnd(firstTab);
-                int selected = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(selectedTab) + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginEnd(selectedTab);
-                x = com.dddev.market.place.ui.view.smarttablayout.Utils.getEnd(selectedTab) - com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginEnd(selectedTab) - extraOffset;
+                int first = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(firstTab) + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginEnd(firstTab);
+                int selected = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(selectedTab) + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginEnd(selectedTab);
+                x = com.dddev.market.place.ui.views.smarttablayout.Utils.getEnd(selectedTab) - com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginEnd(selectedTab) - extraOffset;
                 x -= (first - selected) / 2;
             } else {
-                int first = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(firstTab) + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginStart(firstTab);
-                int selected = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(selectedTab) + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginStart(selectedTab);
-                x = com.dddev.market.place.ui.view.smarttablayout.Utils.getStart(selectedTab) - com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginStart(selectedTab) + extraOffset;
+                int first = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(firstTab) + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginStart(firstTab);
+                int selected = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(selectedTab) + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginStart(selectedTab);
+                x = com.dddev.market.place.ui.views.smarttablayout.Utils.getStart(selectedTab) - com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginStart(selectedTab) + extraOffset;
                 x -= (first - selected) / 2;
             }
 
@@ -461,17 +461,17 @@ public class SmartTabLayout extends HorizontalScrollView {
 
             if (0f < positionOffset && positionOffset < 1f) {
                 View nextTab = tabStrip.getChildAt(tabIndex + 1);
-                int selectHalfWidth = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(selectedTab) / 2 + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginEnd(selectedTab);
-                int nextHalfWidth = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidth(nextTab) / 2 + com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginStart(nextTab);
+                int selectHalfWidth = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(selectedTab) / 2 + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginEnd(selectedTab);
+                int nextHalfWidth = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidth(nextTab) / 2 + com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginStart(nextTab);
                 extraOffset = Math.round(positionOffset * (selectHalfWidth + nextHalfWidth));
             }
 
             if (isLayoutRtl) {
-                x = -com.dddev.market.place.ui.view.smarttablayout.Utils.getWidthWithMargin(selectedTab) / 2 + getWidth() / 2;
-                x -= com.dddev.market.place.ui.view.smarttablayout.Utils.getPaddingStart(this);
+                x = -com.dddev.market.place.ui.views.smarttablayout.Utils.getWidthWithMargin(selectedTab) / 2 + getWidth() / 2;
+                x -= com.dddev.market.place.ui.views.smarttablayout.Utils.getPaddingStart(this);
             } else {
-                x = com.dddev.market.place.ui.view.smarttablayout.Utils.getWidthWithMargin(selectedTab) / 2 - getWidth() / 2;
-                x += com.dddev.market.place.ui.view.smarttablayout.Utils.getPaddingStart(this);
+                x = com.dddev.market.place.ui.views.smarttablayout.Utils.getWidthWithMargin(selectedTab) / 2 - getWidth() / 2;
+                x += com.dddev.market.place.ui.views.smarttablayout.Utils.getPaddingStart(this);
             }
 
         } else {
@@ -484,10 +484,10 @@ public class SmartTabLayout extends HorizontalScrollView {
 
         }
 
-        int start = com.dddev.market.place.ui.view.smarttablayout.Utils.getStart(selectedTab);
-        int startMargin = com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginStart(selectedTab);
+        int start = com.dddev.market.place.ui.views.smarttablayout.Utils.getStart(selectedTab);
+        int startMargin = com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginStart(selectedTab);
         if (isLayoutRtl) {
-            x += start + startMargin - extraOffset - getWidth() + com.dddev.market.place.ui.view.smarttablayout.Utils.getPaddingHorizontally(this);
+            x += start + startMargin - extraOffset - getWidth() + com.dddev.market.place.ui.views.smarttablayout.Utils.getPaddingHorizontally(this);
         } else {
             x += start - startMargin + extraOffset;
         }

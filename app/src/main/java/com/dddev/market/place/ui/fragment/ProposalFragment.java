@@ -19,15 +19,18 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by ugar on 11.02.16.
  */
-public class ProposalFragment extends BaseFragment {
+public class ProposalFragment extends BaseFragment implements View.OnClickListener{
 
     private final static String PROPOSAL_MODEL = "proposal_model";
+    private final static String PROPOSAL_STATUS = "proposal_status";
     private Bids.ModelBids itemModel;
+    private int status;
 
-    public static ProposalFragment newInstance(Bids.ModelBids itemModel) {
+    public static ProposalFragment newInstance(Bids.ModelBids itemModel, int status) {
         ProposalFragment fragment = new ProposalFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(PROPOSAL_MODEL, itemModel);
+        bundle.putInt(PROPOSAL_STATUS, status);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -37,6 +40,7 @@ public class ProposalFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             itemModel = getArguments().getParcelable(PROPOSAL_MODEL);
+            status = getArguments().getInt(PROPOSAL_STATUS);
         }
     }
 
@@ -50,7 +54,25 @@ public class ProposalFragment extends BaseFragment {
         }
         TextView price = (TextView) view.findViewById(R.id.price);
         price.setText(String.format("$ %s", itemModel.getPrice()));
+
         TextView accept = (TextView) view.findViewById(R.id.accept);
+        accept.setOnClickListener(this);
+        if (status == 2) {
+            accept.setVisibility(View.GONE);
+        } else
+        if (status == 1) {
+            if (itemModel.getState() == status) {
+                accept.setText(getActivity().getString(R.string.complete));
+                accept.setVisibility(View.VISIBLE);
+            } else {
+                accept.setText(getActivity().getString(R.string.complete));
+                accept.setVisibility(View.GONE);
+            }
+        } else {
+            accept.setText(getActivity().getString(R.string.accept));
+            accept.setVisibility(View.VISIBLE);
+        }
+
         ImageView picture = (ImageView) view.findViewById(R.id.picture);
         if (itemModel.getUrl() != null && !itemModel.getUrl().isEmpty()) {
             Picasso.with(getActivity()).load(itemModel.getUrl()).into(picture);
@@ -76,10 +98,27 @@ public class ProposalFragment extends BaseFragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            tr.replace(R.id.container, ChatFragment.newInstance(id));
+            boolean accessToWriteMessage = status != 2;
+            if (accessToWriteMessage && status == 1) {
+                accessToWriteMessage = itemModel.getState() == status;
+            }
+            tr.replace(R.id.container, ChatFragment.newInstance(id, accessToWriteMessage));
             tr.commit();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.accept:
+                if (((TextView)v).getText().equals(getActivity().getString(R.string.complete))) {
+                    startCompleteBidsService(itemModel.getId());
+                } else {
+                    startAcceptBidsService(itemModel.getId());
+                }
+                break;
         }
     }
 }

@@ -64,6 +64,8 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
         <service android:name=".core.service.UpdateService"/>
+        <service android:name=".core.service.AcceptBidsService"/>
+        <service android:name=".core.service.CompleteBidsService"/>
         <provider
             android:name=".core.cache.CacheContentProvider"
             android:authorities="com.dddev.market.place.core.cache"

@@ -16,7 +16,6 @@ import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
-import com.dddev.market.place.core.api.strongloop.OpportunityGetRepository;
 import com.dddev.market.place.core.api.strongloop.OpportunityPostRepository;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
@@ -211,7 +210,7 @@ public class NewOrdersFragment extends BaseFragment implements View.OnClickListe
                             values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunity.getTitle());
                             values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunity.getDescription());
                             values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getAccountId());
-                            values.put(CacheHelper.OPPORTUNITIES_DATE, opportunity.getCreateAt());
+                            values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunity.getCreateAt());
                             values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getCategoryId());
                             getActivity().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
                             ProposalActivity.launch(getActivity());

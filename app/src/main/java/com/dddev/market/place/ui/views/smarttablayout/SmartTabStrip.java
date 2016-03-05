@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.dddev.market.place.ui.view.smarttablayout;
+package com.dddev.market.place.ui.views.smarttablayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -271,7 +271,7 @@ class SmartTabStrip extends LinearLayout {
     final int width = getWidth();
     final int tabCount = getChildCount();
     final SmartTabLayout.TabColorizer tabColorizer = getTabColorizer();
-    final boolean isLayoutRtl = com.dddev.market.place.ui.view.smarttablayout.Utils.isLayoutRtl(this);
+    final boolean isLayoutRtl = com.dddev.market.place.ui.views.smarttablayout.Utils.isLayoutRtl(this);
 
     if (indicatorInFront) {
       drawOverline(canvas, 0, width);
@@ -281,8 +281,8 @@ class SmartTabStrip extends LinearLayout {
     // Thick colored underline below the current selection
     if (tabCount > 0) {
       View selectedTab = getChildAt(selectedPosition);
-      int selectedStart = com.dddev.market.place.ui.view.smarttablayout.Utils.getStart(selectedTab, indicatorWithoutPadding);
-      int selectedEnd = com.dddev.market.place.ui.view.smarttablayout.Utils.getEnd(selectedTab, indicatorWithoutPadding);
+      int selectedStart = com.dddev.market.place.ui.views.smarttablayout.Utils.getStart(selectedTab, indicatorWithoutPadding);
+      int selectedEnd = com.dddev.market.place.ui.views.smarttablayout.Utils.getEnd(selectedTab, indicatorWithoutPadding);
       int left;
       int right;
       if (isLayoutRtl) {
@@ -308,8 +308,8 @@ class SmartTabStrip extends LinearLayout {
         float thicknessOffset = indicationInterpolator.getThickness(selectionOffset);
 
         View nextTab = getChildAt(selectedPosition + 1);
-        int nextStart = com.dddev.market.place.ui.view.smarttablayout.Utils.getStart(nextTab, indicatorWithoutPadding);
-        int nextEnd = com.dddev.market.place.ui.view.smarttablayout.Utils.getEnd(nextTab, indicatorWithoutPadding);
+        int nextStart = com.dddev.market.place.ui.views.smarttablayout.Utils.getStart(nextTab, indicatorWithoutPadding);
+        int nextEnd = com.dddev.market.place.ui.views.smarttablayout.Utils.getEnd(nextTab, indicatorWithoutPadding);
         if (isLayoutRtl) {
           left = (int) (endOffset * nextEnd + (1.0f - endOffset) * left);
           right = (int) (startOffset * nextStart + (1.0f - startOffset) * right);
@@ -346,11 +346,11 @@ class SmartTabStrip extends LinearLayout {
     final int separatorTop = (height - dividerHeightPx) / 2;
     final int separatorBottom = separatorTop + dividerHeightPx;
 
-    final boolean isLayoutRtl = com.dddev.market.place.ui.view.smarttablayout.Utils.isLayoutRtl(this);
+    final boolean isLayoutRtl = com.dddev.market.place.ui.views.smarttablayout.Utils.isLayoutRtl(this);
     for (int i = 0; i < tabCount - 1; i++) {
       View child = getChildAt(i);
-      int end = com.dddev.market.place.ui.view.smarttablayout.Utils.getEnd(child);
-      int endMargin = com.dddev.market.place.ui.view.smarttablayout.Utils.getMarginEnd(child);
+      int end = com.dddev.market.place.ui.views.smarttablayout.Utils.getEnd(child);
+      int endMargin = com.dddev.market.place.ui.views.smarttablayout.Utils.getMarginEnd(child);
       int separatorX = isLayoutRtl ? end - endMargin : end + endMargin;
       dividerPaint.setColor(tabColorizer.getDividerColor(i));
       canvas.drawLine(separatorX, separatorTop, separatorX, separatorBottom, dividerPaint);

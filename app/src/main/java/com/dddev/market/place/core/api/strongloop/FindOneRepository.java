@@ -1,10 +1,18 @@
 package com.dddev.market.place.core.api.strongloop;
 
+import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.utils.PreferencesUtils;
 import com.google.common.collect.ImmutableMap;
+import com.loopj.android.http.RequestParams;
 import com.strongloop.android.remoting.adapters.Adapter;
 import com.strongloop.android.remoting.adapters.RestContract;
 import com.strongloop.android.remoting.adapters.RestContractItem;
+import com.strongloop.android.remoting.adapters.StreamParam;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import timber.log.Timber;
 

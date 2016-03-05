@@ -45,7 +45,8 @@ public class ProposalActivity extends BaseActivity {
         if (itemModel == null) {
             switchFragment(ProposalListFragment.newInstance(id), false, null);
         } else {
-            switchFragment(ProposalFragment.newInstance(itemModel), false, null);
+            //TODO get status for all bids of opportunities
+            switchFragment(ProposalFragment.newInstance(itemModel, 0), false, null);
         }
         onBackStackChanged();
     }

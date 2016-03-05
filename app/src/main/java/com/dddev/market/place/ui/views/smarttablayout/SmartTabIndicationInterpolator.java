@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.dddev.market.place.ui.view.smarttablayout;
+package com.dddev.market.place.ui.views.smarttablayout;
 
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;

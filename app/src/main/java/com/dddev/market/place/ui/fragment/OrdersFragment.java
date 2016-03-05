@@ -1,7 +1,12 @@
 package com.dddev.market.place.ui.fragment;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,47 +14,37 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
+import com.dddev.market.place.core.cache.CacheContentProvider;
+import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.OrdersAdapter;
-import com.dddev.market.place.ui.fragment.base.BaseFragment;
+import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
+import com.dddev.market.place.utils.StaticKeys;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Created by ugar on 10.02.16.
  */
-public class OrdersFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class OrdersFragment extends UpdateReceiverFragment implements View.OnClickListener, AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private List<Opportunities.ModelOpportunity> adapterList;
     private OrdersAdapter adapter;
-    private final static String OPPORTUNITIES_LIST = "opportunities_list";
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public static OrdersFragment newInstance(ArrayList<Opportunities.ModelOpportunity> opportunitiesList) {
-        OrdersFragment fragment = new OrdersFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(OPPORTUNITIES_LIST, opportunitiesList);
-        fragment.setArguments(bundle);
-        return fragment;
+    public static OrdersFragment newInstance() {
+        return new OrdersFragment();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapterList = new ArrayList<>();
-        if (getArguments() != null) {
-            if (getArguments().getParcelableArrayList(OPPORTUNITIES_LIST) != null) {
-                ArrayList<Opportunities.ModelOpportunity> opportunitiesList = getArguments().getParcelableArrayList(OPPORTUNITIES_LIST);
-                if (opportunitiesList != null) {
-                    for (Opportunities.ModelOpportunity modelOpportunity : opportunitiesList) {
-                        adapterList.add(modelOpportunity);
-                    }
-                }
-            }
-        }
     }
 
     @Nullable
@@ -61,6 +56,10 @@ public class OrdersFragment extends BaseFragment implements View.OnClickListener
         adapter = new OrdersAdapter(getActivity(), adapterList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
+        getActivity().getLoaderManager().initLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
         return view;
     }
 
@@ -76,5 +75,72 @@ public class OrdersFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ProposalActivity.launch(getActivity(), id, null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        startUpdateService();
+    }
+
+    @Override
+    public void onHandleServerRequest() {
+        if (getActivity() != null && mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void onHandleServerRequestError() {
+        if (getActivity() != null && mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Timber.i("onCreateLoader");
+        switch (id) {
+            case StaticKeys.LoaderId.OPPORTUNITIES_LOADER:
+                String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as " + CacheHelper._ID,
+                        CacheHelper.OPPORTUNITIES_TITLE,
+                        CacheHelper.OPPORTUNITIES_CREATE_AT,
+                        CacheHelper.OPPORTUNITIES_STATUS};
+                return new CursorLoader(getActivity(), CacheContentProvider.OPPORTUNITIES_URI, projection, null, null, null);
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Timber.i("onLoadFinished, loader.getId() = %s", loader.getId());
+        switch (loader.getId()) {
+            case StaticKeys.LoaderId.OPPORTUNITIES_LOADER:
+                adapterList.clear();
+                if (cursor.moveToFirst()) {
+                    do {
+                        Opportunities.ModelOpportunity model = new Opportunities.ModelOpportunity();
+                        model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
+                        model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
+                        model.setCreateAt(cursor.getLong(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
+                        model.setStatus(cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS)));
+                        adapterList.add(model);
+                    } while (cursor.moveToNext());
+                }
+                adapter.notifyDataSetChanged();
+                break;
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Timber.i("onLoaderReset");
     }
 }

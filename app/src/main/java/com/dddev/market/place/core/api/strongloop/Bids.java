@@ -51,9 +51,10 @@ public class Bids extends Model {
         private float price;
         @SerializedName("opportunityId")
         private int opportunityId;
-        private int footerHeight;
+//        private int footerHeight;
         @SerializedName("createAt")
         private long createAt;
+        //TODO: change type provider
         @SerializedName("provider")
         private String provider;
         @SerializedName("state")
@@ -123,19 +124,19 @@ public class Bids extends Model {
             this.opportunityId = opportunityId;
         }
 
-        public int getFooterHeight() {
-            return footerHeight;
-        }
+//        public int getFooterHeight() {
+//            return footerHeight;
+//        }
+//
+//        public void setFooterHeight(int footerHeight) {
+//            this.footerHeight = footerHeight;
+//        }
 
-        public void setFooterHeight(int footerHeight) {
-            this.footerHeight = footerHeight;
-        }
-
-        public long getDate() {
+        public long getCreateAt() {
             return createAt;
         }
 
-        public void setDate(long createAt) {
+        public void setCreateAt(long createAt) {
             this.createAt = createAt;
         }
 
@@ -168,7 +169,7 @@ public class Bids extends Model {
             dest.writeString(this.url);
             dest.writeFloat(this.price);
             dest.writeInt(this.opportunityId);
-            dest.writeInt(this.footerHeight);
+//            dest.writeInt(this.footerHeight);
             dest.writeLong(this.createAt);
             dest.writeString(this.provider);
             dest.writeInt(this.state);
@@ -181,7 +182,7 @@ public class Bids extends Model {
             this.url = in.readString();
             this.price = in.readFloat();
             this.opportunityId = in.readInt();
-            this.footerHeight = in.readInt();
+//            this.footerHeight = in.readInt();
             this.createAt = in.readLong();
             this.provider = in.readString();
             this.state = in.readInt();
@@ -206,7 +207,7 @@ public class Bids extends Model {
                     ", url='" + url + '\'' +
                     ", price=" + price +
                     ", opportunityId=" + opportunityId +
-                    ", footerHeight=" + footerHeight +
+//                    ", footerHeight=" + footerHeight +
                     ", date='" + createAt + '\'' +
                     ", provider='" + provider + '\'' +
                     ", state=" + state +

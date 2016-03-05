@@ -70,21 +70,21 @@ public class OrdersAdapter extends BaseAdapter {
                 viewHolder.title.setText(list.get(position).getTitle());
             }
             viewHolder.date.setText(String.valueOf(list.get(position).getCreateAt()));
-            switch (list.get(position).getCategoryId()) {
+            switch (list.get(position).getStatus()) {
                 case 0:
+                    viewHolder.state.setText(context.getString(R.string.selecting));
+                    viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateYellow));
+                    Picasso.with(context).load(R.drawable.icon_proposal_selecting).into(viewHolder.picture);
+                    break;
+                case 1:
                     viewHolder.state.setText(context.getString(R.string.awarded));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateRed));
                     Picasso.with(context).load(R.drawable.icon_proposal_awarded).into(viewHolder.picture);
                     break;
-                case 1:
+                case 2:
                     viewHolder.state.setText(context.getString(R.string.complete));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateGreen));
                     Picasso.with(context).load(R.drawable.icon_proposal_complite).into(viewHolder.picture);
-                    break;
-                case 2:
-                    viewHolder.state.setText(context.getString(R.string.selecting));
-                    viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateYellow));
-                    Picasso.with(context).load(R.drawable.icon_proposal_selecting).into(viewHolder.picture);
                     break;
                 default:
                     viewHolder.state.setText(context.getString(R.string.selecting));
