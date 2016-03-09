@@ -14,7 +14,7 @@ import timber.log.Timber;
  */
 public class AppOfferFind extends Application {
 
-    public final static String API = "http://178.62.252.200:3000/api/";
+    public final static String API = "http://178.62.252.200:80/api/";
 
     public static RestAdapter getRestAdapter(Context context) {
         final RestAdapter restAdapter = new RestAdapter(context, API);

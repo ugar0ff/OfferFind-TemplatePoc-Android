@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 
 import com.dddev.market.place.R;
@@ -13,7 +14,9 @@ import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.activity.base.BaseActivity;
 import com.dddev.market.place.ui.adapter.TabAdapter;
+import com.dddev.market.place.ui.fragment.AccountEditFragment;
 import com.dddev.market.place.ui.fragment.AccountRootFragment;
+import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.model.TabModel;
 import com.dddev.market.place.ui.views.smarttablayout.SmartTabLayout;
 import com.dddev.market.place.utils.StaticKeys;
@@ -61,6 +64,17 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         });
 
         getLoaderManager().restartLoader(StaticKeys.LoaderId.TAB_LOADER, null, this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Timber.i("onRequestPermissionsResult");
+        if (viewPager.getCurrentItem() == 2) {
+
+            AccountRootFragment fragment = (AccountRootFragment) getSupportFragmentManager().getFragments().get(2);
+            fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

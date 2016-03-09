@@ -11,6 +11,8 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="com.dddev.market.place.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:name="com.dddev.market.place.core.AppOfferFind"
@@ -66,6 +68,9 @@
         <service android:name=".core.service.UpdateService"/>
         <service android:name=".core.service.AcceptBidsService"/>
         <service android:name=".core.service.CompleteBidsService"/>
+        <service
+            android:name=".core.service.FetchAddressIntentService"
+            android:exported="false"/>
         <provider
             android:name=".core.cache.CacheContentProvider"
             android:authorities="com.dddev.market.place.core.cache"
@@ -79,6 +84,9 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <!-- [START gcm_receiver] -->
         <receiver

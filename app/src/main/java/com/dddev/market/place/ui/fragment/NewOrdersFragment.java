@@ -23,6 +23,7 @@ import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.ViewPagerAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
+import com.dddev.market.place.ui.fragment.base.BaseLocationFragment;
 import com.dddev.market.place.ui.model.PagerItemModel;
 import com.dddev.market.place.utils.StaticKeys;
 import com.facebook.FacebookSdk;
@@ -35,7 +36,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 09.02.16.
  */
-public class NewOrdersFragment extends BaseFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class NewOrdersFragment extends BaseLocationFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private ViewPagerAdapter pagerAdapter;
     private List<PagerItemModel> adapterList;
@@ -72,7 +73,7 @@ public class NewOrdersFragment extends BaseFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_orders:
-                createNewOrders();
+                getAddress();
                 break;
         }
     }
@@ -195,11 +196,11 @@ public class NewOrdersFragment extends BaseFragment implements View.OnClickListe
         Timber.i("onLoaderReset");
     }
 
-    private void createNewOrders() {
+    private void createNewOrders(String address) {
         final OpportunityPostRepository repository = AppOfferFind.getRestAdapter(getActivity()).createRepository(OpportunityPostRepository.class);
         repository.createContract();
         repository.opportunities(adapterList.get(viewPager.getCurrentItem()).getTitle(),
-                adapterList.get(viewPager.getCurrentItem()).getDescription(),
+                adapterList.get(viewPager.getCurrentItem()).getDescription(), address,
                 new OpportunityPostRepository.OpportunityCallback() {
                     @Override
                     public void onSuccess(Opportunities.ModelOpportunity opportunity) {
@@ -227,5 +228,12 @@ public class NewOrdersFragment extends BaseFragment implements View.OnClickListe
                         showDialog(getString(R.string.server_connect_failure));
                     }
                 });
+    }
+
+
+    @Override
+    public void addressReceiveResult(String result) {
+        Timber.i("addressReceiveResult = %s", result);
+        createNewOrders(result);
     }
 }

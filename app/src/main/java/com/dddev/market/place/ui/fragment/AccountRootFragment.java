@@ -3,6 +3,7 @@ package com.dddev.market.place.ui.fragment;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -144,6 +145,16 @@ public class AccountRootFragment extends BaseFragment {
         if (getChildFragmentManager().findFragmentById(R.id.container) instanceof AccountEditFragment) {
             AccountEditFragment editFragment = (AccountEditFragment)getChildFragmentManager().findFragmentById(R.id.container);
             editFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (getChildFragmentManager().findFragmentById(R.id.container) instanceof AccountEditFragment) {
+            AccountEditFragment editFragment = (AccountEditFragment)getChildFragmentManager().findFragmentById(R.id.container);
+            editFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
