@@ -53,6 +53,7 @@ public abstract class BaseLocationFragment extends BaseFragment implements Googl
     public void onConnected(Bundle bundle) {
         Timber.i("onConnected");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Timber.i("mLastLocation == null ? %s", mLastLocation == null);
         if (mLastLocation == null) {
             LocationRequest mLocationRequest = LocationRequest.create()
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)

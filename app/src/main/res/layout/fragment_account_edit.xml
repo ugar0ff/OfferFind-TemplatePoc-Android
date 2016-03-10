@@ -60,13 +60,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <com.dddev.market.place.ui.views.DelayAutoCompleteTextView
                 android:id="@+id/location"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:dropDownWidth="fill_parent"
                 android:hint="@string/location"
+                android:imeOptions="flagNoExtractUi|actionSearch"
                 android:inputType="textImeMultiLine"
                 android:maxLines="1"
+                android:padding="10dp"
                 android:paddingBottom="14dp"
                 android:paddingEnd="10dp"
                 android:paddingLeft="10dp"

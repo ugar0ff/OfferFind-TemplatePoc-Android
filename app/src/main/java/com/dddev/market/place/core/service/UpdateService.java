@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.os.Handler;
 
 import com.dddev.market.place.core.AppOfferFind;
+import com.dddev.market.place.core.api.strongloop.Account;
+import com.dddev.market.place.core.api.strongloop.AccountGetRepository;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
 import com.dddev.market.place.core.api.strongloop.OpportunityGetRepository;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.core.receiver.UpdateReceiver;
+import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
 
 import java.util.List;
@@ -31,6 +34,7 @@ public class UpdateService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             if (intent.getStringExtra(StaticKeys.KEY_REQUEST).equals(StaticKeys.REQUEST_START)) {
+                updateAccountData();
                 updateOpportunities();
             } else if (intent.getStringExtra(StaticKeys.KEY_REQUEST).equals(StaticKeys.REQUEST_CHECK)) {
                 sendMessageCallBack(RequestStatus.TASK_OK);
@@ -50,8 +54,8 @@ public class UpdateService extends IntentService {
                 repository.opportunities(new OpportunityGetRepository.OpportunityCallback() {
                     @Override
                     public void onSuccess(Opportunities opportunity) {
-                        Timber.i("onSuccess response=%s", opportunity.toString());
                         if (opportunity != null && opportunity.getList() != null) {
+                            Timber.i("onSuccess response=%s", opportunity.toString());
                             getContentResolver().delete(CacheContentProvider.OPPORTUNITIES_URI, null, null);
                             getContentResolver().delete(CacheContentProvider.BIDS_URI, null, null);
                             ContentValues[] opportunitiesValues = new ContentValues[opportunity.getList().size()];
@@ -100,6 +104,34 @@ public class UpdateService extends IntentService {
             bidsContentValues[j] = bidsValues;
         }
         getContentResolver().bulkInsert(CacheContentProvider.BIDS_URI, bidsContentValues);
+    }
+
+    private void updateAccountData() {
+        Handler mHandler = new Handler(getMainLooper());
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                final AccountGetRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(AccountGetRepository.class);
+                repository.createContract();
+                repository.accounts(new AccountGetRepository.UserCallback() {
+                    @Override
+                    public void onSuccess(Account account) {
+                        if (account != null) {
+                            Timber.i("onSuccess response=%s", account.toString());
+                            PreferencesUtils.setUserName(getApplicationContext(), account.getName());
+                            PreferencesUtils.setUserBankInfo(getApplicationContext(), account.getBankInfo());
+                            PreferencesUtils.setUserEmail(getApplicationContext(), account.getEmail());
+                            PreferencesUtils.setUserAddress(getApplicationContext(), account.getAddress());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Timber.e("onError Throwable: %s", t.toString());
+                    }
+                });
+            }
+        });
     }
 
     private void sendMessageCallBack(RequestStatus requestStatus) {

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,10 +15,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -25,11 +29,18 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dddev.market.place.R;
+import com.dddev.market.place.core.AppOfferFind;
+import com.dddev.market.place.core.api.strongloop.Account;
+import com.dddev.market.place.core.api.strongloop.AccountPutRepository;
 import com.dddev.market.place.ui.activity.CropActivity;
 import com.dddev.market.place.ui.activity.MainActivity;
+import com.dddev.market.place.ui.adapter.GeoAutoCompleteAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseLocationFragment;
+import com.dddev.market.place.ui.model.GeoSearchResult;
+import com.dddev.market.place.ui.views.DelayAutoCompleteTextView;
 import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
+import com.dddev.market.place.utils.Utilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -44,7 +55,9 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     private Bitmap bitmap;
     private String imageInfo;
     private Uri uri;
-    private EditText locationInput;
+    private DelayAutoCompleteTextView inputAddress;
+    private EditText inputName, inputEmail, inputBankInfo;
+    private GeoAutoCompleteAdapter geoAutoCompleteAdapter;
 
     public static AccountEditFragment newInstance() {
         return new AccountEditFragment();
@@ -64,11 +77,40 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         View view = inflater.inflate(R.layout.fragment_account_edit, container, false);
         view.findViewById(R.id.save).setOnClickListener(this);
         view.findViewById(R.id.cancel).setOnClickListener(this);
-        locationInput = (EditText) view.findViewById(R.id.location);
-        locationInput.setEnabled(!PreferencesUtils.isLocaleCheckBoxEnable(getActivity()));
+        inputName = (EditText) view.findViewById(R.id.name);
+        inputEmail = (EditText) view.findViewById(R.id.email);
+        inputBankInfo = (EditText) view.findViewById(R.id.banking_info);
+        inputAddress = (DelayAutoCompleteTextView) view.findViewById(R.id.location);
+//        inputAddress.setThreshold(2);
+        geoAutoCompleteAdapter = new GeoAutoCompleteAdapter(getActivity(), mLastLocation);
+        inputAddress.setAdapter(geoAutoCompleteAdapter);
+        inputAddress.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                GeoSearchResult result = (GeoSearchResult) adapterView.getItemAtPosition(position);
+                inputAddress.setText(result.getAddress());
+            }
+        });
+        inputAddress.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         CheckBox checkBoxLocale = (CheckBox) view.findViewById(R.id.checkbox_locale);
-        checkBoxLocale.setChecked(PreferencesUtils.isLocaleCheckBoxEnable(getActivity()));
         checkBoxLocale.setOnCheckedChangeListener(this);
+//        if (PreferencesUtils.isLocaleCheckBoxEnable(getActivity())) {
+            checkBoxLocale.setChecked(PreferencesUtils.isLocaleCheckBoxEnable(getActivity()));
+//            onCheckedChanged(checkBoxLocale, PreferencesUtils.isLocaleCheckBoxEnable(getActivity()));
+//        }
         ImageView avatarView = (ImageView) view.findViewById(R.id.avatar);
         avatarView.setOnClickListener(this);
         return view;
@@ -81,11 +123,19 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        inputName.setText(PreferencesUtils.getUserName(getActivity()));
+        inputAddress.setText(PreferencesUtils.getUserAddress(getActivity()));
+        inputEmail.setText(PreferencesUtils.getUserEmail(getActivity()));
+        inputBankInfo.setText(PreferencesUtils.getUserBankInfo(getActivity()));
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.save:
-                //TODO: save changes
-                getParentFragment().getChildFragmentManager().popBackStack();
+                saveUserData();
                 break;
             case R.id.cancel:
                 getParentFragment().getChildFragmentManager().popBackStack();
@@ -93,6 +143,61 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
             case R.id.avatar:
                 showAttachDialog();
                 break;
+        }
+    }
+
+    private void saveUserData() {
+        final AccountPutRepository accountPutRepository = AppOfferFind.getRestAdapter(getActivity()).createRepository(AccountPutRepository.class);
+        accountPutRepository.createContract();
+        if (inputName.getText().toString().length() == 0) {
+            inputName.setError(getString(R.string.invalid_name));
+            return;
+        }
+        if (!Utilities.isValidEmail(inputEmail.getText().toString())) {
+            inputEmail.setError(getString(R.string.invalid_email));
+            return;
+        }
+        if (PreferencesUtils.isLocaleCheckBoxEnable(getActivity())) {
+            accountPutRepository.accounts(inputName.getText().toString(), inputBankInfo.getText().toString(),
+                    inputEmail.getText().toString(), new AccountPutRepository.UserCallback() {
+                @Override
+                public void onSuccess(Account account) {
+                    Timber.i("onSuccess response=%s", account.toString());
+                    if (getActivity() != null) {
+                        getParentFragment().getChildFragmentManager().popBackStack();
+                        PreferencesUtils.setUserName(getActivity(), account.getName());
+                        PreferencesUtils.setUserBankInfo(getActivity(), account.getBankInfo());
+                        PreferencesUtils.setUserEmail(getActivity(), account.getEmail());
+                    }
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    Timber.e("onError Throwable: %s", t.toString());
+                    showDialog(t.toString());
+                }
+            });
+        } else {
+            accountPutRepository.accounts(inputName.getText().toString(), inputBankInfo.getText().toString(),
+                    inputEmail.getText().toString(), inputAddress.getText().toString(), new AccountPutRepository.UserCallback() {
+                @Override
+                public void onSuccess(Account account) {
+                    Timber.i("onSuccess response=%s", account.toString());
+                    getParentFragment().getChildFragmentManager().popBackStack();
+                    if (getActivity() != null) {
+                        PreferencesUtils.setUserName(getActivity(), account.getName());
+                        PreferencesUtils.setUserBankInfo(getActivity(), account.getBankInfo());
+                        PreferencesUtils.setUserEmail(getActivity(), account.getEmail());
+                        PreferencesUtils.setUserAddress(getActivity(), account.getAddress());
+                    }
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    Timber.e("onError Throwable: %s", t.toString());
+                    showDialog(t.toString());
+                }
+            });
         }
     }
 
@@ -162,7 +267,7 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
-        Timber.i("bitmapToBase64 byteArray.length = %s", + byteArray.length);
+        Timber.i("bitmapToBase64 byteArray.length = %s", +byteArray.length);
         imageInfo = Base64.encodeToString(byteArray, Base64.NO_WRAP);
         Timber.i("bitmapToBase64 imageInfo = %s", imageInfo);
     }
@@ -237,18 +342,20 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         PreferencesUtils.setLocaleCheckBoxState(getActivity(), isChecked);
-        locationInput.setEnabled(!isChecked);
+        inputAddress.setEnabled(true);
         if (isChecked) {
             int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                locationInput.setText(getString(R.string.device_location));
+                inputAddress.setText(getString(R.string.device_location));
+                inputAddress.setEnabled(false);
             } else {
-                locationInput.setText("");
+                inputAddress.setText("");
                 loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_FINE_LOCATION);
             }
         } else {
-            locationInput.setText("");
+            inputAddress.setText("");
         }
+        getAddress();
     }
 
     @Override
@@ -257,9 +364,11 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         switch (requestCode) {
             case REQUEST_FINE_LOCATION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationInput.setText(getString(R.string.device_location));
+                    inputAddress.setText(getString(R.string.device_location));
+                    inputAddress.setEnabled(false);
                 } else {
-                    locationInput.setText("");
+                    inputAddress.setEnabled(true);
+                    inputAddress.setText("");
                 }
                 return;
             }
@@ -271,5 +380,13 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     @Override
     public void addressReceiveResult(String result) {
         Timber.i("addressReceiveResult = %s", result);
+    }
+
+    @Override
+    public void locationReceiveResult(Location location) {
+        Timber.i("locationReceiveResult = %s", location);
+        if (getActivity() != null && PreferencesUtils.isLocaleCheckBoxEnable(getActivity())) {
+            geoAutoCompleteAdapter.setLocation(location);
+        }
     }
 }

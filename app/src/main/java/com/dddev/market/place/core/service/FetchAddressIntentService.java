@@ -62,7 +62,7 @@ public class FetchAddressIntentService extends IntentService {
             if (errorMessage.isEmpty()) {
                 errorMessage = getString(R.string.no_address_found);
             }
-            deliverResultToReceiver(FAILURE_RESULT, errorMessage);
+            deliverResultToReceiver(FAILURE_RESULT, errorMessage, location);
         } else {
             Address address = addresses.get(0);
             ArrayList<String> addressFragments = new ArrayList<String>();
@@ -72,13 +72,14 @@ public class FetchAddressIntentService extends IntentService {
             for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                 addressFragments.add(address.getAddressLine(i));
             }
-            deliverResultToReceiver(SUCCESS_RESULT, TextUtils.join(System.getProperty("line.separator"), addressFragments));
+            deliverResultToReceiver(SUCCESS_RESULT, TextUtils.join(System.getProperty("line.separator"), addressFragments), location);
         }
     }
 
-    private void deliverResultToReceiver(int resultCode, String message) {
+    private void deliverResultToReceiver(int resultCode, String message, Location location) {
         Bundle bundle = new Bundle();
         bundle.putString(RESULT_DATA_KEY, message);
+        bundle.putParcelable(LOCATION_DATA_EXTRA, location);
         mReceiver.send(resultCode, bundle);
     }
 }

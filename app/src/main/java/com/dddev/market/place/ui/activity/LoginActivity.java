@@ -17,6 +17,7 @@ import com.dddev.market.place.core.gcm.RegistrationIntentService;
 import com.dddev.market.place.core.receiver.UpdateReceiver;
 import com.dddev.market.place.core.service.UpdateService;
 import com.dddev.market.place.utils.StaticKeys;
+import com.dddev.market.place.utils.Utilities;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -70,7 +71,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 }
             }
         };
-        if (PreferencesUtils.getFbId(this) != null) {
+        if (PreferencesUtils.getFbId(this) != null && Utilities.isValidEmail(PreferencesUtils.getUserEmail(this))) {
             authStrongLoop();
         }
     }

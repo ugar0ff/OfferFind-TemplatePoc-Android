@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -235,5 +236,10 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     public void addressReceiveResult(String result) {
         Timber.i("addressReceiveResult = %s", result);
         createNewOrders(result);
+    }
+
+    @Override
+    public void locationReceiveResult(Location location) {
+        Timber.i("locationReceiveResult = %s", location);
     }
 }

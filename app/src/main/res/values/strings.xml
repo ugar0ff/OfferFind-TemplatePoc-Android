@@ -43,6 +43,10 @@
     <string name="address_found">Address found</string>
     <string name="no_geocoder_available">No geocoder available</string>
     <string name="device_location">Device location</string>
+    <string name="invalid_name">Invalid name</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="location_is_not_entered">Location is not entered</string>
+    <string name="bank_info_is_empty">Banking info is empty</string>
 
     <string name="tag_status">tag status</string>
     </resources>

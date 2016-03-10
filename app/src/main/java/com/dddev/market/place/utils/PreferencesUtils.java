@@ -16,6 +16,9 @@ public class PreferencesUtils {
     public static final String SENT_TOKEN_TO_SERVER = "sent_token_to_server";
     public static final String TIME_UPDATE = "time_update";
     public static final String LOCALE_CHECK_BOX_STATE = "locale_check_box_state";
+    public final static String USER_NAME = "user_name";
+    public final static String USER_BANK_INFO = "user_bank_info";
+    public final static String USER_ADDRESS = "user_address";
 
     private static String getPrefName(Context context) {
         return context.getPackageName() + "_preferences";
@@ -85,12 +88,12 @@ public class PreferencesUtils {
         return sharedPref.getString(APP_ID, null);
     }
 
-    public static boolean setUserEmail(Context context, String appId) {
+    public static boolean setUserEmail(Context context, String email) {
         if (context == null) {
             return false;
         }
         SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
-        return sharedPref.edit().putString(USER_EMAIL, appId).commit();
+        return sharedPref.edit().putString(USER_EMAIL, email).commit();
     }
 
     public static String getUserEmail(Context context) {
@@ -147,5 +150,53 @@ public class PreferencesUtils {
         }
         SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
         return sharedPref.getBoolean(LOCALE_CHECK_BOX_STATE, false);
+    }
+
+    public static boolean setUserName(Context context, String name) {
+        if (context == null) {
+            return false;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.edit().putString(USER_NAME, name).commit();
+    }
+
+    public static String getUserName(Context context) {
+        if (context == null) {
+            return null;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.getString(USER_NAME, null);
+    }
+
+    public static boolean setUserBankInfo(Context context, String bankInfo) {
+        if (context == null) {
+            return false;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.edit().putString(USER_BANK_INFO, bankInfo).commit();
+    }
+
+    public static String getUserBankInfo(Context context) {
+        if (context == null) {
+            return null;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.getString(USER_BANK_INFO, null);
+    }
+
+    public static boolean setUserAddress(Context context, String address) {
+        if (context == null) {
+            return false;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.edit().putString(USER_ADDRESS, address).commit();
+    }
+
+    public static String getUserAddress(Context context) {
+        if (context == null) {
+            return null;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.getString(USER_ADDRESS, null);
     }
 }
