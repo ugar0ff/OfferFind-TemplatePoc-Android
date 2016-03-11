@@ -109,19 +109,14 @@ public class AccountRootFragment extends BaseFragment {
             if (fragment != null && fragment.getView() != null) {
                 ImageView avatar = (ImageView) fragment.getView().findViewById(R.id.avatar);
                 TextView name = (TextView) fragment.getView().findViewById(R.id.name);
-                TextView locationHint = (TextView) fragment.getView().findViewById(R.id.location_hint);
                 TextView location = (TextView) fragment.getView().findViewById(R.id.location);
-                TextView emailHint = (TextView) fragment.getView().findViewById(R.id.email_hint);
+                location.setText("");
                 TextView email = (TextView) fragment.getView().findViewById(R.id.email);
-                TextView bankingInfoHint = (TextView) fragment.getView().findViewById(R.id.banking_info_hint);
                 TextView bankingInfo = (TextView) fragment.getView().findViewById(R.id.banking_info);
                 ft.addSharedElement(avatar, "avatar");
                 ft.addSharedElement(name, "name");
-                ft.addSharedElement(locationHint, "location_hint");
                 ft.addSharedElement(location, "location");
-                ft.addSharedElement(emailHint, "email_hint");
                 ft.addSharedElement(email, "email");
-                ft.addSharedElement(bankingInfoHint, "banking_info_hint");
                 ft.addSharedElement(bankingInfo, "banking_info");
             }
             ft.commit();

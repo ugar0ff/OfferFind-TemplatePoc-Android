@@ -57,6 +57,7 @@
                 android:id="@+id/location_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="ADDRESS"
                 android:textColor="@color/colorInputHint"
                 android:textSize="@dimen/text_size_12" />
@@ -65,7 +66,6 @@
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:text="Location"
                 android:textColor="@color/colorInputText"
                 android:textSize="@dimen/text_size_16" />

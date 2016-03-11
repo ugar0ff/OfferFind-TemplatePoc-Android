@@ -194,9 +194,9 @@ public class PreferencesUtils {
 
     public static String getUserAddress(Context context) {
         if (context == null) {
-            return null;
+            return "";
         }
         SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
-        return sharedPref.getString(USER_ADDRESS, null);
+        return sharedPref.getString(USER_ADDRESS, "");
     }
 }

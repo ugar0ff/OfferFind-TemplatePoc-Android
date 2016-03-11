@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorProposalItem">
 
     <LinearLayout
@@ -37,8 +38,10 @@
         </FrameLayout>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/name_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
 
             <EditText
                 android:id="@+id/name"
@@ -57,8 +60,10 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/location_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
 
             <com.dddev.market.place.ui.views.DelayAutoCompleteTextView
                 android:id="@+id/location"
@@ -81,8 +86,10 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/email_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
 
             <EditText
                 android:id="@+id/email"
@@ -101,8 +108,10 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/email_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
 
             <EditText
                 android:id="@+id/banking_info"

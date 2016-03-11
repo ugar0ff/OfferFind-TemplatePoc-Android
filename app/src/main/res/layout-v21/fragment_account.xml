@@ -59,16 +59,15 @@
                 android:id="@+id/location_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="@string/address_upper"
                 android:textColor="@color/colorInputHint"
-                android:textSize="@dimen/text_size_12"
-                android:transitionName="location_hint" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:text="Location"
                 android:textColor="@color/colorInputText"
                 android:textSize="@dimen/text_size_16"
@@ -88,8 +87,7 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/email_upper"
                 android:textColor="@color/colorInputHint"
-                android:textSize="@dimen/text_size_12"
-                android:transitionName="email_hint" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/email"
@@ -114,8 +112,7 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/banking_info_upper"
                 android:textColor="@color/colorInputHint"
-                android:textSize="@dimen/text_size_12"
-                android:transitionName="banking_info_hint" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/banking_info"

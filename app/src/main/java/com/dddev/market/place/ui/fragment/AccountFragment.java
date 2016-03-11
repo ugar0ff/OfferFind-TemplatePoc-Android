@@ -5,10 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
+import com.dddev.market.place.ui.views.DelayAutoCompleteTextView;
 import com.dddev.market.place.utils.PreferencesUtils;
 
 /**
@@ -46,14 +48,23 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         name.setText(PreferencesUtils.getUserName(getActivity()));
-        String locationText = PreferencesUtils.getUserAddress(getActivity());
-        if (locationText.length() == 0) {
-            location.setText(getString(R.string.location_is_not_entered));
+        if (PreferencesUtils.isLocaleCheckBoxEnable(getActivity())) {
+            location.setText(getString(R.string.device_location));
         } else {
-            location.setText(locationText);
+            String locationText = PreferencesUtils.getUserAddress(getActivity());
+            if (locationText.length() == 0) {
+                location.setText(getString(R.string.location_is_not_entered));
+            } else {
+                location.setText(locationText);
+            }
         }
         email.setText(PreferencesUtils.getUserEmail(getActivity()));
         String bankInfoText = PreferencesUtils.getUserBankInfo(getActivity());
