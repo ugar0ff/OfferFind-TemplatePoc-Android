@@ -84,11 +84,11 @@ public class ChatAdapter extends BaseAdapter {
         if (holder.txtMessage != null) {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
             if (!isOutgoing) {
-                holder.txtMessage.setBackgroundResource(R.drawable.dialog_white);
+                holder.txtMessage.setBackgroundResource(R.drawable.background_left_message);
                 layoutParams.gravity = Gravity.LEFT;
                 holder.txtMessage.setLayoutParams(layoutParams);
             } else {
-                holder.txtMessage.setBackgroundResource(R.drawable.dialog_gray);
+                holder.txtMessage.setBackgroundResource(R.drawable.background_right_message);
                 layoutParams.gravity = Gravity.RIGHT;
                 holder.txtMessage.setLayoutParams(layoutParams);
             }

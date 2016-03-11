@@ -18,7 +18,7 @@
             android:layout_gravity="right"
             android:layout_marginBottom="7dp"
             android:layout_marginTop="7dp"
-            android:background="@drawable/dialog_gray"
+            android:background="@drawable/background_right_message"
             android:maxWidth="250dp"
             android:padding="16dp"
             android:textColor="@android:color/black" />
