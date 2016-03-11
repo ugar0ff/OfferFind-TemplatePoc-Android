@@ -40,16 +40,20 @@ public class Messages extends Model {
         private int ownerId;
         @SerializedName("bidId")
         private int bidId;
-        @SerializedName("receiverId")
-        private int receiverId;
+        @SerializedName("senderId")
+        private int senderId;
+        @SerializedName("createdAt")
+        private String createdAt;
 
         public ModelMessages(String jsonObject) {
             Exclude exclude = new Exclude();
             ModelMessages messages = new GsonBuilder().addDeserializationExclusionStrategy(exclude).addSerializationExclusionStrategy(exclude).create().fromJson(jsonObject, ModelMessages.class);
             this.id = messages.getId();
             this.text = messages.getText();
+            this.bidId = messages.getBidId();
             this.ownerId = messages.getOwnerId();
-            this.receiverId = messages.getOwnerId();
+            this.senderId = messages.getSenderId();
+            this.createdAt = messages.getCreatedAt();
         }
 
         public int getId() {
@@ -84,12 +88,20 @@ public class Messages extends Model {
             this.bidId = bidId;
         }
 
-        public int getReceiverId() {
-            return receiverId;
+        public int getSenderId() {
+            return senderId;
         }
 
-        public void setReceiverId(int receiverId) {
-            this.receiverId = receiverId;
+        public void setSenderId(int senderId) {
+            this.senderId = senderId;
+        }
+
+        public String getCreatedAt() {
+            return createdAt;
+        }
+
+        public void setCreatedAt(String createdAt) {
+            this.createdAt = createdAt;
         }
 
         @Override
@@ -99,7 +111,8 @@ public class Messages extends Model {
                     ", text='" + text + '\'' +
                     ", ownerId=" + ownerId +
                     ", bidId=" + bidId +
-                    ", receiverId=" + receiverId +
+                    ", senderId=" + senderId +
+                    ", createdAt=" + createdAt +
                     '}';
         }
 
@@ -114,7 +127,8 @@ public class Messages extends Model {
             dest.writeString(this.text);
             dest.writeInt(this.ownerId);
             dest.writeInt(this.bidId);
-            dest.writeInt(this.receiverId);
+            dest.writeInt(this.senderId);
+            dest.writeString(this.createdAt);
         }
 
         protected ModelMessages(Parcel in) {
@@ -122,7 +136,8 @@ public class Messages extends Model {
             this.text = in.readString();
             this.ownerId = in.readInt();
             this.bidId = in.readInt();
-            this.receiverId = in.readInt();
+            this.senderId = in.readInt();
+            this.createdAt = in.readString();
         }
 
         public static final Parcelable.Creator<ModelMessages> CREATOR = new Parcelable.Creator<ModelMessages>() {

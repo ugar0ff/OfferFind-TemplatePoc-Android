@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.os.Handler;
 
 import com.dddev.market.place.core.AppOfferFind;
+import com.dddev.market.place.core.api.strongloop.BidPutRepository;
+import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
 import com.dddev.market.place.core.api.strongloop.OpportunityPutRepository;
 import com.dddev.market.place.core.cache.CacheContentProvider;
@@ -29,6 +31,7 @@ public class CompleteBidsService extends IntentService {
         if (intent != null) {
             int id = intent.getIntExtra(StaticKeys.COMPLETE_BIDS_ID, 0);
             if (id > 0) {
+                sendBidStatus(id);
                 int opportunitiesId = getOpportunitiesId(id);
                 if (opportunitiesId > 0) {
                     changeBidsState(opportunitiesId, id);
@@ -99,22 +102,21 @@ public class CompleteBidsService extends IntentService {
                 values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_ACCOUNT_ID)));
                 values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CATEGORY_ID)));
                 getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
-                sendOpportunitiesStatus(id);
             }
             cursor.close();
         }
     }
 
-    private void sendOpportunitiesStatus(final int id) {
+    private void sendBidStatus(final int id) {
         Handler mHandler = new Handler(getMainLooper());
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                final OpportunityPutRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(OpportunityPutRepository.class);
+                final BidPutRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(BidPutRepository.class);
                 repository.createContract();
-                repository.opportunities(id, 2, new OpportunityPutRepository.OpportunityCallback() {
+                repository.bids(id, 2, new BidPutRepository.BidsCallback() {
                     @Override
-                    public void onSuccess(Opportunities.ModelOpportunity opportunity) {
+                    public void onSuccess(Bids.ModelBids opportunity) {
                         Timber.i("onSuccess response=%s", opportunity.toString());
                     }
 

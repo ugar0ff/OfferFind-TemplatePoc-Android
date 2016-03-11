@@ -1,5 +1,9 @@
 package com.dddev.market.place.ui.fragment;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,24 +17,31 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.core.cache.CacheContentProvider;
+import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
+import com.dddev.market.place.utils.StaticKeys;
 import com.squareup.picasso.Picasso;
+
+import timber.log.Timber;
 
 /**
  * Created by ugar on 11.02.16.
  */
-public class ProposalFragment extends BaseFragment implements View.OnClickListener{
+public class ProposalFragment extends BaseFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static String PROPOSAL_MODEL = "proposal_model";
     private final static String PROPOSAL_STATUS = "proposal_status";
     private Bids.ModelBids itemModel;
-    private int status;
+    private int statusOpportunities;
+    private TextView accept;
+    private ChatFragment chatFragment;
 
-    public static ProposalFragment newInstance(Bids.ModelBids itemModel, int status) {
+    public static ProposalFragment newInstance(Bids.ModelBids itemModel, int statusOpportunities) {
         ProposalFragment fragment = new ProposalFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(PROPOSAL_MODEL, itemModel);
-        bundle.putInt(PROPOSAL_STATUS, status);
+        bundle.putInt(PROPOSAL_STATUS, statusOpportunities);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -40,7 +51,7 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             itemModel = getArguments().getParcelable(PROPOSAL_MODEL);
-            status = getArguments().getInt(PROPOSAL_STATUS);
+            statusOpportunities = getArguments().getInt(PROPOSAL_STATUS);
         }
     }
 
@@ -55,23 +66,9 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         TextView price = (TextView) view.findViewById(R.id.price);
         price.setText(String.format("$ %s", itemModel.getPrice()));
 
-        TextView accept = (TextView) view.findViewById(R.id.accept);
+        accept = (TextView) view.findViewById(R.id.accept);
         accept.setOnClickListener(this);
-        if (status == 2) {
-            accept.setVisibility(View.GONE);
-        } else
-        if (status == 1) {
-            if (itemModel.getState() == status) {
-                accept.setText(getActivity().getString(R.string.complete));
-                accept.setVisibility(View.VISIBLE);
-            } else {
-                accept.setText(getActivity().getString(R.string.complete));
-                accept.setVisibility(View.GONE);
-            }
-        } else {
-            accept.setText(getActivity().getString(R.string.accept));
-            accept.setVisibility(View.VISIBLE);
-        }
+        setAcceptButtonState();
 
         ImageView picture = (ImageView) view.findViewById(R.id.picture);
         if (itemModel.getUrl() != null && !itemModel.getUrl().isEmpty()) {
@@ -85,7 +82,7 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             accept.setTransitionName(String.format("accept%s", itemModel.getId()));
             picture.setTransitionName(String.format("picture%s", itemModel.getId()));
         }
-        setChatFragment(itemModel.getId());
+        getActivity().getLoaderManager().initLoader(StaticKeys.LoaderId.ACCEPT_STATE_LOADER, null, this);
         return view;
     }
 
@@ -98,11 +95,12 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            boolean accessToWriteMessage = status != 2;
-            if (accessToWriteMessage && status == 1) {
-                accessToWriteMessage = itemModel.getState() == status;
+            boolean accessToWriteMessage = statusOpportunities != 2;
+            if (accessToWriteMessage && statusOpportunities == 1) {
+                accessToWriteMessage = itemModel.getState() == statusOpportunities;
             }
-            tr.replace(R.id.container, ChatFragment.newInstance(id, accessToWriteMessage));
+            chatFragment = ChatFragment.newInstance(id, accessToWriteMessage);
+            tr.replace(R.id.container, chatFragment);
             tr.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,4 +119,63 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
                 break;
         }
     }
+
+    private void setAcceptButtonState() {
+        if (itemModel.getState() == 2) {
+            statusOpportunities = itemModel.getState();
+            accept.setVisibility(View.GONE);
+        } else
+        if (itemModel.getState() == 1) {
+            if (itemModel.getState() >= statusOpportunities) {
+                statusOpportunities = itemModel.getState();
+                accept.setText(getActivity().getString(R.string.complete));
+                accept.setVisibility(View.VISIBLE);
+            } else {
+                accept.setText(getActivity().getString(R.string.complete));
+                accept.setVisibility(View.GONE);
+            }
+        } else {
+            accept.setText(getActivity().getString(R.string.accept));
+            accept.setVisibility(View.VISIBLE);
+        }
+        if (chatFragment == null) {
+            setChatFragment(itemModel.getId());
+        } else {
+            chatFragment.setAccessToWriteMessage(accept.getVisibility() == View.VISIBLE);
+        }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Timber.i("onCreateLoader");
+        switch (id) {
+            case StaticKeys.LoaderId.ACCEPT_STATE_LOADER:
+                String[] projection = new String[]{CacheHelper.BIDS_ID + " as _id ",
+                        CacheHelper.BIDS_STATUS};
+                String selection = CacheHelper.BIDS_ID + " = ?";
+                String[] selectionArg = new String[]{String.valueOf(itemModel.getId())};
+                return new CursorLoader(getActivity(), CacheContentProvider.BIDS_URI, projection, selection, selectionArg, null);
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Timber.i("onLoadFinished, loader.getId() = %s", loader.getId());
+        switch (loader.getId()) {
+            case StaticKeys.LoaderId.ACCEPT_STATE_LOADER:
+                if (cursor.moveToFirst()) {
+                    itemModel.setState(cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_STATUS)));
+                    setAcceptButtonState();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Timber.i("onLoaderReset");
+    }
+
 }

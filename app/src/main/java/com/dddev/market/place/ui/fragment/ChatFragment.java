@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.dddev.market.place.R;
@@ -42,6 +43,7 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
     private EventSource eventSource;
     private ListView listView;
     private boolean accessToWriteMessage;
+    private LinearLayout messagesLayout;
 
     public static ChatFragment newInstance(int id, boolean accessToWriteMessage) {
         ChatFragment fragment = new ChatFragment();
@@ -71,9 +73,15 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
         adapter = new ChatAdapter(getActivity(), adapterList);
         listView.setAdapter(adapter);
         messageEdit = (EditText) view.findViewById(R.id.message_edit);
-        view.findViewById(R.id.message_layout).setVisibility(accessToWriteMessage ? View.VISIBLE : View.GONE);
-        view.findViewById(R.id.chat_send_button).setOnClickListener(this);
+        messagesLayout = (LinearLayout) view.findViewById(R.id.message_layout);
+        setAccessToWriteMessage(accessToWriteMessage);
         return view;
+    }
+
+    public void setAccessToWriteMessage(boolean accessToWriteMessage) {
+        if (messagesLayout != null) {
+            messagesLayout.setVisibility(accessToWriteMessage ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override
@@ -95,6 +103,7 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void onSuccess(Messages messages) {
                 Timber.i("onSuccess response=%s", messages.toString());
+                messageEdit.setText("");
                 adapterList.clear();
                 if (messages != null && messages.getList() != null) {
                     for (Messages.ModelMessages modelMessages : messages.getList()) {

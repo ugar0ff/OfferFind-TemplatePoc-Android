@@ -64,7 +64,6 @@ public class Bids extends Model {
         }
 
         public ModelBids(int id, String title, String description, String url, float price, int opportunityId, String createdAt, String provider, int state) {
-
             this.id = id;
             this.title = title;
             this.description = description;
@@ -74,6 +73,20 @@ public class Bids extends Model {
             this.createdAt = createdAt;
             this.provider = provider;
             this.state = state;
+        }
+
+        public ModelBids(String jsonObject) {
+            Exclude exclude = new Exclude();
+            ModelBids bid = new GsonBuilder().addDeserializationExclusionStrategy(exclude).addSerializationExclusionStrategy(exclude).create().fromJson(jsonObject, ModelBids.class);
+            this.id = bid.getId();
+            this.title = bid.getTitle();
+            this.description = bid.getDescription();
+            this.url = bid.getUrl();
+            this.price = bid.getPrice();
+            this.opportunityId = bid.getOpportunityId();
+            this.createdAt = bid.getCreatedAt();
+            this.provider = bid.getProvider();
+            this.state = bid.getState();
         }
 
         public int getId() {

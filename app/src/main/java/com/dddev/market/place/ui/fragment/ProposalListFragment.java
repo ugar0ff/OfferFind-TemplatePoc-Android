@@ -48,7 +48,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
     private ProposalListAdapter adapter;
     private long opportunitiesId;
     private EventSource eventSource;
-    private int status;
+    private int statusOpportunities;
 
     public static ProposalListFragment newInstance(long opportunitiesId) {
         ProposalListFragment listFragment = new ProposalListFragment();
@@ -123,7 +123,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
                     setSharedElementReturnTransition(changeTransform);
                     setExitTransition(explodeTransform);
 
-                    ProposalFragment proposalFragment = ProposalFragment.newInstance(itemModel, status);
+                    ProposalFragment proposalFragment = ProposalFragment.newInstance(itemModel, statusOpportunities);
 
                     proposalFragment.setSharedElementEnterTransition(changeTransform);
                     proposalFragment.setEnterTransition(explodeTransform);
@@ -142,7 +142,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
                     ft.addSharedElement(accept, String.format("accept%s", itemModel.getId()));
                     ft.commit();
                 } else {
-                    switchFragmentListener.switchFragment(ProposalFragment.newInstance(itemModel, status), true, null);
+                    switchFragmentListener.switchFragment(ProposalFragment.newInstance(itemModel, statusOpportunities), true, null);
                 }
                 break;
             }
@@ -184,13 +184,13 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
                         model.setUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_URL)));
                         int bidStatus = cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_STATUS));
                         model.setState(bidStatus);
-                        if (bidStatus > status) {
-                            status = bidStatus;
+                        if (bidStatus > statusOpportunities) {
+                            statusOpportunities = bidStatus;
                         }
                         adapterList.add(model);
                     } while (cursor.moveToNext());
                 }
-                adapter.setStatus(status);
+                adapter.setStatus(statusOpportunities);
 //                Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0, 0, "", 0);
 //                adapterList.add(modelBids);
                 adapter.notifyDataSetChanged();
@@ -199,7 +199,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
                 if (cursor1 != null) {
                     if (cursor1.moveToFirst()) {
                         do {
-                            Timber.w("id %S, status %s, opportunity_id %s", cursor1.getString(cursor1.getColumnIndex(CacheHelper.BIDS_ID)),
+                            Timber.w("id %S, statusOpportunities %s, opportunity_id %s", cursor1.getString(cursor1.getColumnIndex(CacheHelper.BIDS_ID)),
                                     cursor1.getInt(cursor1.getColumnIndex(CacheHelper.BIDS_STATUS)),
                                     cursor1.getInt(cursor1.getColumnIndex(CacheHelper.BIDS_OPPORTUNITIES_ID)));
                         } while (cursor1.moveToNext());
