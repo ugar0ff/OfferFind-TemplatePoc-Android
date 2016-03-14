@@ -62,15 +62,10 @@ public class ProposalListAdapter extends BaseAdapter {
         public ImageView picture;
     }
 
-//    public class FooterViewHolder {
-//        public ProgressBar progressBar;
-//    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-//        if (getItemViewType(position) == 0) {
             ViewHolder viewHolder;
-            if (convertView == null) {// || convertView.getTag() instanceof FooterViewHolder) {
+            if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.item_proposal, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.title = (TextView) convertView.findViewById(R.id.title);
@@ -130,9 +125,9 @@ public class ProposalListAdapter extends BaseAdapter {
                 viewHolder.price.setText(priceText);
 
                 if (list.get(position).getUrl() != null && !list.get(position).getUrl().isEmpty()) {
-                    Picasso.with(context).load(list.get(position).getUrl()).into(viewHolder.picture);
+                    Picasso.with(context).load(list.get(position).getUrl()).fit().centerInside().into(viewHolder.picture);
                 } else {
-                    Picasso.with(context).load(R.drawable.placeholder_proposal_item).into(viewHolder.picture);
+                    Picasso.with(context).load(R.drawable.placeholder_proposal_item).fit().centerInside().into(viewHolder.picture);
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -144,37 +139,6 @@ public class ProposalListAdapter extends BaseAdapter {
                 viewHolder.accept.setOnClickListener(clickListener);
                 viewHolder.accept.setTag(list.get(position).getId());
             }
-//        } else {
-//            FooterViewHolder viewHolder;
-//            if (convertView == null || convertView.getTag() instanceof ViewHolder) {
-//                convertView = mInflater.inflate(R.layout.footer_proposal_list, parent, false);
-//                viewHolder = new FooterViewHolder();
-//                viewHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
-//                convertView.setTag(viewHolder);
-//            } else {
-//                viewHolder = (FooterViewHolder) convertView.getTag();
-//            }
-//            if (list != null) {
-//                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, list.get(position).getFooterHeight());
-//                params.gravity = Gravity.CENTER;
-//                viewHolder.progressBar.setLayoutParams(params);
-//                convertView.setOnClickListener(null);
-//            }
-//        }
         return convertView;
     }
-
-//    @Override
-//    public int getItemViewType(int position) {
-//        if (position != list.size() - 1) {
-//            return 0;
-//        } else {
-//            return 1;
-//        }
-//    }
-//
-//    @Override
-//    public int getViewTypeCount() {
-//        return 2;
-//    }
 }
