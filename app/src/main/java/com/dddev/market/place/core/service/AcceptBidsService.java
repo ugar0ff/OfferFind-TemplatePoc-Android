@@ -68,7 +68,7 @@ public class AcceptBidsService extends IntentService {
                     values.put(CacheHelper.BIDS_STATUS, cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)) == bidsId ? 1 : 0);
                     values.put(CacheHelper.BIDS_TITLE, cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_TITLE)));
                     values.put(CacheHelper.BIDS_URL, cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_URL)));
-                    values.put(CacheHelper.BIDS_CREATE_AT, cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_CREATE_AT)));
+                    values.put(CacheHelper.BIDS_CREATE_AT, cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_CREATE_AT)));
                     contentValues[i] = values;
                     i++;
                 } while (cursor.moveToNext());
@@ -90,7 +90,7 @@ public class AcceptBidsService extends IntentService {
                 values.put(CacheHelper.OPPORTUNITIES_ID, cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
                 values.put(CacheHelper.OPPORTUNITIES_TITLE, cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
                 values.put(CacheHelper.OPPORTUNITIES_STATUS, 1);
-                values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, cursor.getLong(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
+                values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
                 values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_DESCRIPTION)));
                 values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_ACCOUNT_ID)));
                 values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CATEGORY_ID)));

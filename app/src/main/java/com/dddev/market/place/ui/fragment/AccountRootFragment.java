@@ -32,7 +32,9 @@ public class AccountRootFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_root, container, false);
-        setAccountFragment();
+        if (getChildFragmentManager().findFragmentById(R.id.container) == null) {
+            setAccountFragment();
+        }
         return view;
     }
 

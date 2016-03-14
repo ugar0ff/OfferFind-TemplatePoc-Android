@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorProposalItem">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_horizontal_margin">
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="@dimen/photo_size"
             android:layout_height="@dimen/photo_size"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="50dp">
+            android:layout_marginBottom="50dp"
+            android:paddingTop="@dimen/activity_horizontal_margin">
 
             <ImageView
                 android:id="@+id/avatar"
@@ -41,6 +37,10 @@
             android:id="@+id/name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
             app:errorEnabled="true">
 
             <EditText
@@ -63,6 +63,10 @@
             android:id="@+id/location_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
             app:errorEnabled="true">
 
             <com.dddev.market.place.ui.views.DelayAutoCompleteTextView
@@ -89,6 +93,10 @@
             android:id="@+id/email_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
             app:errorEnabled="true">
 
             <EditText
@@ -108,9 +116,13 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/email_layout"
+            android:id="@+id/banking_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
             app:errorEnabled="true">
 
             <EditText
@@ -132,6 +144,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="12dp"
             android:text="@string/use_device_location" />
 

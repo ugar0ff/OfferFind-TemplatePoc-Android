@@ -12,10 +12,6 @@
         android:layout_weight="1"
         android:divider="@null"
         android:listSelector="@android:color/transparent"
-        android:paddingEnd="11dp"
-        android:paddingLeft="11dp"
-        android:paddingRight="11dp"
-        android:paddingStart="11dp"
         android:transcriptMode="alwaysScroll" />
 
     <LinearLayout

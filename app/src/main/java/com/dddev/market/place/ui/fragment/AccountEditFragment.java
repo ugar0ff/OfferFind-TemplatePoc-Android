@@ -22,6 +22,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -39,6 +40,7 @@ import com.dddev.market.place.ui.adapter.GeoAutoCompleteAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseLocationFragment;
 import com.dddev.market.place.ui.model.GeoSearchResult;
 import com.dddev.market.place.ui.views.DelayAutoCompleteTextView;
+import com.dddev.market.place.utils.PermissionHelper;
 import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
 import com.dddev.market.place.utils.Utilities;
@@ -266,6 +268,15 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
                 startCroup(StaticKeys.MAKE_PHOTO_REQUEST_CODE);
             }
         });
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = (int)Utilities.convertDpToPixel(330, getActivity());
+        lp.height = (int)Utilities.convertDpToPixel(140, getActivity());
+//        lp.x=-170;
+//        lp.y=100;
+        dialog.getWindow().setAttributes(lp);
     }
 
     private void startCroup(int attach) {

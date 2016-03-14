@@ -9,6 +9,10 @@
         android:id="@+id/contentWithBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingEnd="11dp"
+        android:paddingLeft="11dp"
+        android:paddingRight="11dp"
+        android:paddingStart="11dp"
         android:orientation="vertical">
 
         <TextView

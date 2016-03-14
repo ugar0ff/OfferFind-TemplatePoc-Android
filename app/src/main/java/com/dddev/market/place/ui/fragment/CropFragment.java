@@ -65,7 +65,7 @@ public class CropFragment extends BaseFragment implements View.OnClickListener, 
         imageTemplate = (ImageView) view.findViewById(R.id.cp_face_template);
         viewTop = view.findViewById(R.id.view_padding_top);
         filePatch = getActivity().getIntent().getStringExtra(StaticKeys.CROP_IMAGE_URI);
-        Timber.i("filePatch = " + filePatch);
+        Timber.i("filePatch = %s", filePatch);
         try {
             getCorrectlyOrientedImage(filePatch);
         } catch (IOException e) {
@@ -94,7 +94,9 @@ public class CropFragment extends BaseFragment implements View.OnClickListener, 
         int id = item.getItemId();
         if (id == android.R.id.home) {
             getActivity().onBackPressed();
-            photoImg.recycle();
+            if (photoImg != null) {
+                photoImg.recycle();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -105,7 +107,9 @@ public class CropFragment extends BaseFragment implements View.OnClickListener, 
         BitmapFactory.Options dbo = new BitmapFactory.Options();
         dbo.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(is, null, dbo);
-        is.close();
+        if (is != null) {
+            is.close();
+        }
 
         is = getActivity().getContentResolver().openInputStream(Uri.parse("file://" + photoUri));
         DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -123,11 +127,13 @@ public class CropFragment extends BaseFragment implements View.OnClickListener, 
         } else {
             photoImg = BitmapFactory.decodeStream(is);
         }
-        is.close();
+        if (is != null) {
+            is.close();
+        }
 
         ExifInterface exif = new ExifInterface(photoUri);
         int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-        Timber.i("rotation = " + rotation + " String.valueOf(photoUri) = " + String.valueOf(photoUri));
+        Timber.i("rotation = %s, String.valueOf(photoUri) = %s", rotation , String.valueOf(photoUri));
         int rotationInDegrees = exifToDegrees(rotation);
         Matrix matrix = new Matrix();
         if (rotation != 0) {
@@ -175,7 +181,9 @@ public class CropFragment extends BaseFragment implements View.OnClickListener, 
                     cropImage(image.getDrawingCache(true), imageTemplate.getDrawingCache(true)).compress(Bitmap.CompressFormat.JPEG, 100, out);
                     out.flush();
                     out.close();
-                    photoImg.recycle();
+                    if (photoImg != null) {
+                        photoImg.recycle();
+                    }
                 } catch (Exception e) {
                     Timber.i("catch onClick");
                     e.printStackTrace();
@@ -186,7 +194,9 @@ public class CropFragment extends BaseFragment implements View.OnClickListener, 
                 getActivity().finish();
                 break;
             case R.id.cancel:
-                photoImg.recycle();
+                if (photoImg != null) {
+                    photoImg.recycle();
+                }
                 getActivity().finish();
                 break;
         }
@@ -203,7 +213,7 @@ public class CropFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     public boolean onTouch(View v, MotionEvent event) {
-        float firstPointX = 0, firstPointY = 0, secondPointX = 0, secondPointY = 0;
+        float firstPointX, firstPointY, secondPointX, secondPointY;
 
         mScaleDetector.onTouchEvent(event);
         mMoveDetector.onTouchEvent(event);

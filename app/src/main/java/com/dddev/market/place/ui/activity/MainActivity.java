@@ -19,6 +19,7 @@ import com.dddev.market.place.ui.fragment.AccountRootFragment;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.model.TabModel;
 import com.dddev.market.place.ui.views.smarttablayout.SmartTabLayout;
+import com.dddev.market.place.utils.PermissionHelper;
 import com.dddev.market.place.utils.StaticKeys;
 
 import java.util.ArrayList;
@@ -45,8 +46,10 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabAdapter = new TabAdapter(getSupportFragmentManager(), pageList);
         viewPager.setAdapter(tabAdapter);
+        viewPager.setOffscreenPageLimit(3);
 
         final SmartTabLayout tabLayout = (SmartTabLayout) findViewById(R.id.viewpager_tab);
+        assert tabLayout != null;
         tabLayout.setViewPager(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -62,6 +65,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
             public void onPageScrollStateChanged(int state) {
             }
         });
+        PermissionHelper.verifyStoragePermissions(this);
 
         getLoaderManager().restartLoader(StaticKeys.LoaderId.TAB_LOADER, null, this);
     }

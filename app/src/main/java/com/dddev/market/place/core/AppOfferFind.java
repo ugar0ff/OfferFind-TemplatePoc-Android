@@ -36,5 +36,4 @@ public class AppOfferFind extends Application {
 
         }
     }
-
 }

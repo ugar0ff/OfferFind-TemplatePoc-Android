@@ -148,8 +148,8 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
             public void run() {
                 if (getActivity() != null) {
                     //TODO: authentication problem in server
-//                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/streamUpdates?_format=event-stream&access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
-                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/change-stream?access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
+                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/streamUpdates?_format=event-stream&access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
+//                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/change-stream?access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
                     eventSource.connect();
                 }
             }
