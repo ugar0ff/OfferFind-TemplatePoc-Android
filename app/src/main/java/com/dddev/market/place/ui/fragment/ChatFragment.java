@@ -103,7 +103,6 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void onSuccess(Messages messages) {
                 Timber.i("onSuccess response=%s", messages.toString());
-                messageEdit.setText("");
                 adapterList.clear();
                 if (messages != null && messages.getList() != null) {
                     for (Messages.ModelMessages modelMessages : messages.getList()) {
@@ -133,6 +132,7 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
                 Timber.i("onSuccess response=%s", messages.toString());
                 adapterList.add(messages);
                 adapter.notifyDataSetChanged();
+                messageEdit.setText("");
             }
 
             @Override

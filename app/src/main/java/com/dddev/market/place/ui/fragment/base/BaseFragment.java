@@ -12,6 +12,7 @@ import com.dddev.market.place.core.service.AcceptBidsService;
 import com.dddev.market.place.core.service.CompleteBidsService;
 import com.dddev.market.place.core.service.UpdateService;
 import com.dddev.market.place.ui.controller.SwitchFragmentListener;
+import com.dddev.market.place.ui.controller.ToolbarTitleController;
 import com.dddev.market.place.utils.StaticKeys;
 
 /**
@@ -20,12 +21,16 @@ import com.dddev.market.place.utils.StaticKeys;
 public class BaseFragment extends Fragment {
 
     protected SwitchFragmentListener switchFragmentListener;
+    protected ToolbarTitleController toolbarTitleController;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof SwitchFragmentListener) {
             switchFragmentListener = (SwitchFragmentListener) context;
+        }
+        if (context instanceof ToolbarTitleController) {
+            toolbarTitleController = (ToolbarTitleController) context;
         }
     }
 
@@ -34,6 +39,9 @@ public class BaseFragment extends Fragment {
         super.onDetach();
         if (switchFragmentListener != null) {
             switchFragmentListener = null;
+        }
+        if (toolbarTitleController != null) {
+            toolbarTitleController = null;
         }
     }
 

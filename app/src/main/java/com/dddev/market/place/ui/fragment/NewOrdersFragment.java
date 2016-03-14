@@ -23,7 +23,6 @@ import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.ViewPagerAdapter;
-import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.fragment.base.BaseLocationFragment;
 import com.dddev.market.place.ui.model.PagerItemModel;
 import com.dddev.market.place.utils.StaticKeys;
@@ -205,8 +204,8 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                 new OpportunityPostRepository.OpportunityCallback() {
                     @Override
                     public void onSuccess(Opportunities.ModelOpportunity opportunity) {
-                        Timber.i("onSuccess response=%s", opportunity.toString());
                         if (opportunity != null) {
+                            Timber.i("onSuccess response=%s", opportunity.toString());
                             ContentValues values = new ContentValues();
                             values.put(CacheHelper.OPPORTUNITIES_ID, opportunity.getId());
                             values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunity.getTitle());
@@ -216,7 +215,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                             values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getStatus());
                             values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunity.getCategoryId());
                             getActivity().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
-                            ProposalActivity.launch(getActivity());
+                            ProposalActivity.launch(getActivity(), opportunity.getId(), opportunity.getTitle());
                             if (getActivity() instanceof NewOrdersActivity) {
                                 getActivity().finish();
                             }

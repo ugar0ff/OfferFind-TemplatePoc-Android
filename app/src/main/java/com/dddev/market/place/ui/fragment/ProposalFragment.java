@@ -86,6 +86,14 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (itemModel.getTitle() != null) {
+            toolbarTitleController.setToolbarTitle(itemModel.getTitle());
+        }
+    }
+
     private void setChatFragment(int id) {
         try {
             FragmentManager fm = getChildFragmentManager();

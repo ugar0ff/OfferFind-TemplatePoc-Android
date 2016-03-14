@@ -44,16 +44,19 @@ import timber.log.Timber;
 public class ProposalListFragment extends BaseFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public final static String OPPORTUNITIES_ID = "opportunities_id";
+    public final static String OPPORTUNITIES_NAME = "opportunities_name";
     private ArrayList<Bids.ModelBids> adapterList;
     private ProposalListAdapter adapter;
     private long opportunitiesId;
     private EventSource eventSource;
     private int statusOpportunities;
+    private String title;
 
-    public static ProposalListFragment newInstance(long opportunitiesId) {
+    public static ProposalListFragment newInstance(long opportunitiesId, String opportunitiesName) {
         ProposalListFragment listFragment = new ProposalListFragment();
         Bundle bundle = new Bundle();
         bundle.putLong(OPPORTUNITIES_ID, opportunitiesId);
+        bundle.putString(OPPORTUNITIES_NAME, opportunitiesName);
         listFragment.setArguments(bundle);
         return listFragment;
     }
@@ -64,6 +67,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
         adapterList = new ArrayList<>();
         if (getArguments() != null) {
             opportunitiesId = getArguments().getLong(OPPORTUNITIES_ID);
+            title = getArguments().getString(OPPORTUNITIES_NAME);
         }
     }
 
@@ -75,43 +79,9 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
         adapter = new ProposalListAdapter(getActivity(), adapterList, acceptClickListener);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
-
-//        listView.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (adapterList.size() == 0) {
-//                    Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0, 0, "", 0);
-//                    adapterList.add(modelBids);
-//                }
-//                try {
-//                    float itemsHeight = ((adapterList.size() - 1) * (getResources().getDimension(R.dimen.proposal_item_height) + 2 * getResources().getDimension(R.dimen.proposal_list_divider_height))) + 2 * getResources().getDimension(R.dimen.proposal_list_divider_height);
-//                    itemsHeight = itemsHeight % 0 == 0 ? itemsHeight : itemsHeight - 1;
-//                    adapterList.get(adapterList.size() - 1).setFooterHeight(getFooterHeight((int) itemsHeight));
-//                    adapter.notifyDataSetChanged();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.BIDS_LOADER, null, this);
         return view;
     }
-
-//    private int getFooterHeight(int itemsHeight) {
-//        int footerMinHeight = (int) Utilities.convertDpToPixel(100, getActivity());
-//        if (getView() != null) {
-//            int listHeight = getView().getHeight();
-//            if (adapterList.size() > 0) {
-//                if (itemsHeight < listHeight && footerMinHeight < listHeight - itemsHeight) {
-//                    footerMinHeight = listHeight - itemsHeight;
-//                }
-//            } else {
-//                footerMinHeight = listHeight;
-//            }
-//        }
-//        return footerMinHeight;
-//    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -191,8 +161,6 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
                     } while (cursor.moveToNext());
                 }
                 adapter.setStatus(statusOpportunities);
-//                Bids.ModelBids modelBids = new Bids.ModelBids(-1, "", "", "", 0, 0, 0, "", 0);
-//                adapterList.add(modelBids);
                 adapter.notifyDataSetChanged();
 
                 Cursor cursor1 = getActivity().getContentResolver().query(CacheContentProvider.BIDS_URI, null, null, null, null);
@@ -273,6 +241,9 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
     @Override
     public void onResume() {
         super.onResume();
+        if (title != null) {
+            toolbarTitleController.setToolbarTitle(title);
+        }
     }
 
     @Override

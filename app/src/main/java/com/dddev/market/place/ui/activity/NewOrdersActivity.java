@@ -8,12 +8,13 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.ui.activity.base.BaseActivity;
+import com.dddev.market.place.ui.controller.ToolbarTitleController;
 import com.dddev.market.place.ui.fragment.NewOrdersFragment;
 
 /**
  * Created by ugar on 24.02.16.
  */
-public class NewOrdersActivity extends BaseActivity {
+public class NewOrdersActivity extends BaseActivity implements ToolbarTitleController{
 
     public static void launch(Context context) {
         context.startActivity(new Intent(context, NewOrdersActivity.class));
@@ -51,5 +52,18 @@ public class NewOrdersActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setToolbarTitle(getString(R.string.new_order));
     }
 }
