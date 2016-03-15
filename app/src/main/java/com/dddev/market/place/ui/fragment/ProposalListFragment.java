@@ -181,7 +181,7 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                     cursor1.close();
                 }
 
-                //TODO: add after change server request url
+                //ыцшTODO: add after change server request url
 //                streamMessages();
                 break;
         }

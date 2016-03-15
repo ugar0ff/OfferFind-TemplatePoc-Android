@@ -107,6 +107,9 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             if (accessToWriteMessage && statusOpportunities == 1) {
                 accessToWriteMessage = itemModel.getState() == statusOpportunities;
             }
+            if (accept != null) {
+                accept.setVisibility(accessToWriteMessage ? View.VISIBLE : View.GONE);
+            }
             chatFragment = ChatFragment.newInstance(id, accessToWriteMessage);
             tr.replace(R.id.container, chatFragment);
             tr.commit();
