@@ -37,10 +37,12 @@
                     android:transitionName="avatar" />
 
                 <ImageView
+                    android:id="@+id/mask_avatar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="@null"
-                    android:src="@drawable/mask_avatar" />
+                    android:src="@drawable/mask_avatar"
+                    android:transitionName="mask_avatar" />
             </FrameLayout>
 
             <TextView

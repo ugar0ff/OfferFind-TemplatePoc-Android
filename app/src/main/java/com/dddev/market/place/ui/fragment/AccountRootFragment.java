@@ -57,6 +57,7 @@ public class AccountRootFragment extends BaseFragment {
             Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container);
             if (fragment != null && fragment.getView() != null) {
                 ImageView avatar = (ImageView) fragment.getView().findViewById(R.id.avatar);
+                ImageView maskAvatar = (ImageView) fragment.getView().findViewById(R.id.mask_avatar);
                 TextView name = (TextView) fragment.getView().findViewById(R.id.name);
                 TextView locationHint = (TextView) fragment.getView().findViewById(R.id.location_hint);
                 TextView location = (TextView) fragment.getView().findViewById(R.id.location);
@@ -65,6 +66,7 @@ public class AccountRootFragment extends BaseFragment {
                 TextView bankingInfoHint = (TextView) fragment.getView().findViewById(R.id.banking_info_hint);
                 TextView bankingInfo = (TextView) fragment.getView().findViewById(R.id.banking_info);
                 ft.addSharedElement(avatar, "avatar");
+                ft.addSharedElement(maskAvatar, "mask_avatar");
                 ft.addSharedElement(name, "name");
                 ft.addSharedElement(locationHint, "location_hint");
                 ft.addSharedElement(location, "location");
@@ -110,12 +112,14 @@ public class AccountRootFragment extends BaseFragment {
             Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container);
             if (fragment != null && fragment.getView() != null) {
                 ImageView avatar = (ImageView) fragment.getView().findViewById(R.id.avatar);
+                ImageView maskAvatar = (ImageView) fragment.getView().findViewById(R.id.mask_avatar);
                 TextView name = (TextView) fragment.getView().findViewById(R.id.name);
                 TextView location = (TextView) fragment.getView().findViewById(R.id.location);
                 location.setText("");
                 TextView email = (TextView) fragment.getView().findViewById(R.id.email);
                 TextView bankingInfo = (TextView) fragment.getView().findViewById(R.id.banking_info);
                 ft.addSharedElement(avatar, "avatar");
+                ft.addSharedElement(maskAvatar, "mask_avatar");
                 ft.addSharedElement(name, "name");
                 ft.addSharedElement(location, "location");
                 ft.addSharedElement(email, "email");

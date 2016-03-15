@@ -55,12 +55,10 @@
                     android:hint="@string/name"
                     android:inputType="textImeMultiLine"
                     android:maxLines="1"
-                    android:paddingBottom="14dp"
                     android:paddingEnd="10dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingStart="10dp"
-                    android:paddingTop="14dp"
                     android:textColor="@color/colorInputText" />
             </android.support.design.widget.TextInputLayout>
 
@@ -84,13 +82,10 @@
                     android:imeOptions="flagNoExtractUi|actionSearch"
                     android:inputType="textImeMultiLine"
                     android:maxLines="1"
-                    android:padding="10dp"
-                    android:paddingBottom="14dp"
                     android:paddingEnd="10dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingStart="10dp"
-                    android:paddingTop="14dp"
                     android:textColor="@color/colorInputText" />
             </android.support.design.widget.TextInputLayout>
 
@@ -111,12 +106,10 @@
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:paddingBottom="14dp"
                     android:paddingEnd="10dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingStart="10dp"
-                    android:paddingTop="14dp"
                     android:textColor="@color/colorInputText" />
             </android.support.design.widget.TextInputLayout>
 
@@ -135,12 +128,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/banking_info"
-                    android:paddingBottom="14dp"
                     android:paddingEnd="10dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingStart="10dp"
-                    android:paddingTop="14dp"
                     android:textColor="@color/colorInputText" />
             </android.support.design.widget.TextInputLayout>
 
@@ -153,7 +144,6 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="12dp"
                 android:text="@string/use_device_location" />
 
         </LinearLayout>
