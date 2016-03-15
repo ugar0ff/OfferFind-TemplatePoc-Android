@@ -82,6 +82,7 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
         adapter = new ProposalListAdapter(getActivity(), adapterList, acceptClickListener);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        listView.setEmptyView(view.findViewById(R.id.empty));
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);

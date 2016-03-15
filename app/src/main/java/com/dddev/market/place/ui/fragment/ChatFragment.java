@@ -130,8 +130,6 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void onSuccess(Messages.ModelMessages messages) {
                 Timber.i("onSuccess response=%s", messages.toString());
-                adapterList.add(messages);
-                adapter.notifyDataSetChanged();
                 messageEdit.setText("");
             }
 
@@ -148,7 +146,6 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
             public void run() {
                 if (getActivity() != null) {
                     eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/streamUpdates?_format=event-stream&access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
-//                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/change-stream?access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
                     eventSource.connect();
                 }
             }
