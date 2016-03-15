@@ -147,7 +147,6 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void run() {
                 if (getActivity() != null) {
-                    //TODO: authentication problem in server
                     eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/streamUpdates?_format=event-stream&access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
 //                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/change-stream?access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
                     eventSource.connect();
@@ -172,10 +171,25 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
             Timber.v("SSE Message %s", event);
             Timber.v("SSE Message: %s", message.lastEventId);
             Timber.v("SSE Message: %s", message.data);
-            if (message.getMessageData() != null && message.getMessageData().getData() != null) {
-                adapterList.add(message.getMessageData().getData());
-                adapter.notifyDataSetChanged();
+            if (message.getMessageData() == null) {
+                return;
             }
+            if (message.getMessageData().getData() == null) {
+                return;
+            }
+            if (message.getMessageData().getData().getBidId() != id) {
+                return;
+            }
+            adapterList.add(message.getMessageData().getData());
+            if (getActivity() == null) {
+                return;
+            }
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
 
         @Override

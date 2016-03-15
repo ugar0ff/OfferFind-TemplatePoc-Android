@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.adapter.ProposalListAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
+import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
 import com.dddev.market.place.ui.views.eventsource_android.EventSource;
 import com.dddev.market.place.ui.views.eventsource_android.EventSourceHandler;
 import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
@@ -41,7 +43,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 10.02.16.
  */
-public class ProposalListFragment extends BaseFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class ProposalListFragment extends UpdateReceiverFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public final static String OPPORTUNITIES_ID = "opportunities_id";
     public final static String OPPORTUNITIES_NAME = "opportunities_name";
@@ -51,6 +53,7 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
     private EventSource eventSource;
     private int statusOpportunities;
     private String title;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static ProposalListFragment newInstance(long opportunitiesId, String opportunitiesName) {
         ProposalListFragment listFragment = new ProposalListFragment();
@@ -79,6 +82,9 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
         adapter = new ProposalListAdapter(getActivity(), adapterList, acceptClickListener);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.BIDS_LOADER, null, this);
         return view;
     }
@@ -239,14 +245,6 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (title != null) {
-            toolbarTitleController.setToolbarTitle(title);
-        }
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         if (eventSource != null && eventSource.isConnected()) {
@@ -270,4 +268,33 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
             }
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSwipeRefreshLayout.setRefreshing(false);
+        if (title != null) {
+            toolbarTitleController.setToolbarTitle(title);
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        startUpdateService();
+    }
+
+    @Override
+    public void onHandleServerRequest() {
+        if (getActivity() != null && mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void onHandleServerRequestError() {
+        if (getActivity() != null && mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
 }

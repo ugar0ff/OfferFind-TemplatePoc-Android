@@ -1,6 +1,5 @@
 package com.dddev.market.place.core.api.strongloop;
 
-import com.dddev.market.place.utils.PreferencesUtils;
 import com.google.common.collect.ImmutableMap;
 import com.strongloop.android.remoting.adapters.Adapter;
 import com.strongloop.android.remoting.adapters.RestContract;
@@ -27,8 +26,7 @@ public class OpportunityPostRepository extends com.strongloop.android.loopback.M
         invokeStaticMethod("opportunities", ImmutableMap.of("title", title,
                 "description", description,
                 "status", 0,
-                "address", address,
-                "accountId", PreferencesUtils.getUserId(getApplicationContext())), new Adapter.Callback() {
+                "address", address), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

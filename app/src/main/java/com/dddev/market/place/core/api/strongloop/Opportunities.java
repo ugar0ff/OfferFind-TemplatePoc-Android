@@ -54,11 +54,11 @@ public class Opportunities extends Model {
         public ModelOpportunity() {
         }
 
-        public ModelOpportunity(int id, String title, String description, int accountId, ArrayList<Bids.ModelBids> bids, String createAt, int categoryId, int status, String address) {
+        public ModelOpportunity(int id, String title, String description, int ownerId, ArrayList<Bids.ModelBids> bids, String createAt, int categoryId, int status, String address) {
             this.id = id;
             this.title = title;
             this.description = description;
-            this.ownerId = accountId;
+            this.ownerId = ownerId;
             this.bids = bids;
             this.createdAt = createAt;
             this.categoryId = categoryId;

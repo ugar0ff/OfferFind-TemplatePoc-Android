@@ -44,6 +44,7 @@ import com.dddev.market.place.utils.PermissionHelper;
 import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
 import com.dddev.market.place.utils.Utilities;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -63,6 +64,7 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     private GeoAutoCompleteAdapter geoAutoCompleteAdapter;
     private TextInputLayout inputNameLayout, inputEmailLayout;
     private CheckBox checkBoxLocale;
+    private ImageView avatar;
 
     public static AccountEditFragment newInstance() {
         return new AccountEditFragment();
@@ -114,8 +116,9 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         inputEmailLayout = (TextInputLayout) view.findViewById(R.id.email_layout);
         checkBoxLocale = (CheckBox) view.findViewById(R.id.checkbox_locale);
         checkBoxLocale.setOnCheckedChangeListener(this);
-        ImageView avatarView = (ImageView) view.findViewById(R.id.avatar);
-        avatarView.setOnClickListener(this);
+        avatar = (ImageView) view.findViewById(R.id.avatar);
+        avatar.setOnClickListener(this);
+        Picasso.with(getActivity()).load("http://cdn.superbwallpapers.com/wallpapers/meme/poker-face-41130-1920x1200.jpg").fit().centerCrop().into(avatar);
         updateInputInfo();
         return view;
     }
@@ -274,8 +277,6 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = (int)Utilities.convertDpToPixel(330, getActivity());
         lp.height = (int)Utilities.convertDpToPixel(140, getActivity());
-//        lp.x=-170;
-//        lp.y=100;
         dialog.getWindow().setAttributes(lp);
     }
 
