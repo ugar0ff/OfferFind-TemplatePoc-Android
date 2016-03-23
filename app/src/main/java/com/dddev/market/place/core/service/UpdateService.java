@@ -100,7 +100,7 @@ public class UpdateService extends IntentService {
             bidsValues.put(CacheHelper.BIDS_URL, modelBids.get(j).getUrl());
             bidsValues.put(CacheHelper.BIDS_STATUS, modelBids.get(j).getStatus());
             bidsValues.put(CacheHelper.BIDS_CREATE_AT, modelBids.get(j).getCreatedAt());
-            //TODO: add provider model
+            //TODO: addModel provider model
             bidsContentValues[j] = bidsValues;
         }
         getContentResolver().bulkInsert(CacheContentProvider.BIDS_URI, bidsContentValues);

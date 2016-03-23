@@ -13,50 +13,25 @@ import android.widget.TextView;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.utils.PreferencesUtils;
+import com.nhaarman.listviewanimations.ArrayAdapter;
 
 import java.util.List;
 
 
-public class ChatAdapter extends BaseAdapter {
+public class ChatAdapter extends ArrayAdapter<Messages.ModelMessages> {
 
-    private final List<Messages.ModelMessages> chatMessages;
     private LayoutInflater inflater;
     private int currentUserId;
 
-    public ChatAdapter(Activity context, List<Messages.ModelMessages> chatMessages) {
-        this.chatMessages = chatMessages;
+    public ChatAdapter(Activity context) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         currentUserId = PreferencesUtils.getUserId(context);
-    }
-
-    @Override
-    public int getCount() {
-        if (chatMessages != null) {
-            return chatMessages.size();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public Messages.ModelMessages getItem(int position) {
-        if (chatMessages != null) {
-            return chatMessages.get(position);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         Messages.ModelMessages chatMessage = getItem(position);
-
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_message_list, parent, false);
             holder = createViewHolder(convertView);
@@ -70,14 +45,6 @@ public class ChatAdapter extends BaseAdapter {
             holder.txtMessage.setText(chatMessage.getText());
         }
         return convertView;
-    }
-
-    public void add(Messages.ModelMessages message) {
-        chatMessages.add(message);
-    }
-
-    public void add(List<Messages.ModelMessages> messages) {
-        chatMessages.addAll(messages);
     }
 
     private void setAlignment(ViewHolder holder, boolean isOutgoing) {

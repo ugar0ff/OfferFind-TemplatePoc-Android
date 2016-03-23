@@ -13,6 +13,10 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -83,14 +87,32 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         } else {
             Picasso.with(getActivity()).load(R.drawable.placeholder_proposal_item).into(picture);
         }
+
+        setFade((ImageView) view.findViewById(R.id.blur));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             title.setTransitionName(String.format("title%s", itemModel.getId()));
             price.setTransitionName(String.format("price%s", itemModel.getId()));
             accept.setTransitionName(String.format("accept%s", itemModel.getId()));
             picture.setTransitionName(String.format("picture%s", itemModel.getId()));
         }
-        getActivity().getLoaderManager().initLoader(StaticKeys.LoaderId.ACCEPT_STATE_LOADER, null, this);
+        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.ACCEPT_STATE_LOADER, null, this);
         return view;
+    }
+
+    private void setFade(final ImageView blur) {
+        blur.post(new Runnable() {
+            @Override
+            public void run() {
+                Animation fadeIn = new AlphaAnimation(0, 1);
+                fadeIn.setInterpolator(new DecelerateInterpolator());
+                fadeIn.setDuration(1000);
+
+                AnimationSet animation = new AnimationSet(false);
+                animation.addAnimation(fadeIn);
+                blur.setAnimation(animation);
+            }
+        });
     }
 
     @Override

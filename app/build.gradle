@@ -11,9 +11,6 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-//    apply plugin: 'java'
-//        sourceCompatibility = JavaVersion.VERSION_1_8
-//        targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildTypes {
         release {
@@ -21,6 +18,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
 }
 
 dependencies {
@@ -38,4 +40,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-drive:8.3.0'
     compile 'org.jboss.netty:netty:3.2.10.Final'
 //    compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
+    compile 'com.nhaarman.listviewanimations:lib-core:3.1.0@aar'
+    compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0@aar'
+    compile 'com.nhaarman.listviewanimations:lib-core-slh:3.1.0@aar'
+    compile 'com.nineoldandroids:library:2.4.0+'
 }

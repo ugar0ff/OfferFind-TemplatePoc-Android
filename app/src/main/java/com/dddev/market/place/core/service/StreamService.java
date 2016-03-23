@@ -161,7 +161,7 @@ public class StreamService extends Service {
         values.put(CacheHelper.BIDS_URL, message.getMessageData().getData().getUrl());
         values.put(CacheHelper.BIDS_STATUS, message.getMessageData().getData().getStatus());
         values.put(CacheHelper.BIDS_CREATE_AT, message.getMessageData().getData().getCreatedAt());
-        //TODO: add provider model
+        //TODO: addModel provider model
         getBaseContext().getContentResolver().insert(CacheContentProvider.BIDS_URI, values);
     }
 

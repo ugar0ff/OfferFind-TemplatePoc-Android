@@ -352,7 +352,7 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
                     options.inPreferredConfig = Bitmap.Config.ARGB_8888;
                     bitmap = BitmapFactory.decodeFile(imagePatch, options);
                     bitmapToBase64();
-                    //TODO: add imageInfo to server
+                    //TODO: addModel imageInfo to server
                 } else if (resultCode == MainActivity.RESULT_CANCELED) {
                     Timber.i("Funded sale canceled");
                 }
@@ -365,7 +365,7 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
                     options.inPreferredConfig = Bitmap.Config.ARGB_8888;
                     bitmap = BitmapFactory.decodeFile(imagePatch, options);
                     bitmapToBase64();
-                    //TODO: add imageInfo to server
+                    //TODO: addModel imageInfo to server
                 } else if (resultCode == MainActivity.RESULT_CANCELED) {
                     Timber.i("Funded sale canceled");
                 }

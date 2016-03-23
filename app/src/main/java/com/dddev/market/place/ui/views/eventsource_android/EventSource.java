@@ -85,7 +85,7 @@ public class EventSource implements EventSourceHandler {
         }
         bootstrap.setOption("remoteAddress", new InetSocketAddress(uri.getHost(), port));
 
-        // add this class as the event source handler so the connect() call can be intercepted
+        // addModel this class as the event source handler so the connect() call can be intercepted
         AsyncEventSourceHandler asyncHandler = new AsyncEventSourceHandler(executor, this, exposeComments);
 
         clientHandler = new EventSourceChannelHandler(asyncHandler, reconnectionTimeMillis, bootstrap, uri, headers);

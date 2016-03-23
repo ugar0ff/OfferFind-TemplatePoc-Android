@@ -2,6 +2,7 @@ package com.dddev.market.place.ui.fragment;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +17,12 @@ import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.api.strongloop.MessagesGetRepository;
 import com.dddev.market.place.core.api.strongloop.MessagesPostRepository;
 import com.dddev.market.place.core.receiver.MessageReceiver;
-import com.dddev.market.place.core.receiver.UpdateReceiver;
 import com.dddev.market.place.ui.adapter.ChatAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.dddev.market.place.utils.StaticKeys;
+import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.SwipeDismissAdapter;
 
 import timber.log.Timber;
 
@@ -31,16 +31,15 @@ import timber.log.Timber;
  */
 public class ChatFragment extends BaseFragment implements View.OnClickListener, MessageReceiver.MessageBroadcastListener {
 
-    private List<Messages.ModelMessages> adapterList;
     private ChatAdapter adapter;
     private int id;
     private final static String BIDS_ID = "bids_id";
     private final static String BIDS_ACCESS = "bids_access";
     private EditText messageEdit;
-    private ListView listView;
     private boolean accessToWriteMessage;
     private LinearLayout messagesLayout;
     private MessageReceiver messageReceiver;
+    private ListView listView;
 
     public static ChatFragment newInstance(int id, boolean accessToWriteMessage) {
         ChatFragment fragment = new ChatFragment();
@@ -54,7 +53,6 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapterList = new ArrayList<>();
         if (getArguments() != null) {
             id = getArguments().getInt(BIDS_ID);
             accessToWriteMessage = getArguments().getBoolean(BIDS_ACCESS);
@@ -69,8 +67,19 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         view.findViewById(R.id.chat_send_button).setOnClickListener(this);
         listView = (ListView) view.findViewById(R.id.list);
-        adapter = new ChatAdapter(getActivity(), adapterList);
-        listView.setAdapter(adapter);
+        adapter = new ChatAdapter(getActivity());
+        SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(new SwipeDismissAdapter(adapter, new OnDismissCallback() {
+            @Override
+            public void onDismiss(@NonNull ViewGroup listView, @NonNull int[] reverseSortedPositions) {
+//                for (int position : reverseSortedPositions) {
+//                    adapter.remove(position);
+//                }
+            }
+        }));
+        swingBottomInAnimationAdapter.setAbsListView(listView);
+        assert swingBottomInAnimationAdapter.getViewAnimator() != null;
+        swingBottomInAnimationAdapter.getViewAnimator().setInitialDelayMillis(StaticKeys.INITIAL_DELAY_MILLIS);
+        listView.setAdapter(swingBottomInAnimationAdapter);
         messageEdit = (EditText) view.findViewById(R.id.message_edit);
         messagesLayout = (LinearLayout) view.findViewById(R.id.message_layout);
         setAccessToWriteMessage(accessToWriteMessage);
@@ -102,15 +111,14 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
             @Override
             public void onSuccess(Messages messages) {
                 Timber.i("onSuccess response=%s", messages.toString());
-                adapterList.clear();
+                adapter.clear();
                 if (messages != null && messages.getList() != null) {
                     for (Messages.ModelMessages modelMessages : messages.getList()) {
-                        adapterList.add(modelMessages);
+                        adapter.add(modelMessages);
                     }
                 }
-                adapter.notifyDataSetChanged();
-                if (adapterList.size() > 0) {
-                    listView.setSelection(adapterList.size() - 1);
+                if (adapter.getCount() > 0) {
+                    listView.smoothScrollToPosition(adapter.getCount() - 1);
                 }
             }
 
@@ -159,21 +167,12 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
         if (message.getBidId() != id) {
             return;
         }
-        adapterList.add(message);
-        if (getActivity() == null) {
-            return;
-        }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
+        adapter.add(message);
     }
 
     @Override
     public void onHandleServerRequest(Messages.ModelMessages message) {
-        Timber.e("onHandleServerRequest message");
+        Timber.i("onHandleServerRequest message");
         onStreamMessage(message);
     }
 

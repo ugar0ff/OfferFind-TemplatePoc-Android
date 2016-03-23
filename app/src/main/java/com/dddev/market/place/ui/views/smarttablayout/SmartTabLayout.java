@@ -42,7 +42,7 @@ import com.dddev.market.place.ui.adapter.TabAdapter;
  * to
  * the accounts's scroll progress.
  * <p>
- * To use the component, simply add it to your view hierarchy. Then in your
+ * To use the component, simply addModel it to your view hierarchy. Then in your
  * {@link android.app.Activity} or {@link android.app.Fragment}, {@link
  * android.support.v4.app.Fragment} call
  * {@link #setViewPager(android.support.v4.view.ViewPager)} providing it the ViewPager this layout
