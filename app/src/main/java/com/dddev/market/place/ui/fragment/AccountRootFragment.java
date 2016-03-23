@@ -17,12 +17,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.ui.fragment.base.BaseFragment;
 
 /**
  * Created by ugar on 17.02.16.
  */
-public class AccountRootFragment extends BaseFragment {
+public class AccountRootFragment extends Fragment {
 
     public static AccountRootFragment newInstance() {
         return new AccountRootFragment();

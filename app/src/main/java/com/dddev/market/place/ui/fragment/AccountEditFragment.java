@@ -34,12 +34,14 @@ import com.dddev.market.place.R;
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.Account;
 import com.dddev.market.place.core.api.strongloop.AccountPutRepository;
+import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.ui.activity.CropActivity;
 import com.dddev.market.place.ui.activity.MainActivity;
 import com.dddev.market.place.ui.adapter.GeoAutoCompleteAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseLocationFragment;
 import com.dddev.market.place.ui.model.GeoSearchResult;
 import com.dddev.market.place.ui.views.DelayAutoCompleteTextView;
+import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.PermissionHelper;
 import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
@@ -139,6 +141,11 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         super.onResume();
     }
 
+    @Override
+    public void onStreamMessage(Messages.ModelMessages message) {
+
+    }
+
     private void updateInputInfo() {
         inputName.post(new Runnable() {
             @Override
@@ -151,8 +158,10 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
             public void run() {
                 if (PreferencesUtils.isLocaleCheckBoxEnable(getActivity())) {
                     inputAddress.setText(getString(R.string.device_location));
+                    inputAddress.setEnabled(false);
                 } else {
                     inputAddress.setText(PreferencesUtils.getUserAddress(getActivity()));
+                    inputAddress.setEnabled(true);
                 }
             }
         });
@@ -445,5 +454,9 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         if (getActivity() != null && PreferencesUtils.isLocaleCheckBoxEnable(getActivity())) {
             geoAutoCompleteAdapter.setLocation(location);
         }
+    }
+
+    @Override
+    protected void noLocation() {
     }
 }

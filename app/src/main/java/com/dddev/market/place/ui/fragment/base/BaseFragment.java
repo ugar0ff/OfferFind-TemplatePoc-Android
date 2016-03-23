@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.inputmethod.InputMethodManager;
 
 import com.dddev.market.place.R;
+import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.service.AcceptBidsService;
 import com.dddev.market.place.core.service.CompleteBidsService;
 import com.dddev.market.place.core.service.UpdateService;
@@ -18,7 +19,7 @@ import com.dddev.market.place.utils.StaticKeys;
 /**
  * Created by ugar on 09.02.16.
  */
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
     protected SwitchFragmentListener switchFragmentListener;
     protected ToolbarTitleController toolbarTitleController;
@@ -53,8 +54,8 @@ public class BaseFragment extends Fragment {
 
     @Override
     public void onPause() {
-        super.onPause();
         hideKeyboard();
+        super.onPause();
     }
 
     public void hideKeyboard() {
@@ -65,7 +66,7 @@ public class BaseFragment extends Fragment {
     }
 
     protected void showDialog(String message) {
-        if (!isAdded()) {
+        if (isAdded()) {
             try {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(message)
@@ -97,4 +98,6 @@ public class BaseFragment extends Fragment {
             getActivity().startService(new Intent(getActivity(), CompleteBidsService.class).putExtra(StaticKeys.COMPLETE_BIDS_ID, bidId));
         }
     }
+
+    public abstract void onStreamMessage(Messages.ModelMessages message);
 }

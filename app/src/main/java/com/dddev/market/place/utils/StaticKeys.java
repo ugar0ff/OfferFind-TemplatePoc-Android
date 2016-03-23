@@ -13,6 +13,7 @@ public class StaticKeys {
     public static final String REQUEST_START = "request_start";
     public static final String REQUEST_CHECK = "request_check";
     public static final String KEY_REQUEST = "key_request";
+    public static final String KEY_MESSAGE = "key_message";
     public static final String ACCEPT_BIDS_ID = "accept_bids_id";
     public static final String COMPLETE_BIDS_ID = "complete_bids_id";
 

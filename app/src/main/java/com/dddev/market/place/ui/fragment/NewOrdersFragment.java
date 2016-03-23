@@ -12,10 +12,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.AppOfferFind;
+import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
 import com.dddev.market.place.core.api.strongloop.OpportunityPostRepository;
 import com.dddev.market.place.core.cache.CacheContentProvider;
@@ -42,6 +44,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     private List<PagerItemModel> adapterList;
     private ViewPager viewPager;
     private ViewPager.PageTransformer pageTransformer;
+    private FrameLayout progressBar;
 
     public static NewOrdersFragment newInstance() {
         return new NewOrdersFragment();
@@ -58,6 +61,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FacebookSdk.sdkInitialize(getActivity());
         View view = inflater.inflate(R.layout.fragment_new_orders, container, false);
+        progressBar = (FrameLayout) view.findViewById(R.id.progress_bar);
         viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         pagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), adapterList);
         viewPager.setAdapter(pagerAdapter);
@@ -73,6 +77,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_orders:
+                progressBar.setVisibility(View.VISIBLE);
                 getAddress();
                 break;
         }
@@ -95,6 +100,17 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                 }
             });
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onStreamMessage(Messages.ModelMessages message) {
+
     }
 
     private static final class TransformerItem {
@@ -216,6 +232,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                             values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunity.getCategoryId());
                             getActivity().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
                             ProposalActivity.launch(getActivity(), opportunity.getId(), opportunity.getTitle());
+                            progressBar.setVisibility(View.GONE);
                             if (getActivity() instanceof NewOrdersActivity) {
                                 getActivity().finish();
                             }
@@ -225,6 +242,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                     @Override
                     public void onError(Throwable t) {
                         Timber.e("onError Throwable: %s", t.toString());
+                        progressBar.setVisibility(View.GONE);
                         showDialog(getString(R.string.server_connect_failure));
                     }
                 });
@@ -240,5 +258,11 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     @Override
     public void locationReceiveResult(Location location) {
         Timber.i("locationReceiveResult = %s", location);
+    }
+
+    @Override
+    protected void noLocation() {
+        progressBar.setVisibility(View.GONE);
+        createNewOrders("");
     }
 }

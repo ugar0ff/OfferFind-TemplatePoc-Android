@@ -57,8 +57,8 @@ public class Bids extends Model {
         //TODO: change type provider
         @SerializedName("provider")
         private String provider;
-        @SerializedName("state")
-        private int state;
+        @SerializedName("status")
+        private int status;
 
         public ModelBids() {
         }
@@ -72,7 +72,7 @@ public class Bids extends Model {
             this.opportunityId = opportunityId;
             this.createdAt = createdAt;
             this.provider = provider;
-            this.state = state;
+            this.status = state;
         }
 
         public ModelBids(String jsonObject) {
@@ -86,7 +86,7 @@ public class Bids extends Model {
             this.opportunityId = bid.getOpportunityId();
             this.createdAt = bid.getCreatedAt();
             this.provider = bid.getProvider();
-            this.state = bid.getState();
+            this.status = bid.getStatus();
         }
 
         public int getId() {
@@ -161,12 +161,12 @@ public class Bids extends Model {
             this.provider = provider;
         }
 
-        public int getState() {
-            return state;
+        public int getStatus() {
+            return status;
         }
 
-        public void setState(int state) {
-            this.state = state;
+        public void setStatus(int status) {
+            this.status = status;
         }
 
         @Override
@@ -185,7 +185,7 @@ public class Bids extends Model {
 //            dest.writeInt(this.footerHeight);
             dest.writeString(this.createdAt);
             dest.writeString(this.provider);
-            dest.writeInt(this.state);
+            dest.writeInt(this.status);
         }
 
         protected ModelBids(Parcel in) {
@@ -198,7 +198,7 @@ public class Bids extends Model {
 //            this.footerHeight = in.readInt();
             this.createdAt = in.readString();
             this.provider = in.readString();
-            this.state = in.readInt();
+            this.status = in.readInt();
         }
 
         public static final Parcelable.Creator<ModelBids> CREATOR = new Parcelable.Creator<ModelBids>() {
@@ -223,7 +223,7 @@ public class Bids extends Model {
 //                    ", footerHeight=" + footerHeight +
                     ", date='" + createdAt + '\'' +
                     ", provider='" + provider + '\'' +
-                    ", state=" + state +
+                    ", status=" + status +
                     '}';
         }
     }

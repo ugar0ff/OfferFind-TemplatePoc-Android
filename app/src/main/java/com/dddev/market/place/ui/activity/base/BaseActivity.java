@@ -1,6 +1,10 @@
 package com.dddev.market.place.ui.activity.base;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -8,7 +12,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.dddev.market.place.R;
+import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.ui.controller.SwitchFragmentListener;
+
+import timber.log.Timber;
 
 /**
  * Created by ugar on 09.02.16.
@@ -60,4 +67,26 @@ public class BaseActivity extends AppCompatActivity implements SwitchFragmentLis
             getSupportActionBar().setDisplayHomeAsUpEnabled(upShow);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindService(((AppOfferFind)getApplicationContext()).getStreamServiceIntent(), streamServiceConnect, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onPause() {
+        unbindService(streamServiceConnect);
+        super.onPause();
+    }
+
+    public ServiceConnection streamServiceConnect = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            Timber.d("ServiceConnection connected");
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            Timber.d("ServiceConnection disconnected");
+        }
+    };
 }

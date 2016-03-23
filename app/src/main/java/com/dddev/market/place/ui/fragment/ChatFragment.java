@@ -1,5 +1,6 @@
 package com.dddev.market.place.ui.fragment;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,16 +15,12 @@ import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.api.strongloop.MessagesGetRepository;
 import com.dddev.market.place.core.api.strongloop.MessagesPostRepository;
+import com.dddev.market.place.core.receiver.MessageReceiver;
+import com.dddev.market.place.core.receiver.UpdateReceiver;
 import com.dddev.market.place.ui.adapter.ChatAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
-import com.dddev.market.place.ui.views.eventsource_android.EventSource;
-import com.dddev.market.place.ui.views.eventsource_android.EventSourceHandler;
 import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
-import com.dddev.market.place.utils.PreferencesUtils;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +29,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 29.02.16.
  */
-public class ChatFragment extends BaseFragment implements View.OnClickListener {
+public class ChatFragment extends BaseFragment implements View.OnClickListener, MessageReceiver.MessageBroadcastListener {
 
     private List<Messages.ModelMessages> adapterList;
     private ChatAdapter adapter;
@@ -40,10 +37,10 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
     private final static String BIDS_ID = "bids_id";
     private final static String BIDS_ACCESS = "bids_access";
     private EditText messageEdit;
-    private EventSource eventSource;
     private ListView listView;
     private boolean accessToWriteMessage;
     private LinearLayout messagesLayout;
+    private MessageReceiver messageReceiver;
 
     public static ChatFragment newInstance(int id, boolean accessToWriteMessage) {
         ChatFragment fragment = new ChatFragment();
@@ -62,6 +59,8 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
             id = getArguments().getInt(BIDS_ID);
             accessToWriteMessage = getArguments().getBoolean(BIDS_ACCESS);
         }
+        messageReceiver = new MessageReceiver();
+        messageReceiver.setMessageBroadcastListener(this);
     }
 
     @Nullable
@@ -113,7 +112,6 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
                 if (adapterList.size() > 0) {
                     listView.setSelection(adapterList.size() - 1);
                 }
-                streamMessages();
             }
 
             @Override
@@ -140,88 +138,47 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener {
         });
     }
 
-    private void streamMessages() {
-        Thread eventThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (getActivity() != null) {
-                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Messages/streamUpdates?_format=event-stream&access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
-                    eventSource.connect();
-                }
-            }
-        });
-        eventThread.start();
-    }
-
-    private class SSEHandler implements EventSourceHandler {
-
-        public SSEHandler() {
-        }
-
-        @Override
-        public void onConnect() {
-            Timber.v("SSE Connected");
-        }
-
-        @Override
-        public void onMessage(String event, MessageEvent message) {
-            Timber.v("SSE Message %s", event);
-            Timber.v("SSE Message: %s", message.lastEventId);
-            Timber.v("SSE Message: %s", message.data);
-            if (message.getMessageData() == null) {
-                return;
-            }
-            if (message.getMessageData().getData() == null) {
-                return;
-            }
-            if (message.getMessageData().getData().getBidId() != id) {
-                return;
-            }
-            adapterList.add(message.getMessageData().getData());
-            if (getActivity() == null) {
-                return;
-            }
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.notifyDataSetChanged();
-                }
-            });
-        }
-
-        @Override
-        public void onComment(String comment) {
-            //comments only received if exposeComments turned on
-            Timber.v("SSE Comment %s", comment);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Timber.v("SSE Error");
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            t.printStackTrace(pw);
-            Timber.v("SSE Stacktrace %s", sw.toString());
-
-        }
-
-        @Override
-        public void onClosed(boolean willReconnect) {
-            Timber.v("SSE Closed reconnect? %s", willReconnect);
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         getMessages();
+        getActivity().registerReceiver(messageReceiver, new IntentFilter(MessageReceiver.BROADCAST_ACTION));
     }
 
     @Override
     public void onPause() {
+        getActivity().unregisterReceiver(messageReceiver);
         super.onPause();
-        if (eventSource != null && eventSource.isConnected()) {
-            eventSource.close();
+    }
+
+    @Override
+    public void onStreamMessage(Messages.ModelMessages message) {
+        if (message == null) {
+            return;
         }
+        if (message.getBidId() != id) {
+            return;
+        }
+        adapterList.add(message);
+        if (getActivity() == null) {
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    public void onHandleServerRequest(Messages.ModelMessages message) {
+        Timber.e("onHandleServerRequest message");
+        onStreamMessage(message);
+    }
+
+    @Override
+    public void onHandleServerRequestError() {
+        Timber.e("onHandleServerRequestError message");
     }
 }

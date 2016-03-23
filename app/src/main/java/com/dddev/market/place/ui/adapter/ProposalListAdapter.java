@@ -3,14 +3,11 @@ package com.dddev.market.place.ui.adapter;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
@@ -98,7 +95,7 @@ public class ProposalListAdapter extends BaseAdapter {
                 }
                 if (status == 2) {
                     viewHolder.accept.setVisibility(View.GONE);
-                    if (list.get(position).getState() == status) {
+                    if (list.get(position).getStatus() == status) {
                         viewHolder.price.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
                         priceText = priceText + " " + context.getString(R.string.complete);
                     } else {
@@ -106,7 +103,7 @@ public class ProposalListAdapter extends BaseAdapter {
                     }
                 } else
                 if (status == 1) {
-                    if (list.get(position).getState() == status) {
+                    if (list.get(position).getStatus() == status) {
                         viewHolder.price.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
                         priceText = priceText + " " + context.getString(R.string.awarded);
                         viewHolder.accept.setText(context.getString(R.string.complete));
@@ -124,17 +121,17 @@ public class ProposalListAdapter extends BaseAdapter {
                 }
                 viewHolder.price.setText(priceText);
 
-                if (list.get(position).getUrl() != null && !list.get(position).getUrl().isEmpty()) {
-                    Picasso.with(context).load(list.get(position).getUrl()).fit().centerInside().into(viewHolder.picture);
-                } else {
-                    Picasso.with(context).load(R.drawable.placeholder_proposal_item).fit().centerInside().into(viewHolder.picture);
-                }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     viewHolder.title.setTransitionName(String.format("title%s", list.get(position).getId()));
                     viewHolder.price.setTransitionName(String.format("price%s", list.get(position).getId()));
                     viewHolder.accept.setTransitionName(String.format("accept%s", list.get(position).getId()));
                     viewHolder.picture.setTransitionName(String.format("picture%s", list.get(position).getId()));
+                }
+                if (list.get(position).getUrl() != null && list.get(position).getUrl().length() > 5) {
+                    Picasso.with(context).load(list.get(position).getUrl()).fit().centerInside().into(viewHolder.picture);
+                } else {
+                    Picasso.with(context).load(R.drawable.placeholder_proposal_item).fit().centerInside().into(viewHolder.picture);
                 }
                 viewHolder.accept.setOnClickListener(clickListener);
                 viewHolder.accept.setTag(list.get(position).getId());

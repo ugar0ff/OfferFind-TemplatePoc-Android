@@ -52,7 +52,7 @@ public class ProposalActivity extends BaseActivity implements ToolbarTitleContro
             switchFragment(ProposalListFragment.newInstance(id, opportunitiesName), false, null);
         } else {
             //TODO get status for all bids of opportunities
-            switchFragment(ProposalFragment.newInstance(itemModel, itemModel.getState()), false, null);
+            switchFragment(ProposalFragment.newInstance(itemModel, itemModel.getStatus()), false, null);
         }
         onBackStackChanged();
     }

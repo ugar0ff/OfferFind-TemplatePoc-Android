@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,11 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
+import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.StaticKeys;
 import com.squareup.picasso.Picasso;
 
@@ -36,6 +39,8 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
     private int statusOpportunities;
     private TextView accept;
     private ChatFragment chatFragment;
+    private TextView price;
+    private int colorRed, colorGreen;
 
     public static ProposalFragment newInstance(Bids.ModelBids itemModel, int statusOpportunities) {
         ProposalFragment fragment = new ProposalFragment();
@@ -53,6 +58,8 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             itemModel = getArguments().getParcelable(PROPOSAL_MODEL);
             statusOpportunities = getArguments().getInt(PROPOSAL_STATUS);
         }
+        colorRed = ContextCompat.getColor(getActivity(), R.color.colorStateRed);
+        colorGreen = ContextCompat.getColor(getActivity(), R.color.colorStateGreen);
     }
 
     @Nullable
@@ -63,7 +70,7 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         if (itemModel.getTitle() != null) {
             title.setText(itemModel.getTitle());
         }
-        TextView price = (TextView) view.findViewById(R.id.price);
+        price = (TextView) view.findViewById(R.id.price);
         price.setText(String.format("$ %s", itemModel.getPrice()));
 
         accept = (TextView) view.findViewById(R.id.accept);
@@ -74,7 +81,7 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         if (itemModel.getUrl() != null && !itemModel.getUrl().isEmpty()) {
             Picasso.with(getActivity()).load(itemModel.getUrl()).into(picture);
         } else {
-            Picasso.with(getActivity()).load(R.color.colorGrey).into(picture);
+            Picasso.with(getActivity()).load(R.drawable.placeholder_proposal_item).into(picture);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             title.setTransitionName(String.format("title%s", itemModel.getId()));
@@ -94,6 +101,11 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onStreamMessage(Messages.ModelMessages message) {
+
+    }
+
     private void setChatFragment(int id) {
         try {
             FragmentManager fm = getChildFragmentManager();
@@ -105,7 +117,7 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             }
             boolean accessToWriteMessage = statusOpportunities != 2;
             if (accessToWriteMessage && statusOpportunities == 1) {
-                accessToWriteMessage = itemModel.getState() == statusOpportunities;
+                accessToWriteMessage = itemModel.getStatus() == statusOpportunities;
             }
             if (accept != null) {
                 accept.setVisibility(accessToWriteMessage ? View.VISIBLE : View.GONE);
@@ -132,13 +144,13 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void setAcceptButtonState() {
-        if (itemModel.getState() == 2) {
-            statusOpportunities = itemModel.getState();
+        if (itemModel.getStatus() == 2) {
+            statusOpportunities = itemModel.getStatus();
             accept.setVisibility(View.GONE);
         } else
-        if (itemModel.getState() == 1) {
-            if (itemModel.getState() >= statusOpportunities) {
-                statusOpportunities = itemModel.getState();
+        if (itemModel.getStatus() == 1) {
+            if (itemModel.getStatus() >= statusOpportunities) {
+                statusOpportunities = itemModel.getStatus();
                 accept.setText(getActivity().getString(R.string.complete));
                 accept.setVisibility(View.VISIBLE);
             } else {
@@ -147,8 +159,9 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             }
         } else {
             accept.setText(getActivity().getString(R.string.accept));
-            accept.setVisibility(View.VISIBLE);
+            accept.setVisibility(statusOpportunities == itemModel.getStatus() ? View.VISIBLE : View.GONE);
         }
+        price.setTextColor(statusOpportunities == itemModel.getStatus() ? colorGreen : colorRed);
         if (chatFragment == null) {
             setChatFragment(itemModel.getId());
         } else {
@@ -161,8 +174,7 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         Timber.i("onCreateLoader");
         switch (id) {
             case StaticKeys.LoaderId.ACCEPT_STATE_LOADER:
-                String[] projection = new String[]{CacheHelper.BIDS_ID + " as _id ",
-                        CacheHelper.BIDS_STATUS};
+                String[] projection = new String[]{CacheHelper.BIDS_ID + " as _id ", CacheHelper.BIDS_STATUS};
                 String selection = CacheHelper.BIDS_ID + " = ?";
                 String[] selectionArg = new String[]{String.valueOf(itemModel.getId())};
                 return new CursorLoader(getActivity(), CacheContentProvider.BIDS_URI, projection, selection, selectionArg, null);
@@ -177,7 +189,7 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         switch (loader.getId()) {
             case StaticKeys.LoaderId.ACCEPT_STATE_LOADER:
                 if (cursor.moveToFirst()) {
-                    itemModel.setState(cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_STATUS)));
+                    itemModel.setStatus(cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_STATUS)));
                     setAcceptButtonState();
                 }
                 break;

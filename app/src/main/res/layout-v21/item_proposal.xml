@@ -17,6 +17,7 @@
             android:layout_width="@dimen/proposal_item_height"
             android:layout_height="@dimen/proposal_item_height"
             android:contentDescription="@null"
+            android:background="@color/colorTransparent"
             android:scaleType="centerInside"
             android:transitionName="picture" />
 

@@ -102,7 +102,8 @@ public abstract class BaseLocationFragment extends BaseFragment implements Googl
                 buildGoogleApiClient();
             }
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+            noLocation();
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
         }
     }
 
@@ -113,4 +114,6 @@ public abstract class BaseLocationFragment extends BaseFragment implements Googl
 //            }
         }
     }
+
+    protected abstract void noLocation();
 }

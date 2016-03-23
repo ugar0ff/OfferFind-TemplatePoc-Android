@@ -87,7 +87,7 @@ public class MessagingAdapter extends BaseAdapter {
             if (list.get(position).getProvider() != null) {
                 viewHolder.provider.setText(list.get(position).getProvider());
             }
-            switch (list.get(position).getState()) {
+            switch (list.get(position).getStatus()) {
                 case 0:
                     viewHolder.state.setText(context.getString(R.string.selecting));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateYellow));

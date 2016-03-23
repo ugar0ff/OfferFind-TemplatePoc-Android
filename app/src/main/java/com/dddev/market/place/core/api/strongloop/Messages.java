@@ -44,6 +44,25 @@ public class Messages extends Model {
         private int senderId;
         @SerializedName("createdAt")
         private String createdAt;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("description")
+        private String description;
+        @SerializedName("status")
+        private String status;
+        @SerializedName("address")
+        private String address;
+        @SerializedName("categoryId")
+        private int categoryId;
+        //TODO: change type provider
+        @SerializedName("provider")
+        private String provider;
+        @SerializedName("url")
+        private String url;
+        @SerializedName("price")
+        private float price;
+        @SerializedName("opportunityId")
+        private int opportunityId;
 
         public ModelMessages(String jsonObject) {
             Exclude exclude = new Exclude();
@@ -54,6 +73,15 @@ public class Messages extends Model {
             this.ownerId = messages.getOwnerId();
             this.senderId = messages.getSenderId();
             this.createdAt = messages.getCreatedAt();
+            this.title = messages.getTitle();
+            this.description = messages.getDescription();
+            this.status = messages.getStatus();
+            this.address = messages.getAddress();
+            this.categoryId = messages.getCategoryId();
+            this.provider = messages.getProvider();
+            this.url = messages.getUrl();
+            this.price = messages.getPrice();
+            this.opportunityId = messages.getOpportunityId();
         }
 
         public int getId() {
@@ -104,16 +132,76 @@ public class Messages extends Model {
             this.createdAt = createdAt;
         }
 
-        @Override
-        public String toString() {
-            return "ModelMessages{" +
-                    "id=" + id +
-                    ", text='" + text + '\'' +
-                    ", ownerId=" + ownerId +
-                    ", bidId=" + bidId +
-                    ", senderId=" + senderId +
-                    ", createdAt=" + createdAt +
-                    '}';
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(int categoryId) {
+            this.categoryId = categoryId;
+        }
+
+        public String getProvider() {
+            return provider;
+        }
+
+        public void setProvider(String provider) {
+            this.provider = provider;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public float getPrice() {
+            return price;
+        }
+
+        public void setPrice(float price) {
+            this.price = price;
+        }
+
+        public int getOpportunityId() {
+            return opportunityId;
+        }
+
+        public void setOpportunityId(int opportunityId) {
+            this.opportunityId = opportunityId;
         }
 
         @Override
@@ -129,6 +217,15 @@ public class Messages extends Model {
             dest.writeInt(this.bidId);
             dest.writeInt(this.senderId);
             dest.writeString(this.createdAt);
+            dest.writeString(this.title);
+            dest.writeString(this.description);
+            dest.writeString(this.status);
+            dest.writeString(this.address);
+            dest.writeInt(this.categoryId);
+            dest.writeString(this.provider);
+            dest.writeString(this.url);
+            dest.writeFloat(this.price);
+            dest.writeInt(this.opportunityId);
         }
 
         protected ModelMessages(Parcel in) {
@@ -138,13 +235,24 @@ public class Messages extends Model {
             this.bidId = in.readInt();
             this.senderId = in.readInt();
             this.createdAt = in.readString();
+            this.title = in.readString();
+            this.description = in.readString();
+            this.status = in.readString();
+            this.address = in.readString();
+            this.categoryId = in.readInt();
+            this.provider = in.readString();
+            this.url = in.readString();
+            this.price = in.readFloat();
+            this.opportunityId = in.readInt();
         }
 
         public static final Parcelable.Creator<ModelMessages> CREATOR = new Parcelable.Creator<ModelMessages>() {
+            @Override
             public ModelMessages createFromParcel(Parcel source) {
                 return new ModelMessages(source);
             }
 
+            @Override
             public ModelMessages[] newArray(int size) {
                 return new ModelMessages[size];
             }

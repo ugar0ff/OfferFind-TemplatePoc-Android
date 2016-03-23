@@ -1,55 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorProposalItem"
-    android:orientation="vertical">
-
-    <com.dddev.market.place.ui.views.CardViewPagerLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_viewpager_card">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_marginTop="13dp"
-            android:layout_marginLeft="13dp"
-            android:layout_marginRight="13dp"
-            android:layout_marginEnd="13dp"
-            android:layout_marginStart="13dp"
-            android:layout_marginBottom="30dp"
-            android:layout_height="match_parent" />
-    </com.dddev.market.place.ui.views.CardViewPagerLayout>
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/add_orders"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_order_height"
-        android:layout_marginBottom="@dimen/button_order_height"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:background="@drawable/background_accept_button"
-        android:gravity="center"
+        android:layout_height="match_parent"
+        android:background="@color/colorProposalItem"
         android:orientation="vertical">
 
-        <TextView
+        <com.dddev.market.place.ui.views.CardViewPagerLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/order"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/text_size_20" />
+            android:background="@drawable/background_viewpager_card">
 
-        <TextView
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="30dp"
+                android:layout_marginEnd="13dp"
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="13dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="13dp" />
+        </com.dddev.market.place.ui.views.CardViewPagerLayout>
+
+        <LinearLayout
+            android:id="@+id/add_orders"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/button_order_height"
+            android:layout_marginBottom="@dimen/button_order_height"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:background="@drawable/background_accept_button"
             android:gravity="center"
-            android:text="@string/press_here_to_claim"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/text_size_14" />
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/order"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_20" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/press_here_to_claim"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_14" />
+
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorShadow"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</FrameLayout>

@@ -16,7 +16,7 @@
 
     <application
         android:name="com.dddev.market.place.core.AppOfferFind"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
@@ -66,6 +66,7 @@
         <service android:name=".core.service.UpdateService"/>
         <service android:name=".core.service.AcceptBidsService"/>
         <service android:name=".core.service.CompleteBidsService"/>
+        <service android:name=".core.service.StreamService"/>
         <service
             android:name=".core.service.FetchAddressIntentService"
             android:exported="false"/>

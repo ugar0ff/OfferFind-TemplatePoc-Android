@@ -52,7 +52,6 @@
                     android:id="@+id/price"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textColor="@color/colorGreen"
                     android:gravity="center_vertical"
                     android:textSize="@dimen/text_size_16" />
             </LinearLayout>

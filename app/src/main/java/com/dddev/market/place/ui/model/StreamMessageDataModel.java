@@ -16,6 +16,8 @@ public class StreamMessageDataModel {
     public Messages.ModelMessages data;
     @SerializedName("type")
     public String type;
+    @SerializedName("class")
+    public String className;
 
     public StreamMessageDataModel(String jsonObject) {
         Exclude exclude = new Exclude();
@@ -23,12 +25,14 @@ public class StreamMessageDataModel {
         this.target = messageDataModel.getTarget();
         this.data = messageDataModel.getData();
         this.type = messageDataModel.getType();
+        this.className = messageDataModel.getClassName();
     }
 
-    public StreamMessageDataModel(int target, Messages.ModelMessages data, String type) {
+    public StreamMessageDataModel(int target, Messages.ModelMessages data, String type, String className) {
         this.target = target;
         this.data = data;
         this.type = type;
+        this.className = className;
     }
 
     public int getTarget() {
@@ -53,5 +57,13 @@ public class StreamMessageDataModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 }

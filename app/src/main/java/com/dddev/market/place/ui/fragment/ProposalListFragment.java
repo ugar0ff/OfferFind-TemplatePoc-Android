@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
@@ -22,10 +23,10 @@ import android.widget.TextView;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.adapter.ProposalListAdapter;
-import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
 import com.dddev.market.place.ui.views.eventsource_android.EventSource;
 import com.dddev.market.place.ui.views.eventsource_android.EventSourceHandler;
@@ -50,7 +51,6 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
     private ArrayList<Bids.ModelBids> adapterList;
     private ProposalListAdapter adapter;
     private long opportunitiesId;
-    private EventSource eventSource;
     private int statusOpportunities;
     private String title;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -160,7 +160,7 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                         model.setPrice(cursor.getFloat(cursor.getColumnIndex(CacheHelper.BIDS_PRICE)));
                         model.setUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_URL)));
                         int bidStatus = cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_STATUS));
-                        model.setState(bidStatus);
+                        model.setStatus(bidStatus);
                         if (bidStatus > statusOpportunities) {
                             statusOpportunities = bidStatus;
                         }
@@ -169,21 +169,6 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                 }
                 adapter.setStatus(statusOpportunities);
                 adapter.notifyDataSetChanged();
-
-                Cursor cursor1 = getActivity().getContentResolver().query(CacheContentProvider.BIDS_URI, null, null, null, null);
-                if (cursor1 != null) {
-                    if (cursor1.moveToFirst()) {
-                        do {
-                            Timber.w("id %S, statusOpportunities %s, opportunity_id %s", cursor1.getString(cursor1.getColumnIndex(CacheHelper.BIDS_ID)),
-                                    cursor1.getInt(cursor1.getColumnIndex(CacheHelper.BIDS_STATUS)),
-                                    cursor1.getInt(cursor1.getColumnIndex(CacheHelper.BIDS_OPPORTUNITIES_ID)));
-                        } while (cursor1.moveToNext());
-                    }
-                    cursor1.close();
-                }
-
-                //ыцшTODO: add after change server request url
-//                streamMessages();
                 break;
         }
     }
@@ -193,64 +178,9 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
         Timber.i("onLoaderReset");
     }
 
-    private void streamMessages() {
-        Thread eventThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (getActivity() != null) {
-                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Bids/streamUpdates?_format=event-stream&access_token=" + PreferencesUtils.getUserToken(getActivity())), new SSEHandler(), null, true);
-                    eventSource.connect();
-                }
-            }
-        });
-        eventThread.start();
-    }
-
-    private class SSEHandler implements EventSourceHandler {
-
-        public SSEHandler() {
-        }
-
-        @Override
-        public void onConnect() {
-            Timber.v("SSE Connected");
-        }
-
-        @Override
-        public void onMessage(String event, MessageEvent message) {
-            Timber.v("SSE Message %s", event);
-            Timber.v("SSE Message: %s", message.lastEventId);
-            Timber.v("SSE Message: %s", message.data);
-        }
-
-        @Override
-        public void onComment(String comment) {
-            //comments only received if exposeComments turned on
-            Timber.v("SSE Comment %s", comment);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Timber.v("SSE Error");
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            t.printStackTrace(pw);
-            Timber.v("SSE Stacktrace %s", sw.toString());
-
-        }
-
-        @Override
-        public void onClosed(boolean willReconnect) {
-            Timber.v("SSE Closed reconnect? %s", willReconnect);
-        }
-    }
-
     @Override
-    public void onPause() {
-        super.onPause();
-        if (eventSource != null && eventSource.isConnected()) {
-            eventSource.close();
-        }
+    public void onStreamMessage(Messages.ModelMessages message) {
+
     }
 
     private View.OnClickListener acceptClickListener = new View.OnClickListener() {

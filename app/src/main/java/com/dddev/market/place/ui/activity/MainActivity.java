@@ -74,8 +74,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Timber.i("onRequestPermissionsResult");
         if (viewPager.getCurrentItem() == 2) {
-
-            AccountRootFragment fragment = (AccountRootFragment) getSupportFragmentManager().getFragments().get(2);
+            AccountRootFragment fragment = (AccountRootFragment) tabAdapter.getItem(2);
             fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
