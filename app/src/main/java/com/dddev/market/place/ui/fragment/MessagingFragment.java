@@ -107,7 +107,7 @@ public class MessagingFragment extends UpdateReceiverFragment implements View.On
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         for (Bids.ModelBids modelBids : adapterList) {
             if (modelBids.getId() == id) {
-                ProposalActivity.launch(getActivity(), id, modelBids);
+                ProposalActivity.launch(getActivity(), modelBids.getId(), modelBids);
                 break;
             }
         }

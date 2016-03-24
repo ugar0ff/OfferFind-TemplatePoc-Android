@@ -16,7 +16,7 @@ public class StaticKeys {
     public static final String KEY_MESSAGE = "key_message";
     public static final String ACCEPT_BIDS_ID = "accept_bids_id";
     public static final String COMPLETE_BIDS_ID = "complete_bids_id";
-    public static final int INITIAL_DELAY_MILLIS = 300;
+    public static final int INITIAL_DELAY_MILLIS = 0;
 
     public class LoaderId {
         public static final int TAB_LOADER = 1;

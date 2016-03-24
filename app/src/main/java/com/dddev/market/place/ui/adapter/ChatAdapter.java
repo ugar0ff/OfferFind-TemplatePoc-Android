@@ -50,7 +50,7 @@ public class ChatAdapter extends ArrayAdapter<Messages.ModelMessages> {
     private void setAlignment(ViewHolder holder, boolean isOutgoing) {
         if (holder.txtMessage != null) {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
-            if (!isOutgoing) {
+            if (isOutgoing) {
                 holder.txtMessage.setBackgroundResource(R.drawable.background_left_message);
                 layoutParams.gravity = Gravity.LEFT;
                 holder.txtMessage.setLayoutParams(layoutParams);

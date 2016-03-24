@@ -76,7 +76,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements View.OnCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ProposalActivity.launch(getActivity(), id, adapterList.get(position).getTitle());
+        ProposalActivity.launch(getActivity(), adapterList.get(position).getId(), adapterList.get(position).getTitle());
     }
 
     @Override

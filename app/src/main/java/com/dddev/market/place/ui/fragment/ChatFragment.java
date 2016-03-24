@@ -2,6 +2,7 @@ package com.dddev.market.place.ui.fragment;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
     private LinearLayout messagesLayout;
     private MessageReceiver messageReceiver;
     private ListView listView;
+    SwingBottomInAnimationAdapter swingBottomInAnimationAdapter;
 
     public static ChatFragment newInstance(int id, boolean accessToWriteMessage) {
         ChatFragment fragment = new ChatFragment();
@@ -68,17 +70,8 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
         view.findViewById(R.id.chat_send_button).setOnClickListener(this);
         listView = (ListView) view.findViewById(R.id.list);
         adapter = new ChatAdapter(getActivity());
-        SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(new SwipeDismissAdapter(adapter, new OnDismissCallback() {
-            @Override
-            public void onDismiss(@NonNull ViewGroup listView, @NonNull int[] reverseSortedPositions) {
-//                for (int position : reverseSortedPositions) {
-//                    adapter.remove(position);
-//                }
-            }
-        }));
+        swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(adapter);
         swingBottomInAnimationAdapter.setAbsListView(listView);
-        assert swingBottomInAnimationAdapter.getViewAnimator() != null;
-        swingBottomInAnimationAdapter.getViewAnimator().setInitialDelayMillis(StaticKeys.INITIAL_DELAY_MILLIS);
         listView.setAdapter(swingBottomInAnimationAdapter);
         messageEdit = (EditText) view.findViewById(R.id.message_edit);
         messagesLayout = (LinearLayout) view.findViewById(R.id.message_layout);
@@ -110,14 +103,19 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
         messagesGetRepository.messages(id, new MessagesGetRepository.MessagesCallback() {
             @Override
             public void onSuccess(Messages messages) {
-                Timber.i("onSuccess response=%s", messages.toString());
                 adapter.clear();
                 if (messages != null && messages.getList() != null) {
-                    for (Messages.ModelMessages modelMessages : messages.getList()) {
-                        adapter.add(modelMessages);
-                    }
+                    adapter.addAll(messages.getList());
                 }
+                //                    new Handler().postDelayed(new Runnable() {
+//                        public void run() {
+//                            listView.smoothScrollToPosition(adapter.getCount() - 1);
+//                        }
+//                    }, 1000);
                 if (adapter.getCount() > 0) {
+                    if (swingBottomInAnimationAdapter.getViewAnimator() != null) {
+                        swingBottomInAnimationAdapter.getViewAnimator().setShouldAnimateFromPosition(adapter.getCount() - 1);
+                    }
                     listView.smoothScrollToPosition(adapter.getCount() - 1);
                 }
             }

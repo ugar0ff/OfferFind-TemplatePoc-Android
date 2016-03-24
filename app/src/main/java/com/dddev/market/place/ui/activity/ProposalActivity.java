@@ -21,14 +21,14 @@ public class ProposalActivity extends BaseActivity implements ToolbarTitleContro
     public final static String OPPORTUNITIES_ID = "opportunities_id";
     public final static String OPPORTUNITIES_NAME = "opportunities_name";
     public final static String IS_OPPORTUNITIES = "is_opportunities";
-    private long id;
+    private int id;
     private Bids.ModelBids itemModel;
 
-    public static void launch(Context context, long id, String title) {
+    public static void launch(Context context, int id, String title) {
         context.startActivity(new Intent(context, ProposalActivity.class).putExtra(OPPORTUNITIES_ID, id).putExtra(OPPORTUNITIES_NAME, title));
     }
 
-    public static void launch(Context context, long id, Bids.ModelBids itemModel) {
+    public static void launch(Context context, int id, Bids.ModelBids itemModel) {
         context.startActivity(new Intent(context, ProposalActivity.class).putExtra(OPPORTUNITIES_ID, id).putExtra(IS_OPPORTUNITIES, itemModel));
     }
 
@@ -38,7 +38,7 @@ public class ProposalActivity extends BaseActivity implements ToolbarTitleContro
         String opportunitiesName = "";
         if (getIntent() != null) {
             if (getIntent().hasExtra(OPPORTUNITIES_ID)) {
-                id = getIntent().getLongExtra(OPPORTUNITIES_ID, 0);
+                id = getIntent().getIntExtra(OPPORTUNITIES_ID, 0);
             }
             if (getIntent().hasExtra(IS_OPPORTUNITIES)) {
                 itemModel = getIntent().getParcelableExtra(IS_OPPORTUNITIES);
@@ -52,7 +52,7 @@ public class ProposalActivity extends BaseActivity implements ToolbarTitleContro
             switchFragment(ProposalListFragment.newInstance(id, opportunitiesName), false, null);
         } else {
             //TODO get status for all bids of opportunities
-            switchFragment(ProposalFragment.newInstance(itemModel, itemModel.getStatus()), false, null);
+            switchFragment(ProposalFragment.newInstance(itemModel, id), false, null);
         }
         onBackStackChanged();
     }
