@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/colorTransparent"
-            android:hint="message text"
+            android:hint="@string/accept"
             android:minHeight="51dp"
             android:maxHeight="150dp"
             android:paddingLeft="10dp"
@@ -49,8 +49,7 @@
             android:layout_gravity="center"
             android:contentDescription="@null"
             android:scaleType="centerInside"
-            android:src="@drawable/icon_message_send"
-            android:text="Send" />
+            android:src="@drawable/icon_message_send" />
 
     </LinearLayout>
 </LinearLayout>

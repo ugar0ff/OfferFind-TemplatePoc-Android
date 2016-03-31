@@ -71,6 +71,9 @@
                 android:transitionName="accept"
                 android:background="@drawable/background_accept_button"
                 android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:text="@string/accept"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_16" />

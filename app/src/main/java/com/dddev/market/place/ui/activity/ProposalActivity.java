@@ -25,7 +25,7 @@ public class ProposalActivity extends BaseActivity implements ToolbarController 
 
     public final static String OPPORTUNITIES_ID = "opportunities_id";
     public final static String OPPORTUNITIES_NAME = "opportunities_name";
-    public final static String IS_OPPORTUNITIES = "is_opportunities";
+    public final static String IS_BIDS = "is_bids";
     private int id;
     private Bids.ModelBids itemModel;
     private Toolbar toolbar;
@@ -35,7 +35,7 @@ public class ProposalActivity extends BaseActivity implements ToolbarController 
     }
 
     public static void launch(Context context, Bids.ModelBids itemModel) {
-        context.startActivity(new Intent(context, ProposalActivity.class).putExtra(IS_OPPORTUNITIES, itemModel));
+        context.startActivity(new Intent(context, ProposalActivity.class).putExtra(IS_BIDS, itemModel));
     }
 
     @Override
@@ -51,8 +51,8 @@ public class ProposalActivity extends BaseActivity implements ToolbarController 
             if (getIntent().hasExtra(OPPORTUNITIES_ID)) {
                 id = getIntent().getIntExtra(OPPORTUNITIES_ID, 0);
             }
-            if (getIntent().hasExtra(IS_OPPORTUNITIES)) {
-                itemModel = getIntent().getParcelableExtra(IS_OPPORTUNITIES);
+            if (getIntent().hasExtra(IS_BIDS)) {
+                itemModel = getIntent().getParcelableExtra(IS_BIDS);
             }
             if (getIntent().hasExtra(OPPORTUNITIES_NAME)) {
                 opportunitiesName = getIntent().getStringExtra(OPPORTUNITIES_NAME);
