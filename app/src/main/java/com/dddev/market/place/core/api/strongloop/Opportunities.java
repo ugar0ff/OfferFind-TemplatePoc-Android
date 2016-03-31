@@ -46,15 +46,15 @@ public class Opportunities extends Model {
         private String createdAt;
         @SerializedName("categoryId")
         private int categoryId;
-        @SerializedName("status")
-        private int status;
+        @SerializedName("state")
+        private String state;
         @SerializedName("Address")
         private String address;
 
         public ModelOpportunity() {
         }
 
-        public ModelOpportunity(int id, String title, String description, int ownerId, ArrayList<Bids.ModelBids> bids, String createAt, int categoryId, int status, String address) {
+        public ModelOpportunity(int id, String title, String description, int ownerId, ArrayList<Bids.ModelBids> bids, String createAt, int categoryId, String status, String address) {
             this.id = id;
             this.title = title;
             this.description = description;
@@ -62,7 +62,7 @@ public class Opportunities extends Model {
             this.bids = bids;
             this.createdAt = createAt;
             this.categoryId = categoryId;
-            this.status = status;
+            this.state = status;
             this.address = address;
         }
 
@@ -76,7 +76,7 @@ public class Opportunities extends Model {
             this.bids = opportunity.getBids();
             this.createdAt = opportunity.getCreatedAt();
             this.categoryId = opportunity.getCategoryId();
-            this.status = opportunity.getStatus();
+            this.state = opportunity.getState();
             this.address = opportunity.getAddress();
         }
 
@@ -136,12 +136,12 @@ public class Opportunities extends Model {
             this.categoryId = categoryId;
         }
 
-        public int getStatus() {
-            return status;
+        public String getState() {
+            return state;
         }
 
-        public void setStatus(int status) {
-            this.status = status;
+        public void setState(String state) {
+            this.state = state;
         }
 
         public String getAddress() {
@@ -162,7 +162,7 @@ public class Opportunities extends Model {
                     ", bids=" + bids +
                     ", createdAt='" + createdAt + '\'' +
                     ", categoryId=" + categoryId +
-                    ", status=" + status +
+                    ", state=" + state +
                     ", address=" + address +
                     '}';
         }
@@ -181,7 +181,7 @@ public class Opportunities extends Model {
             dest.writeTypedList(bids);
             dest.writeString(this.createdAt);
             dest.writeInt(this.categoryId);
-            dest.writeInt(this.status);
+            dest.writeString(this.state);
             dest.writeString(this.address);
         }
 
@@ -193,7 +193,7 @@ public class Opportunities extends Model {
             this.bids = in.createTypedArrayList(Bids.ModelBids.CREATOR);
             this.createdAt = in.readString();
             this.categoryId = in.readInt();
-            this.status = in.readInt();
+            this.state = in.readString();
             this.address = in.readString();
         }
 

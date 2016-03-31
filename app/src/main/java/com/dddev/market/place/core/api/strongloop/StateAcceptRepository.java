@@ -10,20 +10,20 @@ import timber.log.Timber;
 /**
  * Created by ugar on 11.03.16.
  */
-public class BidPutRepository extends com.strongloop.android.loopback.ModelRepository<Bids> {
+public class StateAcceptRepository extends com.strongloop.android.loopback.ModelRepository<Bids> {
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
-        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:id", "PUT"), getClassName() + ".Bids");
+        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:id/state/accept", "POST"), getClassName() + ".Bids");
         return contract;
     }
 
-    public BidPutRepository() {
+    public StateAcceptRepository() {
         super("Bid", null, Bids.class);
     }
 
-    public void bids(int id, int status, final BidsCallback callback) {
-        invokeStaticMethod("Bids", ImmutableMap.of("id", id, "status", status), new Adapter.Callback() {
+    public void bids(int id, final BidsCallback callback) {
+        invokeStaticMethod("Bids", ImmutableMap.of("id", id), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

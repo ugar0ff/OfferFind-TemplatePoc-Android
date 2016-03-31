@@ -104,14 +104,10 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
             @Override
             public void onSuccess(Messages messages) {
                 adapter.clear();
+                addAdapterHeaderView();
                 if (messages != null && messages.getList() != null) {
                     adapter.addAll(messages.getList());
                 }
-                //                    new Handler().postDelayed(new Runnable() {
-//                        public void run() {
-//                            listView.smoothScrollToPosition(adapter.getCount() - 1);
-//                        }
-//                    }, 1000);
                 if (adapter.getCount() > 0) {
                     if (swingBottomInAnimationAdapter.getViewAnimator() != null) {
                         swingBottomInAnimationAdapter.getViewAnimator().setShouldAnimateFromPosition(adapter.getCount() - 1);
@@ -128,6 +124,9 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void sendMessage(String message) {
+        if (message.replaceAll(" ", "").length() == 0) {
+            return;
+        }
         final MessagesPostRepository messagesPostRepository = AppOfferFind.getRestAdapter(getActivity()).createRepository(MessagesPostRepository.class);
         messagesPostRepository.createContract();
         messagesPostRepository.messages(message, id, new MessagesPostRepository.MessagesCallback() {
@@ -177,5 +176,9 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onHandleServerRequestError() {
         Timber.e("onHandleServerRequestError message");
+    }
+
+    public void addAdapterHeaderView() {
+        adapter.add(0, new Messages.ModelMessages());
     }
 }

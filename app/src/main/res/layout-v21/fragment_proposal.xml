@@ -2,10 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:paddingTop="?attr/actionBarSize"
+    android:background="@color/colorProposalItem"
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/provider_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/proposal_header_height"
         android:background="@color/colorProposalItem"

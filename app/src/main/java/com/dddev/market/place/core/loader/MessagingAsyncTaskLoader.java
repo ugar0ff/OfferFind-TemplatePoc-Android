@@ -27,7 +27,7 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
             if (cursorOpportunities.moveToFirst()) {
                 do {
                     int opportunitiesId = cursorOpportunities.getInt(cursorOpportunities.getColumnIndex(CacheHelper.OPPORTUNITIES_ID));
-                    int opportunitiesStatus = cursorOpportunities.getInt(cursorOpportunities.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS));
+                    String opportunitiesStatus = cursorOpportunities.getString(cursorOpportunities.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS));
                     String[] projection = new String[]{CacheHelper.BIDS_ID + " as _id ",
                             CacheHelper.BIDS_TITLE,
                             CacheHelper.BIDS_DESCRIPTION,
@@ -42,8 +42,8 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
                     if (cursorBids != null) {
                         if (cursorBids.moveToFirst()) {
                             do {
-                                int bidStatus = cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper.BIDS_STATUS));
-                                if (opportunitiesStatus == bidStatus) {
+                                String bidStatus = cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_STATUS));
+                                if (opportunitiesStatus.equals(bidStatus)) {
                                     list.add(new Bids.ModelBids(cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper._ID)),
                                             cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_TITLE)),
                                             cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_DESCRIPTION)),

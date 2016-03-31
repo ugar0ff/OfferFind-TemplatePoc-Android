@@ -48,8 +48,8 @@ public class Messages extends Model {
         private String title;
         @SerializedName("description")
         private String description;
-        @SerializedName("status")
-        private String status;
+        @SerializedName("state")
+        private String state;
         @SerializedName("address")
         private String address;
         @SerializedName("categoryId")
@@ -75,13 +75,16 @@ public class Messages extends Model {
             this.createdAt = messages.getCreatedAt();
             this.title = messages.getTitle();
             this.description = messages.getDescription();
-            this.status = messages.getStatus();
+            this.state = messages.getState();
             this.address = messages.getAddress();
             this.categoryId = messages.getCategoryId();
             this.provider = messages.getProvider();
             this.url = messages.getUrl();
             this.price = messages.getPrice();
             this.opportunityId = messages.getOpportunityId();
+        }
+
+        public ModelMessages() {
         }
 
         public int getId() {
@@ -148,12 +151,12 @@ public class Messages extends Model {
             this.description = description;
         }
 
-        public String getStatus() {
-            return status;
+        public String getState() {
+            return state;
         }
 
-        public void setStatus(String status) {
-            this.status = status;
+        public void setState(String state) {
+            this.state = state;
         }
 
         public String getAddress() {
@@ -219,7 +222,7 @@ public class Messages extends Model {
             dest.writeString(this.createdAt);
             dest.writeString(this.title);
             dest.writeString(this.description);
-            dest.writeString(this.status);
+            dest.writeString(this.state);
             dest.writeString(this.address);
             dest.writeInt(this.categoryId);
             dest.writeString(this.provider);
@@ -237,7 +240,7 @@ public class Messages extends Model {
             this.createdAt = in.readString();
             this.title = in.readString();
             this.description = in.readString();
-            this.status = in.readString();
+            this.state = in.readString();
             this.address = in.readString();
             this.categoryId = in.readInt();
             this.provider = in.readString();

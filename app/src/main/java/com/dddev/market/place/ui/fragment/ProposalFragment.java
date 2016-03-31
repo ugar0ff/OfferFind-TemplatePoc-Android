@@ -10,13 +10,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +30,6 @@ import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.StaticKeys;
 import com.squareup.picasso.Picasso;
 
@@ -38,19 +41,26 @@ import timber.log.Timber;
 public class ProposalFragment extends BaseFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static String PROPOSAL_MODEL = "proposal_model";
-    private final static String PROPOSAL_STATUS = "proposal_status";
+    private final static String OPPORTUNITIES_STATUS = "opportunities_status";
+    private final static String OPPORTUNITIES_NAME = "opportunities_name";
     private Bids.ModelBids itemModel;
-    private int statusOpportunities;
+    private String statusOpportunities;
+    private String opportunitiesName;
     private TextView accept;
     private ChatFragment chatFragment;
     private TextView price;
     private int colorRed, colorGreen;
+    private FrameLayout providerLayout;
+    private FrameLayout chatLayout;
+    private int cahtLayoutHeight;
+    private Toolbar toolbar;
 
-    public static ProposalFragment newInstance(Bids.ModelBids itemModel, int statusOpportunities) {
+    public static ProposalFragment newInstance(Bids.ModelBids itemModel, String statusOpportunities, String opportunitiesName) {
         ProposalFragment fragment = new ProposalFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(PROPOSAL_MODEL, itemModel);
-        bundle.putInt(PROPOSAL_STATUS, statusOpportunities);
+        bundle.putString(OPPORTUNITIES_STATUS, statusOpportunities);
+        bundle.putString(OPPORTUNITIES_NAME, opportunitiesName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -60,7 +70,8 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             itemModel = getArguments().getParcelable(PROPOSAL_MODEL);
-            statusOpportunities = getArguments().getInt(PROPOSAL_STATUS);
+            statusOpportunities = getArguments().getString(OPPORTUNITIES_STATUS);
+            opportunitiesName = getArguments().getString(OPPORTUNITIES_NAME);
         }
         colorRed = ContextCompat.getColor(getActivity(), R.color.colorStateRed);
         colorGreen = ContextCompat.getColor(getActivity(), R.color.colorStateGreen);
@@ -96,6 +107,14 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             accept.setTransitionName(String.format("accept%s", itemModel.getId()));
             picture.setTransitionName(String.format("picture%s", itemModel.getId()));
         }
+
+        providerLayout = (FrameLayout) view.findViewById(R.id.provider_layout);
+        chatLayout = (FrameLayout) view.findViewById(R.id.container);
+
+        if (toolbar == null) {
+            toolbar = toolbarController.getToolbar();
+        }
+
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.ACCEPT_STATE_LOADER, null, this);
         return view;
     }
@@ -115,12 +134,40 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         });
     }
 
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            if (cahtLayoutHeight == 0) {
+                cahtLayoutHeight = chatLayout.getHeight();
+            }
+            if (cahtLayoutHeight <= chatLayout.getHeight()) {
+                providerLayout.setVisibility(View.VISIBLE);
+                providerLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            } else {
+                providerLayout.animate().translationY(-providerLayout.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+                providerLayout.setVisibility(View.GONE);
+            }
+        }
+    };
+
     @Override
     public void onResume() {
         super.onResume();
-        if (itemModel.getTitle() != null) {
-            toolbarTitleController.setToolbarTitle(itemModel.getTitle());
+        if (opportunitiesName != null) {
+            toolbarController.setToolbarTitle(opportunitiesName);
         }
+        if (chatLayout != null) {
+            chatLayout.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+        }
+        toolbar.setY(0);
+    }
+
+    @Override
+    public void onPause() {
+        if (chatLayout != null) {
+            chatLayout.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
+        }
+        super.onPause();
     }
 
     @Override
@@ -137,9 +184,9 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            boolean accessToWriteMessage = statusOpportunities != 2;
-            if (accessToWriteMessage && statusOpportunities == 1) {
-                accessToWriteMessage = itemModel.getStatus() == statusOpportunities;
+            boolean accessToWriteMessage = !statusOpportunities.equals(StaticKeys.State.CLOSED);
+            if (accessToWriteMessage && statusOpportunities.equals(StaticKeys.State.ACCEPTED)) {
+                accessToWriteMessage = itemModel.getState().equals(statusOpportunities);
             }
             if (accept != null) {
                 accept.setVisibility(accessToWriteMessage ? View.VISIBLE : View.GONE);
@@ -156,7 +203,7 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.accept:
-                if (((TextView)v).getText().equals(getActivity().getString(R.string.complete))) {
+                if (((TextView) v).getText().equals(getActivity().getString(R.string.complete))) {
                     startCompleteBidsService(itemModel.getId());
                 } else {
                     startAcceptBidsService(itemModel.getId());
@@ -166,24 +213,18 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void setAcceptButtonState() {
-        if (itemModel.getStatus() == 2) {
-            statusOpportunities = itemModel.getStatus();
+        if (itemModel.getState().equals(StaticKeys.State.CLOSED)) {
+            statusOpportunities = itemModel.getState();
             accept.setVisibility(View.GONE);
-        } else
-        if (itemModel.getStatus() == 1) {
-            if (itemModel.getStatus() >= statusOpportunities) {
-                statusOpportunities = itemModel.getStatus();
-                accept.setText(getActivity().getString(R.string.complete));
-                accept.setVisibility(View.VISIBLE);
-            } else {
-                accept.setText(getActivity().getString(R.string.complete));
-                accept.setVisibility(View.GONE);
-            }
+        } else if (itemModel.getState().equals(StaticKeys.State.ACCEPTED)) {
+            statusOpportunities = itemModel.getState();
+            accept.setText(getActivity().getString(R.string.complete));
+            accept.setVisibility(View.VISIBLE);
         } else {
             accept.setText(getActivity().getString(R.string.accept));
-            accept.setVisibility(statusOpportunities == itemModel.getStatus() ? View.VISIBLE : View.GONE);
+            accept.setVisibility(statusOpportunities.equals(itemModel.getState()) ? View.VISIBLE : View.GONE);
         }
-        price.setTextColor(statusOpportunities == itemModel.getStatus() ? colorGreen : colorRed);
+        price.setTextColor(statusOpportunities.equals(itemModel.getState()) ? colorGreen : colorRed);
         if (chatFragment == null) {
             setChatFragment(itemModel.getId());
         } else {
@@ -211,8 +252,10 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         switch (loader.getId()) {
             case StaticKeys.LoaderId.ACCEPT_STATE_LOADER:
                 if (cursor.moveToFirst()) {
-                    itemModel.setStatus(cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_STATUS)));
-                    setAcceptButtonState();
+                    itemModel.setState(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_STATUS)));
+                    if (getActivity() != null) {
+                        setAcceptButtonState();
+                    }
                 }
                 break;
         }

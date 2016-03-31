@@ -22,8 +22,8 @@ public class OpportunityPutRepository extends com.strongloop.android.loopback.Mo
         super("Opportunity", null, Opportunities.class);
     }
 
-    public void opportunities(int id, int status, final OpportunityCallback callback) {
-        invokeStaticMethod("opportunities", ImmutableMap.of("id", id, "status", status), new Adapter.Callback() {
+    public void opportunities(int id, final OpportunityCallback callback) {
+        invokeStaticMethod("opportunities", ImmutableMap.of("id", id), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

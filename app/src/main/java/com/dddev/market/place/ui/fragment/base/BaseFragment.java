@@ -13,7 +13,7 @@ import com.dddev.market.place.core.service.AcceptBidsService;
 import com.dddev.market.place.core.service.CompleteBidsService;
 import com.dddev.market.place.core.service.UpdateService;
 import com.dddev.market.place.ui.controller.SwitchFragmentListener;
-import com.dddev.market.place.ui.controller.ToolbarTitleController;
+import com.dddev.market.place.ui.controller.ToolbarController;
 import com.dddev.market.place.utils.StaticKeys;
 
 /**
@@ -22,7 +22,7 @@ import com.dddev.market.place.utils.StaticKeys;
 public abstract class BaseFragment extends Fragment {
 
     protected SwitchFragmentListener switchFragmentListener;
-    protected ToolbarTitleController toolbarTitleController;
+    protected ToolbarController toolbarController;
 
     @Override
     public void onAttach(Context context) {
@@ -30,8 +30,8 @@ public abstract class BaseFragment extends Fragment {
         if (context instanceof SwitchFragmentListener) {
             switchFragmentListener = (SwitchFragmentListener) context;
         }
-        if (context instanceof ToolbarTitleController) {
-            toolbarTitleController = (ToolbarTitleController) context;
+        if (context instanceof ToolbarController) {
+            toolbarController = (ToolbarController) context;
         }
     }
 
@@ -41,8 +41,8 @@ public abstract class BaseFragment extends Fragment {
         if (switchFragmentListener != null) {
             switchFragmentListener = null;
         }
-        if (toolbarTitleController != null) {
-            toolbarTitleController = null;
+        if (toolbarController != null) {
+            toolbarController = null;
         }
     }
 

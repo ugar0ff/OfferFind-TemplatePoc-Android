@@ -27,7 +27,7 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String OPPORTUNITIES_CATEGORY_ID = "opportunities_category";
     public static final String OPPORTUNITIES_STATUS = "opportunities_status";
     private final String CREATE_OPPORTUNITIES = "CREATE TABLE " + TABLE_OPPORTUNITIES + " (" + OPPORTUNITIES_ID + " integer primary key, " + OPPORTUNITIES_TITLE + " text, " + OPPORTUNITIES_DESCRIPTION + " text, " +
-            OPPORTUNITIES_ACCOUNT_ID + " integer, " + OPPORTUNITIES_CREATE_AT + " text NOT NULL DEFAULT '0', " + OPPORTUNITIES_STATUS + " integer NOT NULL DEFAULT 0, " + OPPORTUNITIES_CATEGORY_ID + " integer);";
+            OPPORTUNITIES_ACCOUNT_ID + " integer, " + OPPORTUNITIES_CREATE_AT + " text NOT NULL DEFAULT '0', " + OPPORTUNITIES_STATUS + " text, " + OPPORTUNITIES_CATEGORY_ID + " integer);";
     private final String DROP_OPPORTUNITIES = "DROP TABLE IF EXISTS " + TABLE_OPPORTUNITIES + ";";
 
     public static final String TABLE_BIDS = "bids";
@@ -40,7 +40,7 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String BIDS_OPPORTUNITIES_ID = "bids_opportunities_id";
     public static final String BIDS_CREATE_AT = "bids_create_at";
     private final String CREATE_BIDS = "CREATE TABLE " + TABLE_BIDS + " (" + BIDS_ID + " integer primary key, " + BIDS_TITLE + " text, " + BIDS_DESCRIPTION + " text, " +
-            BIDS_URL + " text, " + BIDS_PRICE + " real, " + BIDS_OPPORTUNITIES_ID + " integer, " + BIDS_STATUS + " integer NOT NULL DEFAULT 0, " + BIDS_CREATE_AT + " text NOT NULL DEFAULT '0');";
+            BIDS_URL + " text, " + BIDS_PRICE + " real, " + BIDS_OPPORTUNITIES_ID + " integer, " + BIDS_STATUS + " text, " + BIDS_CREATE_AT + " text NOT NULL DEFAULT '0');";
     private final String DROP_BIDS = "DROP TABLE IF EXISTS " + TABLE_BIDS + ";";
 
     public static final String TABLE_CATEGORY = "category";
@@ -66,11 +66,11 @@ public class CacheHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        switch (oldVersion) {
+//        switch (oldVersion) {
 //            case 1:
 //                db.execSQL(DROP_OPPORTUNITIES);
 //                db.execSQL(CREATE_OPPORTUNITIES);
-        }
+//        }
     }
 
     private void setCategory(SQLiteDatabase db) {

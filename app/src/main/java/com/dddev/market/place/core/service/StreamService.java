@@ -11,7 +11,6 @@ import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.core.receiver.MessageReceiver;
-import com.dddev.market.place.core.receiver.UpdateReceiver;
 import com.dddev.market.place.ui.views.eventsource_android.EventSource;
 import com.dddev.market.place.ui.views.eventsource_android.EventSourceHandler;
 import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
@@ -32,13 +31,13 @@ public class StreamService extends Service {
     private EventSource eventSource;
 
     public StreamService() {
-        Timber.i("StreamService");
+        Timber.v("StreamService");
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Timber.i("onBind");
+        Timber.v("onBind");
         if (eventSource == null || !eventSource.isConnected()) {
             streamMessagesConnect();
         }
@@ -47,19 +46,19 @@ public class StreamService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.i("onStartCommand");
+        Timber.v("onStartCommand");
         return Service.START_STICKY;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Timber.i("onUnbind");
+        Timber.v("onUnbind");
         return super.onUnbind(intent);
     }
 
     @Override
     public void onRebind(Intent intent) {
-        Timber.i("onRebind");
+        Timber.v("onRebind");
         super.onRebind(intent);
     }
 
@@ -78,13 +77,12 @@ public class StreamService extends Service {
 
     @Override
     public void onDestroy() {
-        Timber.i("onDestroy");
+        Timber.v("onDestroy");
         if (eventSource != null && eventSource.isConnected()) {
             eventSource.close();
         }
         super.onDestroy();
     }
-
 
     private class SSEHandler implements EventSourceHandler {
 
@@ -108,7 +106,7 @@ public class StreamService extends Service {
             if (message.getMessageData() == null || message.getMessageData().getClassName() == null || message.getMessageData().getData() == null) {
                 return;
             }
-            if (message.getMessageData().getClassName().equals("Opportunity") && !message.getMessageData().getType().equals("create")) {
+            if (message.getMessageData().getClassName().equals("Opportunity")) {
                 updateOpportunities(message);
             } else if (message.getMessageData().getClassName().equals("Bid")) {
                 updateBid(message);
@@ -147,7 +145,7 @@ public class StreamService extends Service {
         values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, message.getMessageData().getData().getOwnerId());
         values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, message.getMessageData().getData().getCreatedAt());
         values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, message.getMessageData().getData().getCategoryId());
-        values.put(CacheHelper.OPPORTUNITIES_STATUS, message.getMessageData().getData().getStatus());
+        values.put(CacheHelper.OPPORTUNITIES_STATUS, message.getMessageData().getData().getState());
         getBaseContext().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
     }
 
@@ -159,7 +157,7 @@ public class StreamService extends Service {
         values.put(CacheHelper.BIDS_OPPORTUNITIES_ID, message.getMessageData().getData().getOpportunityId());
         values.put(CacheHelper.BIDS_PRICE, message.getMessageData().getData().getPrice());
         values.put(CacheHelper.BIDS_URL, message.getMessageData().getData().getUrl());
-        values.put(CacheHelper.BIDS_STATUS, message.getMessageData().getData().getStatus());
+        values.put(CacheHelper.BIDS_STATUS, message.getMessageData().getData().getState());
         values.put(CacheHelper.BIDS_CREATE_AT, message.getMessageData().getData().getCreatedAt());
         //TODO: addModel provider model
         getBaseContext().getContentResolver().insert(CacheContentProvider.BIDS_URI, values);

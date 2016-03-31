@@ -1,5 +1,6 @@
 package com.dddev.market.place.ui.fragment;
 
+import android.animation.Animator;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -8,35 +9,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.adapter.ProposalListAdapter;
 import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
-import com.dddev.market.place.ui.views.eventsource_android.EventSource;
-import com.dddev.market.place.ui.views.eventsource_android.EventSourceHandler;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
-import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URI;
 import java.util.ArrayList;
 
 import timber.log.Timber;
@@ -51,9 +47,14 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
     private ArrayList<Bids.ModelBids> adapterList;
     private ProposalListAdapter adapter;
     private long opportunitiesId;
-    private int statusOpportunities;
+    private String statusOpportunities;
     private String title;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ListView listView;
+    private int lastPositionY;
+    private int lastFirstVisibleItem;
+    private Toolbar toolbar;
+    private boolean isAnimated;
 
     public static ProposalListFragment newInstance(long opportunitiesId, String opportunitiesName) {
         ProposalListFragment listFragment = new ProposalListFragment();
@@ -78,17 +79,74 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_proposal_list, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.list);
+        listView = (ListView) view.findViewById(R.id.list);
         adapter = new ProposalListAdapter(getActivity(), adapterList, acceptClickListener);
-        listView.setAdapter(adapter);
+        if (toolbar == null) {
+            toolbar = toolbarController.getToolbar();
+        }
+        toolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                View header = new View(getActivity());
+                header.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, toolbar.getHeight()));
+                listView.addHeaderView(header);
+                listView.setAdapter(adapter);
+            }
+        });
         listView.setOnItemClickListener(this);
         listView.setEmptyView(view.findViewById(R.id.empty));
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (view.getChildAt(firstVisibleItem) != null) {
+                    if (lastFirstVisibleItem != firstVisibleItem) {
+                        lastFirstVisibleItem = firstVisibleItem;
+                        lastPositionY = view.getChildAt(firstVisibleItem).getTop();
+                        return;
+                    }
+
+                    if (!isAnimated) {
+                        if (lastPositionY < view.getChildAt(firstVisibleItem).getTop() && (toolbar.getY() < 0)) {
+                            toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).setListener(animatorListener).start();
+                        } else if (lastPositionY > view.getChildAt(firstVisibleItem).getTop() && (toolbar.getY() == 0)) {
+                            toolbar.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2)).setListener(animatorListener).start();
+                        }
+                    }
+                    lastPositionY = view.getChildAt(firstVisibleItem).getTop();
+                }
+            }
+        });
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.BIDS_LOADER, null, this);
         return view;
     }
+
+    private Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            isAnimated = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            isAnimated = false;
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            isAnimated = false;
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+        }
+    };
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,7 +158,7 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                     setSharedElementReturnTransition(changeTransform);
                     setExitTransition(explodeTransform);
 
-                    ProposalFragment proposalFragment = ProposalFragment.newInstance(itemModel, statusOpportunities);
+                    ProposalFragment proposalFragment = ProposalFragment.newInstance(itemModel, statusOpportunities, title);
 
                     proposalFragment.setSharedElementEnterTransition(changeTransform);
                     proposalFragment.setEnterTransition(explodeTransform);
@@ -119,7 +177,7 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                     ft.addSharedElement(accept, String.format("accept%s", itemModel.getId()));
                     ft.commit();
                 } else {
-                    switchFragmentListener.switchFragment(ProposalFragment.newInstance(itemModel, statusOpportunities), true, null);
+                    switchFragmentListener.switchFragment(ProposalFragment.newInstance(itemModel, statusOpportunities, title), true, null);
                 }
                 break;
             }
@@ -159,11 +217,10 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                         model.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_DESCRIPTION)));
                         model.setPrice(cursor.getFloat(cursor.getColumnIndex(CacheHelper.BIDS_PRICE)));
                         model.setUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_URL)));
-                        int bidStatus = cursor.getInt(cursor.getColumnIndex(CacheHelper.BIDS_STATUS));
-                        model.setStatus(bidStatus);
-                        if (bidStatus > statusOpportunities) {
-                            statusOpportunities = bidStatus;
-                        }
+                        String bidStatus = cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_STATUS));
+                        model.setState(bidStatus);
+
+                        checkStatus(bidStatus);
                         adapterList.add(model);
                     } while (cursor.moveToNext());
                 }
@@ -180,7 +237,24 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
 
     @Override
     public void onStreamMessage(Messages.ModelMessages message) {
+    }
 
+    private void checkStatus(String bidStatus) {
+        switch (bidStatus) {
+            case StaticKeys.State.PUBLISHED:
+                if (statusOpportunities == null || statusOpportunities.length() == 0) {
+                    statusOpportunities = bidStatus;
+                }
+                break;
+            case StaticKeys.State.CLOSED:
+                statusOpportunities = bidStatus;
+                break;
+            case StaticKeys.State.ACCEPTED:
+                if (statusOpportunities == null || !statusOpportunities.equals(StaticKeys.State.CLOSED)) {
+                    statusOpportunities = bidStatus;
+                }
+                break;
+        }
     }
 
     private View.OnClickListener acceptClickListener = new View.OnClickListener() {
@@ -189,7 +263,7 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
             for (Bids.ModelBids bid : adapterList) {
                 if (bid.getId() == (int) v.getTag()) {
                     Timber.i("bid.getId() = %s", bid.getId());
-                    if (((TextView)v).getText().equals(getString(R.string.complete))) {
+                    if (((TextView) v).getText().equals(getString(R.string.complete))) {
                         startCompleteBidsService(bid.getId());
                     } else {
                         startAcceptBidsService(bid.getId());
@@ -205,8 +279,9 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
         super.onResume();
         mSwipeRefreshLayout.setRefreshing(false);
         if (title != null) {
-            toolbarTitleController.setToolbarTitle(title);
+            toolbarController.setToolbarTitle(title);
         }
+        toolbar.setY(0);
     }
 
     @Override
@@ -227,5 +302,26 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
         if (getActivity() != null && mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
+    }
+
+//    @Override
+//    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+//        Toolbar toolbar = toolbarController.getToolbar();
+//        if (toolbar == null) {
+//            return;
+//        }
+//        if (scrollState == ScrollState.UP) {
+//            if (toolbar.isShown()) {
+//                toolbar.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+//            }
+//        } else if (scrollState == ScrollState.DOWN) {
+//            if (!toolbar.isShown() && !isLastItem()) {
+//                toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+//            }
+//        }
+//    }
+
+    private boolean isLastItem() {
+        return listView.getLastVisiblePosition() == (adapterList.size() - 1);
     }
 }

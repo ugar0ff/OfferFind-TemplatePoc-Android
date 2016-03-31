@@ -6,26 +6,26 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.utils.PreferencesUtils;
+import com.dddev.market.place.utils.Utilities;
 import com.nhaarman.listviewanimations.ArrayAdapter;
-
-import java.util.List;
 
 
 public class ChatAdapter extends ArrayAdapter<Messages.ModelMessages> {
 
     private LayoutInflater inflater;
     private int currentUserId;
+    private Context context;
 
     public ChatAdapter(Activity context) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         currentUserId = PreferencesUtils.getUserId(context);
+        this.context = context;
     }
 
     @Override
@@ -40,11 +40,27 @@ public class ChatAdapter extends ArrayAdapter<Messages.ModelMessages> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        setAlignment(holder, chatMessage.getSenderId() == currentUserId);
-        if (holder.txtMessage != null) {
-            holder.txtMessage.setText(chatMessage.getText());
+        if (getItemViewType(position) == 0) {
+            View view = new View(context);
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)Utilities.convertDpToPixel(5, context)));
+            return view;
+        } else {
+            setAlignment(holder, chatMessage.getSenderId() == currentUserId);
+            if (holder.txtMessage != null) {
+                holder.txtMessage.setText(chatMessage.getText());
+            }
+            return convertView;
         }
-        return convertView;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == 0 ? 0 : 1;
     }
 
     private void setAlignment(ViewHolder holder, boolean isOutgoing) {

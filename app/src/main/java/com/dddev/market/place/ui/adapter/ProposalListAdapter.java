@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.utils.StaticKeys;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -25,14 +26,14 @@ public class ProposalListAdapter extends BaseAdapter {
     private List<Bids.ModelBids> list;
     private Context context;
     private View.OnClickListener clickListener;
-    private int status;
+    private String status;
 
     public ProposalListAdapter(Context context, List<Bids.ModelBids> list, View.OnClickListener clickListener) {
         mInflater = LayoutInflater.from(context);
         this.list = list;
         this.context = context;
         this.clickListener = clickListener;
-        status = 0;
+        status = StaticKeys.State.PUBLISHED;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ProposalListAdapter extends BaseAdapter {
         return list.get(position).getId();
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -61,49 +62,50 @@ public class ProposalListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder;
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.item_proposal, parent, false);
-                viewHolder = new ViewHolder();
-                viewHolder.title = (TextView) convertView.findViewById(R.id.title);
-                viewHolder.description = (TextView) convertView.findViewById(R.id.description);
-                viewHolder.price = (TextView) convertView.findViewById(R.id.price);
-                viewHolder.picture = (ImageView) convertView.findViewById(R.id.picture);
-                viewHolder.accept = (TextView) convertView.findViewById(R.id.accept);
-                convertView.setTag(viewHolder);
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.item_proposal, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.title = (TextView) convertView.findViewById(R.id.title);
+            viewHolder.description = (TextView) convertView.findViewById(R.id.description);
+            viewHolder.price = (TextView) convertView.findViewById(R.id.price);
+            viewHolder.picture = (ImageView) convertView.findViewById(R.id.picture);
+            viewHolder.accept = (TextView) convertView.findViewById(R.id.accept);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        if (list != null) {
+            if (list.get(position).getTitle() != null) {
+                viewHolder.title.setText(list.get(position).getTitle());
             } else {
-                viewHolder = (ViewHolder) convertView.getTag();
+                viewHolder.title.setText("");
+            }
+            if (list.get(position).getDescription() != null) {
+                viewHolder.description.setText(list.get(position).getDescription());
+            } else {
+                viewHolder.description.setText("");
             }
 
-            if (list != null) {
-                if (list.get(position).getTitle() != null) {
-                    viewHolder.title.setText(list.get(position).getTitle());
-                } else {
-                    viewHolder.title.setText("");
-                }
-                if (list.get(position).getDescription() != null) {
-                    viewHolder.description.setText(list.get(position).getDescription());
-                } else {
-                    viewHolder.description.setText("");
-                }
-
-                String priceText;
-                if (list.get(position).getPrice() == 0) {
-                    priceText = "$ --";
-                } else {
-                    priceText = String.format("$ %s", list.get(position).getPrice());
-                }
-                if (status == 2) {
+            String priceText;
+            if (list.get(position).getPrice() == 0) {
+                priceText = "$ --";
+            } else {
+                priceText = String.format("$ %s", list.get(position).getPrice());
+            }
+            switch (status) {
+                case StaticKeys.State.CLOSED:
                     viewHolder.accept.setVisibility(View.GONE);
-                    if (list.get(position).getStatus() == status) {
+                    if (list.get(position).getState().equals(status)) {
                         viewHolder.price.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
                         priceText = priceText + " " + context.getString(R.string.complete);
                     } else {
                         viewHolder.price.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
                     }
-                } else
-                if (status == 1) {
-                    if (list.get(position).getStatus() == status) {
+                    break;
+                case StaticKeys.State.ACCEPTED:
+                    if (list.get(position).getState().equals(status)) {
                         viewHolder.price.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
                         priceText = priceText + " " + context.getString(R.string.awarded);
                         viewHolder.accept.setText(context.getString(R.string.complete));
@@ -113,29 +115,30 @@ public class ProposalListAdapter extends BaseAdapter {
                         viewHolder.accept.setText(context.getString(R.string.complete));
                         viewHolder.accept.setVisibility(View.GONE);
                     }
-                } else {
+                    break;
+                default:
                     viewHolder.price.setTextColor(ContextCompat.getColor(context, R.color.colorGreen));
                     viewHolder.accept.setText(context.getString(R.string.accept));
                     viewHolder.accept.setTag(R.string.tag_status, list.get(position).getId());
                     viewHolder.accept.setVisibility(View.VISIBLE);
-                }
-                viewHolder.price.setText(priceText);
-
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    viewHolder.title.setTransitionName(String.format("title%s", list.get(position).getId()));
-                    viewHolder.price.setTransitionName(String.format("price%s", list.get(position).getId()));
-                    viewHolder.accept.setTransitionName(String.format("accept%s", list.get(position).getId()));
-                    viewHolder.picture.setTransitionName(String.format("picture%s", list.get(position).getId()));
-                }
-                if (list.get(position).getUrl() != null && list.get(position).getUrl().length() > 5) {
-                    Picasso.with(context).load(list.get(position).getUrl()).fit().centerInside().into(viewHolder.picture);
-                } else {
-                    Picasso.with(context).load(R.drawable.placeholder_proposal_item).fit().centerInside().into(viewHolder.picture);
-                }
-                viewHolder.accept.setOnClickListener(clickListener);
-                viewHolder.accept.setTag(list.get(position).getId());
             }
+            viewHolder.price.setText(priceText);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                viewHolder.title.setTransitionName(String.format("title%s", list.get(position).getId()));
+                viewHolder.price.setTransitionName(String.format("price%s", list.get(position).getId()));
+                viewHolder.accept.setTransitionName(String.format("accept%s", list.get(position).getId()));
+                viewHolder.picture.setTransitionName(String.format("picture%s", list.get(position).getId()));
+            }
+            if (list.get(position).getUrl() != null && list.get(position).getUrl().length() > 5) {
+                Picasso.with(context).load(list.get(position).getUrl()).fit().centerInside().into(viewHolder.picture);
+            } else {
+                Picasso.with(context).load(R.drawable.placeholder_proposal_item).fit().centerInside().into(viewHolder.picture);
+            }
+            viewHolder.accept.setOnClickListener(clickListener);
+            viewHolder.accept.setTag(list.get(position).getId());
+        }
         return convertView;
     }
 }

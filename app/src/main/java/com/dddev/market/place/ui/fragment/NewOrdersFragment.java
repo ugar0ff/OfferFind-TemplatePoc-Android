@@ -228,7 +228,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                             values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunity.getDescription());
                             values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getOwnerId());
                             values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunity.getCreatedAt());
-                            values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getStatus());
+                            values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getState());
                             values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunity.getCategoryId());
                             getActivity().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
                             ProposalActivity.launch(getActivity(), opportunity.getId(), opportunity.getTitle());

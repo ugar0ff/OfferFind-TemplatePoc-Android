@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.utils.StaticKeys;
 import com.dddev.market.place.utils.Utilities;
 import com.squareup.picasso.Picasso;
 
@@ -87,18 +88,18 @@ public class MessagingAdapter extends BaseAdapter {
             if (list.get(position).getProvider() != null) {
                 viewHolder.provider.setText(list.get(position).getProvider());
             }
-            switch (list.get(position).getStatus()) {
-                case 0:
+            switch (list.get(position).getState()) {
+                case StaticKeys.State.PUBLISHED:
                     viewHolder.state.setText(context.getString(R.string.selecting));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateYellow));
                     Picasso.with(context).load(R.drawable.icon_proposal_selecting).into(viewHolder.picture);
                     break;
-                case 1:
+                case StaticKeys.State.ACCEPTED:
                     viewHolder.state.setText(context.getString(R.string.awarded));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateRed));
                     Picasso.with(context).load(R.drawable.icon_proposal_awarded).into(viewHolder.picture);
                     break;
-                case 2:
+                case StaticKeys.State.CLOSED:
                     viewHolder.state.setText(context.getString(R.string.complete));
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateGreen));
                     Picasso.with(context).load(R.drawable.icon_proposal_complite).into(viewHolder.picture);

@@ -47,7 +47,8 @@
         <activity
             android:name="com.dddev.market.place.ui.activity.ProposalActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ProposalTheme"
             android:windowSoftInputMode="adjustResize"/>

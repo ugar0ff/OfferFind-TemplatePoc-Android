@@ -16,7 +16,6 @@ public class StaticKeys {
     public static final String KEY_MESSAGE = "key_message";
     public static final String ACCEPT_BIDS_ID = "accept_bids_id";
     public static final String COMPLETE_BIDS_ID = "complete_bids_id";
-    public static final int INITIAL_DELAY_MILLIS = 0;
 
     public class LoaderId {
         public static final int TAB_LOADER = 1;
@@ -25,5 +24,11 @@ public class StaticKeys {
         public static final int ALL_BIDS_LOADER = 4;
         public static final int OPPORTUNITIES_LOADER = 5;
         public static final int ACCEPT_STATE_LOADER = 6;
+    }
+
+    public class State {
+        public static final String PUBLISHED = "published";
+        public static final String ACCEPTED = "accepted";
+        public static final String CLOSED = "closed";
     }
 }

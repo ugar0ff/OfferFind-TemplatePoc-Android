@@ -51,19 +51,18 @@ public class Bids extends Model {
         private float price;
         @SerializedName("opportunityId")
         private int opportunityId;
-//        private int footerHeight;
         @SerializedName("createdAt")
         private String createdAt;
         //TODO: change type provider
         @SerializedName("provider")
         private String provider;
-        @SerializedName("status")
-        private int status;
+        @SerializedName("state")
+        private String state;
 
         public ModelBids() {
         }
 
-        public ModelBids(int id, String title, String description, String url, float price, int opportunityId, String createdAt, String provider, int state) {
+        public ModelBids(int id, String title, String description, String url, float price, int opportunityId, String createdAt, String provider, String state) {
             this.id = id;
             this.title = title;
             this.description = description;
@@ -72,7 +71,7 @@ public class Bids extends Model {
             this.opportunityId = opportunityId;
             this.createdAt = createdAt;
             this.provider = provider;
-            this.status = state;
+            this.state = state;
         }
 
         public ModelBids(String jsonObject) {
@@ -86,7 +85,7 @@ public class Bids extends Model {
             this.opportunityId = bid.getOpportunityId();
             this.createdAt = bid.getCreatedAt();
             this.provider = bid.getProvider();
-            this.status = bid.getStatus();
+            this.state = bid.getState();
         }
 
         public int getId() {
@@ -137,14 +136,6 @@ public class Bids extends Model {
             this.opportunityId = opportunityId;
         }
 
-//        public int getFooterHeight() {
-//            return footerHeight;
-//        }
-//
-//        public void setFooterHeight(int footerHeight) {
-//            this.footerHeight = footerHeight;
-//        }
-
         public String getCreatedAt() {
             return createdAt;
         }
@@ -161,12 +152,12 @@ public class Bids extends Model {
             this.provider = provider;
         }
 
-        public int getStatus() {
-            return status;
+        public String getState() {
+            return state;
         }
 
-        public void setStatus(int status) {
-            this.status = status;
+        public void setState(String state) {
+            this.state = state;
         }
 
         @Override
@@ -182,10 +173,9 @@ public class Bids extends Model {
             dest.writeString(this.url);
             dest.writeFloat(this.price);
             dest.writeInt(this.opportunityId);
-//            dest.writeInt(this.footerHeight);
             dest.writeString(this.createdAt);
             dest.writeString(this.provider);
-            dest.writeInt(this.status);
+            dest.writeString(this.state);
         }
 
         protected ModelBids(Parcel in) {
@@ -195,10 +185,9 @@ public class Bids extends Model {
             this.url = in.readString();
             this.price = in.readFloat();
             this.opportunityId = in.readInt();
-//            this.footerHeight = in.readInt();
             this.createdAt = in.readString();
             this.provider = in.readString();
-            this.status = in.readInt();
+            this.state = in.readString();
         }
 
         public static final Parcelable.Creator<ModelBids> CREATOR = new Parcelable.Creator<ModelBids>() {
@@ -220,10 +209,9 @@ public class Bids extends Model {
                     ", url='" + url + '\'' +
                     ", price=" + price +
                     ", opportunityId=" + opportunityId +
-//                    ", footerHeight=" + footerHeight +
                     ", date='" + createdAt + '\'' +
                     ", provider='" + provider + '\'' +
-                    ", status=" + status +
+                    ", state=" + state +
                     '}';
         }
     }

@@ -22,7 +22,6 @@ import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.OrdersAdapter;
 import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.StaticKeys;
 
 import java.util.ArrayList;
@@ -137,7 +136,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements View.OnCli
                         model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
                         model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
                         model.setCreatedAt(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
-                        model.setStatus(cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS)));
+                        model.setState(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS)));
                         adapterList.add(model);
                     } while (cursor.moveToNext());
                 }

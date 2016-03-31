@@ -8,24 +8,22 @@ import com.strongloop.android.remoting.adapters.RestContractItem;
 import timber.log.Timber;
 
 /**
- * Created by ugar on 25.02.16.
+ * Created by ugar on 29.03.16.
  */
-public class OpportunityPostRepository extends com.strongloop.android.loopback.ModelRepository<Opportunities> {
+public class StateCloseRepository extends com.strongloop.android.loopback.ModelRepository<Bids> {
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
-        contract.addItem(new RestContractItem("/" + getNameForRestUrl(), "POST"), getClassName() + ".opportunities");
+        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:id/state/close", "POST"), getClassName() + ".Bids");
         return contract;
     }
 
-    public OpportunityPostRepository() {
-        super("Opportunity", null, Opportunities.class);
+    public StateCloseRepository() {
+        super("Bid", null, Bids.class);
     }
 
-    public void opportunities(String title, String description, String address, final OpportunityCallback callback) {
-        invokeStaticMethod("opportunities", ImmutableMap.of("title", title,
-                "description", description,
-                "address", address), new Adapter.Callback() {
+    public void bids(int id, final BidsCallback callback) {
+        invokeStaticMethod("Bids", ImmutableMap.of("id", id), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {
@@ -35,14 +33,16 @@ public class OpportunityPostRepository extends com.strongloop.android.loopback.M
 
             @Override
             public void onSuccess(String response) {
-                callback.onSuccess(new Opportunities.ModelOpportunity(response));
+                callback.onSuccess(new Bids.ModelBids(response));
                 Timber.i("onSuccess response=%s", response);
             }
         });
     }
 
-    public interface OpportunityCallback {
-        void onSuccess(Opportunities.ModelOpportunity response);
+    public interface BidsCallback {
+        void onSuccess(Bids.ModelBids response);
+
         void onError(Throwable t);
+
     }
 }
