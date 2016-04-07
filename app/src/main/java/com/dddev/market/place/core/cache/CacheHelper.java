@@ -40,7 +40,7 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String BIDS_CREATE_AT = "bids_create_at";
     public static final String BIDS_OWNER_ID = "bids_owner_id";
     private final String CREATE_BIDS = "CREATE TABLE " + TABLE_BIDS + " (" + BIDS_ID + " integer primary key, " + BIDS_TITLE + " text, " + BIDS_DESCRIPTION + " text, " +
-            BIDS_PRICE + " real, " + BIDS_OPPORTUNITIES_ID + " integer, " + BIDS_STATUS + " text, " + BIDS_CREATE_AT + " text NOT NULL DEFAULT '0'," + BIDS_OWNER_ID + " text);";
+            BIDS_PRICE + " real, " + BIDS_OPPORTUNITIES_ID + " integer, " + BIDS_STATUS + " text, " + BIDS_CREATE_AT + " text NOT NULL DEFAULT '0'," + BIDS_OWNER_ID + " integer);";
     private final String DROP_BIDS = "DROP TABLE IF EXISTS " + TABLE_BIDS + ";";
 
     public static final String TABLE_CATEGORY = "category";

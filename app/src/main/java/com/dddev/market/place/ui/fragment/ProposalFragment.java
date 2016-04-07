@@ -82,8 +82,8 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_proposal, container, false);
         TextView title = (TextView) view.findViewById(R.id.title);
-        if (itemModel.getTitle() != null) {
-            title.setText(itemModel.getTitle());
+        if (itemModel.getOwner().getName() != null) {
+            title.setText(itemModel.getOwner().getName());
         }
         price = (TextView) view.findViewById(R.id.price);
         price.setText(String.format("$ %s", itemModel.getPrice()));

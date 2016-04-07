@@ -77,8 +77,8 @@ public class ProposalListAdapter extends BaseAdapter {
         }
 
         if (list != null) {
-            if (list.get(position).getTitle() != null) {
-                viewHolder.title.setText(list.get(position).getTitle());
+            if (list.get(position).getOwner().getName() != null) {
+                viewHolder.title.setText(list.get(position).getOwner().getName());
             } else {
                 viewHolder.title.setText("");
             }

@@ -192,7 +192,6 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
         switch (id) {
             case StaticKeys.LoaderId.BIDS_LOADER:
                 String[] projection = new String[]{CacheHelper.BIDS_ID + " as _id ",
-                        CacheHelper.BIDS_TITLE,
                         CacheHelper.BIDS_DESCRIPTION,
                         CacheHelper.OWNER_ID,
                         CacheHelper.OWNER_NAME,
@@ -217,7 +216,6 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                     do {
                         Bids.ModelBids model = new Bids.ModelBids();
                         model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
-                        model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_TITLE)));
                         model.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_DESCRIPTION)));
                         model.setPrice(cursor.getFloat(cursor.getColumnIndex(CacheHelper.BIDS_PRICE)));
                         model.setOwner(new Owner(cursor.getInt(cursor.getColumnIndex(CacheHelper.OWNER_ID)),

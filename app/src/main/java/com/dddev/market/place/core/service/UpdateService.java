@@ -70,7 +70,7 @@ public class UpdateService extends IntentService {
                                 values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunity.getList().get(i).getCategoryId());
                                 values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getList().get(i).getState());
 
-                                updateBids(opportunity.getList().get(i).getBids());
+                                updateBids(opportunity.getList().get(i).getBids(), opportunity.getList().get(i).getTitle());
 
                                 opportunitiesValues[i] = values;
                             }
@@ -89,12 +89,12 @@ public class UpdateService extends IntentService {
         });
     }
 
-    private void updateBids(List<Bids.ModelBids> modelBids) {
+    private void updateBids(List<Bids.ModelBids> modelBids, String title) {
         ContentValues[] bidsContentValues = new ContentValues[modelBids.size()];
         for (int j = 0; j < modelBids.size(); j++) {
             ContentValues bidsValues = new ContentValues();
             bidsValues.put(CacheHelper.BIDS_ID, modelBids.get(j).getId());
-            bidsValues.put(CacheHelper.BIDS_TITLE, modelBids.get(j).getTitle());
+            bidsValues.put(CacheHelper.BIDS_TITLE, title);
             bidsValues.put(CacheHelper.BIDS_DESCRIPTION, modelBids.get(j).getDescription());
             bidsValues.put(CacheHelper.BIDS_OPPORTUNITIES_ID, modelBids.get(j).getOpportunityId());
             bidsValues.put(CacheHelper.BIDS_PRICE, modelBids.get(j).getPrice());
