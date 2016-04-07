@@ -1,6 +1,5 @@
 package com.dddev.market.place.core.api.strongloop;
 
-import com.dddev.market.place.utils.PreferencesUtils;
 import com.google.common.collect.ImmutableMap;
 import com.strongloop.android.remoting.adapters.Adapter;
 import com.strongloop.android.remoting.adapters.RestContract;
@@ -23,8 +22,8 @@ public class AccountGetRepository extends com.strongloop.android.loopback.ModelR
         super("Account", null, Account.class);
     }
 
-    public void accounts(final UserCallback callback) {
-        invokeStaticMethod("accounts", ImmutableMap.of("id", PreferencesUtils.getUserId(getApplicationContext())), new Adapter.Callback() {
+    public void accounts(int id, final UserCallback callback) {
+        invokeStaticMethod("accounts", ImmutableMap.of("id", id), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

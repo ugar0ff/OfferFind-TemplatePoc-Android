@@ -64,7 +64,7 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     private DelayAutoCompleteTextView inputAddress;
     private EditText inputName, inputEmail, inputBankInfo;
     private GeoAutoCompleteAdapter geoAutoCompleteAdapter;
-    private TextInputLayout inputNameLayout, inputEmailLayout;
+    private TextInputLayout inputNameLayout, inputEmailLayout, inputBankInfoLayout, inputAddressLayout;
     private CheckBox checkBoxLocale;
     private ImageView avatar;
 
@@ -116,6 +116,8 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         });
         inputNameLayout = (TextInputLayout) view.findViewById(R.id.name_layout);
         inputEmailLayout = (TextInputLayout) view.findViewById(R.id.email_layout);
+        inputAddressLayout = (TextInputLayout) view.findViewById(R.id.location_layout);
+        inputBankInfoLayout = (TextInputLayout) view.findViewById(R.id.banking_info_layout);
         checkBoxLocale = (CheckBox) view.findViewById(R.id.checkbox_locale);
         checkBoxLocale.setOnCheckedChangeListener(this);
         avatar = (ImageView) view.findViewById(R.id.avatar);
@@ -139,6 +141,10 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     @Override
     public void onResume() {
         super.onResume();
+        inputNameLayout.setError(null);
+        inputEmailLayout.setError(null);
+        inputBankInfoLayout.setError(null);
+        inputAddressLayout.setError(null);
     }
 
     @Override

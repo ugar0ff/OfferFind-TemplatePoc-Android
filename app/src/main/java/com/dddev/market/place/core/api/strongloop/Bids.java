@@ -45,33 +45,32 @@ public class Bids extends Model {
         private String title;
         @SerializedName("description")
         private String description;
-        @SerializedName("url")
-        private String url;
         @SerializedName("price")
         private float price;
         @SerializedName("opportunityId")
         private int opportunityId;
         @SerializedName("createdAt")
         private String createdAt;
-        //TODO: change type provider
-        @SerializedName("provider")
-        private String provider;
+        @SerializedName("ownerId")
+        private int ownerId;
+        @SerializedName("owner")
+        private Owner owner;
         @SerializedName("state")
         private String state;
 
         public ModelBids() {
         }
 
-        public ModelBids(int id, String title, String description, String url, float price, int opportunityId, String createdAt, String provider, String state) {
+        public ModelBids(int id, String title, String description, float price, int opportunityId, String createdAt, String state, int ownerId, Owner owner) {
             this.id = id;
             this.title = title;
             this.description = description;
-            this.url = url;
             this.price = price;
             this.opportunityId = opportunityId;
             this.createdAt = createdAt;
-            this.provider = provider;
             this.state = state;
+            this.ownerId = ownerId;
+            this.owner = owner;
         }
 
         public ModelBids(String jsonObject) {
@@ -80,12 +79,12 @@ public class Bids extends Model {
             this.id = bid.getId();
             this.title = bid.getTitle();
             this.description = bid.getDescription();
-            this.url = bid.getUrl();
             this.price = bid.getPrice();
             this.opportunityId = bid.getOpportunityId();
             this.createdAt = bid.getCreatedAt();
-            this.provider = bid.getProvider();
+            this.owner = bid.getOwner();
             this.state = bid.getState();
+            this.ownerId = bid.getOwnerId();
         }
 
         public int getId() {
@@ -112,14 +111,6 @@ public class Bids extends Model {
             this.description = description;
         }
 
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
         public float getPrice() {
             return price;
         }
@@ -144,12 +135,12 @@ public class Bids extends Model {
             this.createdAt = createdAt;
         }
 
-        public String getProvider() {
-            return provider;
+        public Owner getOwner() {
+            return owner;
         }
 
-        public void setProvider(String provider) {
-            this.provider = provider;
+        public void setOwner(Owner owner) {
+            this.owner = owner;
         }
 
         public String getState() {
@@ -158,6 +149,29 @@ public class Bids extends Model {
 
         public void setState(String state) {
             this.state = state;
+        }
+
+        public int getOwnerId() {
+            return ownerId;
+        }
+
+        public void setOwnerId(int ownerId) {
+            this.ownerId = ownerId;
+        }
+
+        @Override
+        public String toString() {
+            return "ModelBids{" +
+                    "id=" + id +
+                    ", title='" + title + '\'' +
+                    ", description='" + description + '\'' +
+                    ", price=" + price +
+                    ", opportunityId=" + opportunityId +
+                    ", date='" + createdAt + '\'' +
+                    ", ownerId='" + ownerId + '\'' +
+                    ", owner='" + owner + '\'' +
+                    ", state=" + state +
+                    '}';
         }
 
         @Override
@@ -170,11 +184,11 @@ public class Bids extends Model {
             dest.writeInt(this.id);
             dest.writeString(this.title);
             dest.writeString(this.description);
-            dest.writeString(this.url);
             dest.writeFloat(this.price);
             dest.writeInt(this.opportunityId);
             dest.writeString(this.createdAt);
-            dest.writeString(this.provider);
+            dest.writeInt(this.ownerId);
+            dest.writeParcelable(this.owner, flags);
             dest.writeString(this.state);
         }
 
@@ -182,37 +196,24 @@ public class Bids extends Model {
             this.id = in.readInt();
             this.title = in.readString();
             this.description = in.readString();
-            this.url = in.readString();
             this.price = in.readFloat();
             this.opportunityId = in.readInt();
             this.createdAt = in.readString();
-            this.provider = in.readString();
+            this.ownerId = in.readInt();
+            this.owner = in.readParcelable(Account.class.getClassLoader());
             this.state = in.readString();
         }
 
         public static final Parcelable.Creator<ModelBids> CREATOR = new Parcelable.Creator<ModelBids>() {
+            @Override
             public ModelBids createFromParcel(Parcel source) {
                 return new ModelBids(source);
             }
 
+            @Override
             public ModelBids[] newArray(int size) {
                 return new ModelBids[size];
             }
         };
-
-        @Override
-        public String toString() {
-            return "ModelBids{" +
-                    "id=" + id +
-                    ", title='" + title + '\'' +
-                    ", description='" + description + '\'' +
-                    ", url='" + url + '\'' +
-                    ", price=" + price +
-                    ", opportunityId=" + opportunityId +
-                    ", date='" + createdAt + '\'' +
-                    ", provider='" + provider + '\'' +
-                    ", state=" + state +
-                    '}';
-        }
     }
 }

@@ -40,20 +40,29 @@ import timber.log.Timber;
  */
 public class NewOrdersFragment extends BaseLocationFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    private final static String IS_VIEW_PAGER_ITEM = "is_view_pager_item";
     private ViewPagerAdapter pagerAdapter;
     private List<PagerItemModel> adapterList;
     private ViewPager viewPager;
     private ViewPager.PageTransformer pageTransformer;
     private FrameLayout progressBar;
+    private boolean isViewPageItem;
 
-    public static NewOrdersFragment newInstance() {
-        return new NewOrdersFragment();
+    public static NewOrdersFragment newInstance(boolean isViewPageItem) {
+        NewOrdersFragment fragment = new NewOrdersFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_VIEW_PAGER_ITEM, isViewPageItem);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapterList = new ArrayList<>();
+        if (getArguments() != null) {
+            isViewPageItem = getArguments().getBoolean(IS_VIEW_PAGER_ITEM);
+        }
     }
 
     @Nullable
@@ -69,6 +78,9 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
         viewPager.addOnPageChangeListener(pageChangeListener);
         setViewPagerTransform(true);
         view.findViewById(R.id.add_orders).setOnClickListener(this);
+        if (isViewPageItem) {
+            view.setPadding(0, 0, 0, 0);
+        }
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.CATEGORY_LOADER, null, this);
         return view;
     }

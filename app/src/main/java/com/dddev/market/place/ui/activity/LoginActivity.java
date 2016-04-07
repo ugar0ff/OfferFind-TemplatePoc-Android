@@ -175,6 +175,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onHandleServerRequestError() {
         showDialog(getString(R.string.server_connect_failure));
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

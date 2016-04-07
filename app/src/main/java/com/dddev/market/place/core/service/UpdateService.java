@@ -11,6 +11,7 @@ import com.dddev.market.place.core.api.strongloop.AccountGetRepository;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
 import com.dddev.market.place.core.api.strongloop.OpportunityGetRepository;
+import com.dddev.market.place.core.api.strongloop.Owner;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.core.receiver.UpdateReceiver;
@@ -97,13 +98,24 @@ public class UpdateService extends IntentService {
             bidsValues.put(CacheHelper.BIDS_DESCRIPTION, modelBids.get(j).getDescription());
             bidsValues.put(CacheHelper.BIDS_OPPORTUNITIES_ID, modelBids.get(j).getOpportunityId());
             bidsValues.put(CacheHelper.BIDS_PRICE, modelBids.get(j).getPrice());
-            bidsValues.put(CacheHelper.BIDS_URL, modelBids.get(j).getUrl());
             bidsValues.put(CacheHelper.BIDS_STATUS, modelBids.get(j).getState());
             bidsValues.put(CacheHelper.BIDS_CREATE_AT, modelBids.get(j).getCreatedAt());
-            //TODO: addModel provider model
+            bidsValues.put(CacheHelper.BIDS_OWNER_ID, modelBids.get(j).getOwnerId());
             bidsContentValues[j] = bidsValues;
+            updateOwner(modelBids.get(j).getOwner());
         }
         getContentResolver().bulkInsert(CacheContentProvider.BIDS_URI, bidsContentValues);
+    }
+
+    private void updateOwner(Owner owner) {
+        if (owner == null) {
+            return;
+        }
+        ContentValues values = new ContentValues();
+        values.put(CacheHelper.OWNER_ID, owner.getId());
+        values.put(CacheHelper.OWNER_AVATAR, owner.getAvatar());
+        values.put(CacheHelper.OWNER_NAME, owner.getName());
+        getBaseContext().getContentResolver().insert(CacheContentProvider.OWNER_URI, values);
     }
 
     private void updateAccountData() {
@@ -113,7 +125,7 @@ public class UpdateService extends IntentService {
             public void run() {
                 final AccountGetRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(AccountGetRepository.class);
                 repository.createContract();
-                repository.accounts(new AccountGetRepository.UserCallback() {
+                repository.accounts(PreferencesUtils.getUserId(getApplicationContext()), new AccountGetRepository.UserCallback() {
                     @Override
                     public void onSuccess(Account account) {
                         if (account != null) {

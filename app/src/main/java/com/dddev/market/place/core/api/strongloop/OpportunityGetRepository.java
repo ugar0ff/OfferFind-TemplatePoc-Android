@@ -24,7 +24,7 @@ public class OpportunityGetRepository extends com.strongloop.android.loopback.Mo
     }
 
     public void opportunities(final OpportunityCallback callback) {
-        invokeStaticMethod("opportunities", ImmutableMap.of("filter", "{\"include\":\"bids\"}"), new Adapter.Callback() {
+        invokeStaticMethod("opportunities", ImmutableMap.of("filter", "{\"include\": {\"bids\": \"owner\"}}"), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

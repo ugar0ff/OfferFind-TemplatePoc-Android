@@ -4,7 +4,9 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.dddev.market.place.core.api.strongloop.Account;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.core.api.strongloop.Owner;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 
@@ -31,10 +33,13 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
                     String[] projection = new String[]{CacheHelper.BIDS_ID + " as _id ",
                             CacheHelper.BIDS_TITLE,
                             CacheHelper.BIDS_DESCRIPTION,
-                            CacheHelper.BIDS_URL,
+                            CacheHelper.OWNER_ID,
+                            CacheHelper.OWNER_NAME,
+                            CacheHelper.OWNER_AVATAR,
                             CacheHelper.BIDS_PRICE,
                             CacheHelper.BIDS_OPPORTUNITIES_ID,
                             CacheHelper.BIDS_CREATE_AT,
+                            CacheHelper.BIDS_OWNER_ID,
                             CacheHelper.BIDS_STATUS};
                     String selection = CacheHelper.BIDS_OPPORTUNITIES_ID + " = ? ";
                     String[] selectionArg = new String[]{String.valueOf(opportunitiesId)};
@@ -47,11 +52,14 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
                                     list.add(new Bids.ModelBids(cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper._ID)),
                                             cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_TITLE)),
                                             cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_DESCRIPTION)),
-                                            cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_URL)),
                                             cursorBids.getFloat(cursorBids.getColumnIndex(CacheHelper.BIDS_PRICE)),
                                             cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper.BIDS_OPPORTUNITIES_ID)),
                                             cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_CREATE_AT)),
-                                            "provider", opportunitiesStatus));
+                                            opportunitiesStatus,
+                                            cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper.BIDS_OWNER_ID)),
+                                            new Owner(cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper.OWNER_ID)),
+                                                    cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.OWNER_NAME)),
+                                                    cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.OWNER_AVATAR)))));
                                 }
                             } while (cursorBids.moveToNext());
                         }

@@ -3,17 +3,15 @@ package com.dddev.market.place.core.api.strongloop;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
-import com.strongloop.android.loopback.Model;
 
 /**
- * Created by ugar on 10.03.16.
+ * Created by ugar on 07.04.16.
  */
-public class Account extends Model implements Parcelable {
+public class Owner implements Parcelable {
 
     @SerializedName("id")
-    private String id;
+    private int id;
     @SerializedName("name")
     private String name;
     @SerializedName("address")
@@ -25,23 +23,26 @@ public class Account extends Model implements Parcelable {
     @SerializedName("avatar")
     private String avatar;
 
-    public Account(String jsonObject) {
-        Exclude exclude = new Exclude();
-        Account user = new GsonBuilder().addDeserializationExclusionStrategy(exclude).addSerializationExclusionStrategy(exclude).create().fromJson(jsonObject, Account.class);
-        this.id = user.getId();
-        this.name = user.getName();
-        this.address = user.getAddress();
-        this.bankInfo = user.getBankInfo();
-        this.email = user.getEmail();
-        this.avatar = user.getAvatar();
+    public Owner(int accountId, String name, String avatar) {
+        this.id = accountId;
+        this.name = name;
+        this.avatar = avatar;
     }
 
-    @Override
-    public String getId() {
+    public Owner(int accountId, String name, String address, String bankInfo, String email, String avatar) {
+        this.id = accountId;
+        this.name = name;
+        this.address = address;
+        this.bankInfo = bankInfo;
+        this.email = email;
+        this.avatar = avatar;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String accountId) {
+    public void setId(int accountId) {
         this.id = accountId;
     }
 
@@ -104,7 +105,7 @@ public class Account extends Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
+        dest.writeInt(this.id);
         dest.writeString(this.name);
         dest.writeString(this.address);
         dest.writeString(this.bankInfo);
@@ -112,8 +113,8 @@ public class Account extends Model implements Parcelable {
         dest.writeString(this.avatar);
     }
 
-    protected Account(Parcel in) {
-        this.id = in.readString();
+    protected Owner(Parcel in) {
+        this.id = in.readInt();
         this.name = in.readString();
         this.address = in.readString();
         this.bankInfo = in.readString();
@@ -121,15 +122,15 @@ public class Account extends Model implements Parcelable {
         this.avatar = in.readString();
     }
 
-    public static final Parcelable.Creator<Account> CREATOR = new Parcelable.Creator<Account>() {
+    public static final Parcelable.Creator<Owner> CREATOR = new Parcelable.Creator<Owner>() {
         @Override
-        public Account createFromParcel(Parcel source) {
-            return new Account(source);
+        public Owner createFromParcel(Parcel source) {
+            return new Owner(source);
         }
 
         @Override
-        public Account[] newArray(int size) {
-            return new Account[size];
+        public Owner[] newArray(int size) {
+            return new Owner[size];
         }
     };
 }

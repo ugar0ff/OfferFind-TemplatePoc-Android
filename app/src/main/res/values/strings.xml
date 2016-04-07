@@ -5,7 +5,7 @@
 
     <string name="ok">Ok</string>
     <string name="facebook_authentication_error">Facebook authentication error</string>
-    <string name="i_am_provider">I\'m provider</string>
+    <string name="i_am_provider">I\'m owner</string>
     <string name="order">Order</string>
     <string name="press_here_to_claim">Press here to claim service right away</string>
     <!--<string name="basic_cleaning">Basic (regular)\ncleaning</string>-->

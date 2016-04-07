@@ -25,8 +25,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
+import com.dddev.market.place.core.api.strongloop.Account;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Messages;
+import com.dddev.market.place.core.api.strongloop.Owner;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.adapter.ProposalListAdapter;
@@ -192,7 +194,9 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                 String[] projection = new String[]{CacheHelper.BIDS_ID + " as _id ",
                         CacheHelper.BIDS_TITLE,
                         CacheHelper.BIDS_DESCRIPTION,
-                        CacheHelper.BIDS_URL,
+                        CacheHelper.OWNER_ID,
+                        CacheHelper.OWNER_NAME,
+                        CacheHelper.OWNER_AVATAR,
                         CacheHelper.BIDS_STATUS,
                         CacheHelper.BIDS_PRICE};
                 String selection = CacheHelper.BIDS_OPPORTUNITIES_ID + " = ?";
@@ -216,7 +220,9 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                         model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_TITLE)));
                         model.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_DESCRIPTION)));
                         model.setPrice(cursor.getFloat(cursor.getColumnIndex(CacheHelper.BIDS_PRICE)));
-                        model.setUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_URL)));
+                        model.setOwner(new Owner(cursor.getInt(cursor.getColumnIndex(CacheHelper.OWNER_ID)),
+                                cursor.getString(cursor.getColumnIndex(CacheHelper.OWNER_NAME)),
+                                cursor.getString(cursor.getColumnIndex(CacheHelper.OWNER_AVATAR))));
                         String bidStatus = cursor.getString(cursor.getColumnIndex(CacheHelper.BIDS_STATUS));
                         model.setState(bidStatus);
 

@@ -43,7 +43,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         if (position == 0) {
             if (!isOrdersFragment) {
-                return NewOrdersFragment.newInstance();
+                return NewOrdersFragment.newInstance(true);
             } else {
                 return OrdersFragment.newInstance();
             }

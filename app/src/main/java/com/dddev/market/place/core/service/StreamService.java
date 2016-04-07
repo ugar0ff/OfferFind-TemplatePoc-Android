@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.dddev.market.place.core.AppOfferFind;
+import com.dddev.market.place.core.api.strongloop.Account;
+import com.dddev.market.place.core.api.strongloop.AccountGetRepository;
 import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
@@ -156,12 +158,36 @@ public class StreamService extends Service {
         values.put(CacheHelper.BIDS_DESCRIPTION, message.getMessageData().getData().getDescription());
         values.put(CacheHelper.BIDS_OPPORTUNITIES_ID, message.getMessageData().getData().getOpportunityId());
         values.put(CacheHelper.BIDS_PRICE, message.getMessageData().getData().getPrice());
-        values.put(CacheHelper.BIDS_URL, message.getMessageData().getData().getUrl());
         values.put(CacheHelper.BIDS_STATUS, message.getMessageData().getData().getState());
         values.put(CacheHelper.BIDS_CREATE_AT, message.getMessageData().getData().getCreatedAt());
-        //TODO: addModel provider model
+        values.put(CacheHelper.BIDS_OWNER_ID, message.getMessageData().getData().getOwnerId());
         getBaseContext().getContentResolver().insert(CacheContentProvider.BIDS_URI, values);
+        updateOwner(message.getMessageData().getData().getOwnerId());
     }
+
+    private void updateOwner(int ownerId) {
+        final AccountGetRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(AccountGetRepository.class);
+        repository.createContract();
+        repository.accounts(ownerId, new AccountGetRepository.UserCallback() {
+            @Override
+            public void onSuccess(Account account) {
+                if (account != null) {
+                    Timber.i("onSuccess response=%s", account.toString());
+                    ContentValues values = new ContentValues();
+                    values.put(CacheHelper.OWNER_ID, account.getId());
+                    values.put(CacheHelper.OWNER_AVATAR, account.getAvatar());
+                    values.put(CacheHelper.OWNER_NAME, account.getName());
+                    getBaseContext().getContentResolver().insert(CacheContentProvider.OWNER_URI, values);
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Timber.e("onError Throwable: %s", t.toString());
+            }
+        });
+    }
+
 
     private void sendMessageCallBack(Messages.ModelMessages message) {
         Intent intent = new Intent(MessageReceiver.BROADCAST_ACTION);

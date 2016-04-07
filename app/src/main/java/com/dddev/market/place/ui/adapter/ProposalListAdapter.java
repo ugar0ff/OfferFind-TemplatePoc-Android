@@ -131,8 +131,8 @@ public class ProposalListAdapter extends BaseAdapter {
                 viewHolder.accept.setTransitionName(String.format("accept%s", list.get(position).getId()));
                 viewHolder.picture.setTransitionName(String.format("picture%s", list.get(position).getId()));
             }
-            if (list.get(position).getUrl() != null && list.get(position).getUrl().length() > 5) {
-                Picasso.with(context).load(list.get(position).getUrl()).fit().centerInside().into(viewHolder.picture);
+            if (list.get(position).getOwner() != null && list.get(position).getOwner().getAvatar() != null && list.get(position).getOwner().getAvatar().length() > 5) {
+                Picasso.with(context).load(list.get(position).getOwner().getAvatar()).fit().centerInside().into(viewHolder.picture);
             } else {
                 Picasso.with(context).load(R.drawable.placeholder_proposal_item).fit().centerInside().into(viewHolder.picture);
             }

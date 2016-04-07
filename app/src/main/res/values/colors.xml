@@ -25,4 +25,5 @@
     <color name="colorStateRed">#ff4049</color>
     <color name="colorStateYellow">#ffbe21</color>
     <color name="colorHintColor">#bfbfbf</color>
+    <color name="colorNewMessage">#e6f4ff</color>
 </resources>

@@ -54,11 +54,8 @@ public class Messages extends Model {
         private String address;
         @SerializedName("categoryId")
         private int categoryId;
-        //TODO: change type provider
-        @SerializedName("provider")
-        private String provider;
-        @SerializedName("url")
-        private String url;
+        @SerializedName("owner")
+        private Owner owner;
         @SerializedName("price")
         private float price;
         @SerializedName("opportunityId")
@@ -78,8 +75,7 @@ public class Messages extends Model {
             this.state = messages.getState();
             this.address = messages.getAddress();
             this.categoryId = messages.getCategoryId();
-            this.provider = messages.getProvider();
-            this.url = messages.getUrl();
+            this.owner = messages.getOwner();
             this.price = messages.getPrice();
             this.opportunityId = messages.getOpportunityId();
         }
@@ -175,20 +171,12 @@ public class Messages extends Model {
             this.categoryId = categoryId;
         }
 
-        public String getProvider() {
-            return provider;
+        public Owner getOwner() {
+            return owner;
         }
 
-        public void setProvider(String provider) {
-            this.provider = provider;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
+        public void setOwner(Owner owner) {
+            this.owner = owner;
         }
 
         public float getPrice() {
@@ -225,8 +213,7 @@ public class Messages extends Model {
             dest.writeString(this.state);
             dest.writeString(this.address);
             dest.writeInt(this.categoryId);
-            dest.writeString(this.provider);
-            dest.writeString(this.url);
+            dest.writeParcelable(this.owner, flags);
             dest.writeFloat(this.price);
             dest.writeInt(this.opportunityId);
         }
@@ -243,8 +230,7 @@ public class Messages extends Model {
             this.state = in.readString();
             this.address = in.readString();
             this.categoryId = in.readInt();
-            this.provider = in.readString();
-            this.url = in.readString();
+            this.owner = in.readParcelable(Account.class.getClassLoader());
             this.price = in.readFloat();
             this.opportunityId = in.readInt();
         }

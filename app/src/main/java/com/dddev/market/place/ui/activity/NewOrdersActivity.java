@@ -31,7 +31,7 @@ public class NewOrdersActivity extends BaseActivity implements ToolbarController
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
-        switchFragment(NewOrdersFragment.newInstance(), false, null);
+        switchFragment(NewOrdersFragment.newInstance(false), false, null);
         onBackStackChanged();
     }
 

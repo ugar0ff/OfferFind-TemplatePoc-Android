@@ -23,7 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Title"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_16" />
 
@@ -32,15 +31,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
-            android:text="13/12/2016"
             android:textSize="@dimen/text_size_12" />
 
         <TextView
-            android:id="@+id/provider"
+            android:id="@+id/owner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
-            android:text="provider"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_12" />
 
@@ -64,7 +61,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="bottom"
-                android:text="Selected"
                 android:textColor="@color/colorStateYellow"
                 android:textSize="@dimen/text_size_14" />
         </LinearLayout>

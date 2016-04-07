@@ -34,13 +34,13 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String BIDS_ID = "bids_id";
     public static final String BIDS_TITLE = "bids_title";
     public static final String BIDS_DESCRIPTION = "bids_description";
-    public static final String BIDS_URL = "bids_url";
     public static final String BIDS_PRICE = "bids_price";
     public static final String BIDS_STATUS = "bids_status";
     public static final String BIDS_OPPORTUNITIES_ID = "bids_opportunities_id";
     public static final String BIDS_CREATE_AT = "bids_create_at";
+    public static final String BIDS_OWNER_ID = "bids_owner_id";
     private final String CREATE_BIDS = "CREATE TABLE " + TABLE_BIDS + " (" + BIDS_ID + " integer primary key, " + BIDS_TITLE + " text, " + BIDS_DESCRIPTION + " text, " +
-            BIDS_URL + " text, " + BIDS_PRICE + " real, " + BIDS_OPPORTUNITIES_ID + " integer, " + BIDS_STATUS + " text, " + BIDS_CREATE_AT + " text NOT NULL DEFAULT '0');";
+            BIDS_PRICE + " real, " + BIDS_OPPORTUNITIES_ID + " integer, " + BIDS_STATUS + " text, " + BIDS_CREATE_AT + " text NOT NULL DEFAULT '0'," + BIDS_OWNER_ID + " text);";
     private final String DROP_BIDS = "DROP TABLE IF EXISTS " + TABLE_BIDS + ";";
 
     public static final String TABLE_CATEGORY = "category";
@@ -52,6 +52,14 @@ public class CacheHelper extends SQLiteOpenHelper {
             CATEGORY_DESCRIPTION + " text, " + CATEGORY_IMAGE_URL + " text);";
     private final String DROP_WORK_CATEGORY = "DROP TABLE IF EXISTS " + TABLE_CATEGORY + ";";
 
+    public static final String TABLE_OWNER = "owner";
+    public static final String OWNER_ID = "owner_id";
+    public static final String OWNER_AVATAR = "owner_avatar";
+    public static final String OWNER_NAME = "owner_name";
+    private final String CREATE_OWNER = "CREATE TABLE " + TABLE_OWNER + " (" + OWNER_ID + " integer primary key, " + OWNER_AVATAR + " text, " +
+            OWNER_NAME + " text);";
+    private final String DROP_OWNER = "DROP TABLE IF EXISTS " + TABLE_OWNER + ";";
+
     public CacheHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -61,6 +69,7 @@ public class CacheHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_OPPORTUNITIES);
         db.execSQL(CREATE_BIDS);
         db.execSQL(CREATE_WORK_CATEGORY);
+        db.execSQL(CREATE_OWNER);
         setCategory(db);
     }
 

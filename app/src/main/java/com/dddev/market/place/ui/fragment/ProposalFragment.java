@@ -93,8 +93,8 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
         setAcceptButtonState();
 
         ImageView picture = (ImageView) view.findViewById(R.id.picture);
-        if (itemModel.getUrl() != null && !itemModel.getUrl().isEmpty()) {
-            Picasso.with(getActivity()).load(itemModel.getUrl()).into(picture);
+        if (itemModel.getOwner() != null && itemModel.getOwner().getAvatar() != null && !itemModel.getOwner().getAvatar().isEmpty()) {
+            Picasso.with(getActivity()).load(itemModel.getOwner().getAvatar()).into(picture);
         } else {
             Picasso.with(getActivity()).load(R.drawable.placeholder_proposal_item).into(picture);
         }

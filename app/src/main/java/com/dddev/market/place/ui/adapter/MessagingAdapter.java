@@ -63,7 +63,7 @@ public class MessagingAdapter extends BaseAdapter {
             viewHolder.title = (TextView) convertView.findViewById(R.id.title);
             viewHolder.createAt = (TextView) convertView.findViewById(R.id.createdAt);
             viewHolder.state = (TextView) convertView.findViewById(R.id.text_state);
-            viewHolder.provider = (TextView) convertView.findViewById(R.id.provider);
+            viewHolder.provider = (TextView) convertView.findViewById(R.id.owner);
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.image_state);
             convertView.setTag(viewHolder);
         } else {
@@ -85,8 +85,8 @@ public class MessagingAdapter extends BaseAdapter {
             } else {
                 viewHolder.createAt.setText("");
             }
-            if (list.get(position).getProvider() != null) {
-                viewHolder.provider.setText(list.get(position).getProvider());
+            if (list.get(position).getOwner() != null) {
+                viewHolder.provider.setText(list.get(position).getOwner().getName());
             }
             switch (list.get(position).getState()) {
                 case StaticKeys.State.PUBLISHED:

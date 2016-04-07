@@ -32,6 +32,11 @@ public class CacheContentProvider extends ContentProvider {
     private static final int CATEGORY = 5;
     private static final int CATEGORY_ID = 6;
 
+    private static final String OWNER_PATCH = "owner";
+    public static final Uri OWNER_URI = Uri.parse("content://" + AUTHORITY + "/" + OWNER_PATCH);
+    private static final int OWNER = 7;
+    private static final int OWNER_ID = 8;
+
     private static final UriMatcher uriMatcher;
 
     static {
@@ -42,6 +47,8 @@ public class CacheContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, BIDS_PATCH + "/#", BIDS_ID);
         uriMatcher.addURI(AUTHORITY, CATEGORY_PATCH, CATEGORY);
         uriMatcher.addURI(AUTHORITY, CATEGORY_PATCH + "/#", CATEGORY_ID);
+        uriMatcher.addURI(AUTHORITY, OWNER_PATCH, OWNER);
+        uriMatcher.addURI(AUTHORITY, OWNER_PATCH + "/#", OWNER_ID);
     }
 
     private CacheHelper cacheHelper;
@@ -68,10 +75,12 @@ public class CacheContentProvider extends ContentProvider {
                 selectionArgs = new String[]{uri.getLastPathSegment()};
                 break;
             case BIDS:
-                table = CacheHelper.TABLE_BIDS;
+                table = CacheHelper.TABLE_BIDS + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_BIDS + "." + CacheHelper.BIDS_OWNER_ID + " = " +
+                        CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
                 break;
             case BIDS_ID:
-                table = CacheHelper.TABLE_BIDS;
+                table = CacheHelper.TABLE_BIDS + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_BIDS + "." + CacheHelper.BIDS_OWNER_ID + " = " +
+                        CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
                 selection = CacheHelper.BIDS_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
                 break;
@@ -81,6 +90,14 @@ public class CacheContentProvider extends ContentProvider {
             case CATEGORY_ID:
                 table = CacheHelper.TABLE_CATEGORY;
                 selection = CacheHelper.CATEGORY_ID + " = ?";
+                selectionArgs = new String[]{uri.getLastPathSegment()};
+                break;
+            case OWNER:
+                table = CacheHelper.TABLE_OWNER;
+                break;
+            case OWNER_ID:
+                table = CacheHelper.TABLE_OWNER;
+                selection = CacheHelper.OWNER_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
                 break;
             default:
@@ -130,6 +147,13 @@ public class CacheContentProvider extends ContentProvider {
                 if (id >= 0) {
                     _uri = ContentUris.withAppendedId(CATEGORY_URI, id);
                     currentUri = CATEGORY_URI;
+                }
+                break;
+            case OWNER:
+                id = sqLiteDatabase.replace(CacheHelper.TABLE_OWNER, null, values);
+                if (id >= 0) {
+                    _uri = ContentUris.withAppendedId(OWNER_URI, id);
+                    currentUri = OWNER_URI;
                 }
                 break;
             default:
@@ -186,6 +210,19 @@ public class CacheContentProvider extends ContentProvider {
                             CacheHelper.CATEGORY_ID + " = " + id + " and " + selection, selectionArgs);
                 }
                 break;
+            case OWNER:
+                rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_CATEGORY, selection, selectionArgs);
+                break;
+            case OWNER_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_OWNER,
+                            CacheHelper.OWNER_ID + " = " + id, null);
+                } else {
+                    rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_OWNER,
+                            CacheHelper.OWNER_ID + " = " + id + " and " + selection, selectionArgs);
+                }
+                break;
             default:
                 throw new IllegalArgumentException("Wrong URI: " + uri);
         }
@@ -238,6 +275,19 @@ public class CacheContentProvider extends ContentProvider {
                 } else {
                     rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_CATEGORY, values,
                             CacheHelper.CATEGORY_ID + " = " + id + " and " + selection, selectionArgs);
+                }
+                break;
+            case OWNER:
+                rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_CATEGORY, values, selection, selectionArgs);
+                break;
+            case OWNER_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_OWNER, values,
+                            CacheHelper.OWNER_ID + " = " + id, null);
+                } else {
+                    rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_OWNER, values,
+                            CacheHelper.OWNER_ID + " = " + id + " and " + selection, selectionArgs);
                 }
                 break;
             default:
