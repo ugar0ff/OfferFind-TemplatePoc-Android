@@ -2,12 +2,15 @@ package com.dddev.market.place.ui.views.eventsource_android;
 
 import com.dddev.market.place.ui.model.StreamMessageDataModel;
 
+import timber.log.Timber;
+
 public class MessageEvent {
     public final String data;
     public final String lastEventId;
     public final String origin;
 
     public MessageEvent(String data, String lastEventId, String origin) {
+        Timber.v(data);
         this.data = data;
         this.lastEventId = lastEventId;
         this.origin = origin;

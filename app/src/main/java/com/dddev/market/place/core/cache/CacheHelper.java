@@ -60,6 +60,18 @@ public class CacheHelper extends SQLiteOpenHelper {
             OWNER_NAME + " text);";
     private final String DROP_OWNER = "DROP TABLE IF EXISTS " + TABLE_OWNER + ";";
 
+    public static final String TABLE_MESSAGE = "message";
+    public static final String MESSAGE_ID = "message_id";
+    public static final String MESSAGE_READ = "message_read";
+    public static final String MESSAGE_TEXT = "message_text";
+    public static final String MESSAGE_CREATE_AT = "message_create_at";
+    public static final String MESSAGE_BID_ID = "message_bid_id";
+    public static final String MESSAGE_OWNER_ID = "message_owner_id";
+    public static final String MESSAGE_SENDER_ID = "message_sender_id";
+    private final String CREATE_MESSAGE = "CREATE TABLE " + TABLE_MESSAGE + " (" + MESSAGE_ID + " integer primary key, " + MESSAGE_READ + " integer, " +
+            MESSAGE_TEXT + " text, " + MESSAGE_CREATE_AT + " text, " + MESSAGE_BID_ID + " integer, " + MESSAGE_OWNER_ID + " integer, " + MESSAGE_SENDER_ID + " integer);";
+    private final String DROP_MESSAGE = "DROP TABLE IF EXISTS " + TABLE_MESSAGE + ";";
+
     public CacheHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -70,6 +82,7 @@ public class CacheHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_BIDS);
         db.execSQL(CREATE_WORK_CATEGORY);
         db.execSQL(CREATE_OWNER);
+        db.execSQL(CREATE_MESSAGE);
         setCategory(db);
     }
 

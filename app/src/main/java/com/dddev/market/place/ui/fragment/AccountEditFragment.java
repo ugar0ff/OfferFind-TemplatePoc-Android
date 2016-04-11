@@ -34,15 +34,12 @@ import com.dddev.market.place.R;
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.Account;
 import com.dddev.market.place.core.api.strongloop.AccountPutRepository;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.ui.activity.CropActivity;
 import com.dddev.market.place.ui.activity.MainActivity;
 import com.dddev.market.place.ui.adapter.GeoAutoCompleteAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseLocationFragment;
 import com.dddev.market.place.ui.model.GeoSearchResult;
 import com.dddev.market.place.ui.views.DelayAutoCompleteTextView;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
-import com.dddev.market.place.utils.PermissionHelper;
 import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
 import com.dddev.market.place.utils.Utilities;
@@ -145,11 +142,6 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
         inputEmailLayout.setError(null);
         inputBankInfoLayout.setError(null);
         inputAddressLayout.setError(null);
-    }
-
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-
     }
 
     private void updateInputInfo() {

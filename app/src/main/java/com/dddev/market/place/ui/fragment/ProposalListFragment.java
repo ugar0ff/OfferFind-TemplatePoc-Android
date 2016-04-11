@@ -25,13 +25,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Account;
 import com.dddev.market.place.core.api.strongloop.Bids;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.api.strongloop.Owner;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.adapter.ProposalListAdapter;
+import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
 import com.dddev.market.place.utils.StaticKeys;
 
@@ -42,7 +41,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 10.02.16.
  */
-public class ProposalListFragment extends UpdateReceiverFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class ProposalListFragment extends BaseFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public final static String OPPORTUNITIES_ID = "opportunities_id";
     public final static String OPPORTUNITIES_NAME = "opportunities_name";
@@ -51,7 +50,7 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
     private long opportunitiesId;
     private String statusOpportunities;
     private String title;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+//    private SwipeRefreshLayout mSwipeRefreshLayout;
     private ListView listView;
     private int lastPositionY;
     private int lastFirstVisibleItem;
@@ -122,9 +121,9 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
                 }
             }
         });
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
+//        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+//        mSwipeRefreshLayout.setOnRefreshListener(this);
+//        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.BIDS_LOADER, null, this);
         return view;
     }
@@ -239,10 +238,6 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
         Timber.i("onLoaderReset");
     }
 
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-    }
-
     private void checkStatus(String bidStatus) {
         switch (bidStatus) {
             case StaticKeys.State.PUBLISHED:
@@ -281,51 +276,34 @@ public class ProposalListFragment extends UpdateReceiverFragment implements Adap
     @Override
     public void onResume() {
         super.onResume();
-        mSwipeRefreshLayout.setRefreshing(false);
+//        mSwipeRefreshLayout.setRefreshing(false);
         if (title != null) {
             toolbarController.setToolbarTitle(title);
         }
         toolbar.setY(0);
     }
 
-    @Override
-    public void onRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        startUpdateService();
-    }
-
-    @Override
-    public void onHandleServerRequest() {
-        if (getActivity() != null && mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    @Override
-    public void onHandleServerRequestError() {
-        if (getActivity() != null && mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
 //    @Override
-//    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-//        Toolbar toolbar = toolbarController.getToolbar();
-//        if (toolbar == null) {
-//            return;
-//        }
-//        if (scrollState == ScrollState.UP) {
-//            if (toolbar.isShown()) {
-//                toolbar.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
-//            }
-//        } else if (scrollState == ScrollState.DOWN) {
-//            if (!toolbar.isShown() && !isLastItem()) {
-//                toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-//            }
+//    public void onRefresh() {
+//        mSwipeRefreshLayout.setRefreshing(true);
+//        startUpdateService();
+//    }
+//
+//    @Override
+//    public void onHandleServerRequest() {
+//        if (getActivity() != null && mSwipeRefreshLayout != null) {
+//            mSwipeRefreshLayout.setRefreshing(false);
 //        }
 //    }
-
-    private boolean isLastItem() {
-        return listView.getLastVisiblePosition() == (adapterList.size() - 1);
-    }
+//
+//    @Override
+//    public void onHandleServerRequestError() {
+//        if (getActivity() != null && mSwipeRefreshLayout != null) {
+//            mSwipeRefreshLayout.setRefreshing(false);
+//        }
+//    }
+//
+//    private boolean isLastItem() {
+//        return listView.getLastVisiblePosition() == (adapterList.size() - 1);
+//    }
 }

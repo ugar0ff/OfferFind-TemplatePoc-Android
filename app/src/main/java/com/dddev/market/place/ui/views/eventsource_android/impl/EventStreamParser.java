@@ -5,6 +5,8 @@ import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
+
 
 /**
  * <a href="http://dev.w3.org/html5/eventsource/#event-stream-interpretation">Interprets an event stream</a>
@@ -27,6 +29,7 @@ public class EventStreamParser {
     private StringBuffer data = new StringBuffer();
     private String lastEventId;
     private String eventName = DEFAULT_EVENT;
+    private String leftLine;
 
     public EventStreamParser(String origin, EventSourceHandler eventSourceHandler, ConnectionHandler connectionHandler) {
         this.eventSourceHandler = eventSourceHandler;
@@ -35,6 +38,20 @@ public class EventStreamParser {
     }
 
     public void line(String line) {
+        Timber.v(line);
+        int leftBracketCount = line.length() - line.replace("{", "").length();
+        int rightBracketCount = line.length() - line.replace("}", "").length();
+        if (leftBracketCount > rightBracketCount) {
+            leftLine = line;
+        } else if (leftBracketCount < rightBracketCount) {
+            line = leftLine + line;
+            newLine(line);
+        } else {
+            newLine(line);
+        }
+    }
+
+    public void newLine(String line){
         int colonIndex;
         if (line.trim().isEmpty()) {
             dispatchEvent();

@@ -33,7 +33,7 @@ public class MyGcmListenerService extends GcmListenerService {
         String message = data.getString("message");
         String id = data.getString("id");
         Timber.d("From: %s", from);
-        Timber.d("Message: %s", message);
+        Timber.d("Messages: %s", message);
         Timber.d("data: %s", data.toString());
 
         if (from.startsWith("/topics/")) {
@@ -72,7 +72,7 @@ public class MyGcmListenerService extends GcmListenerService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.icon_logo)
-                .setContentTitle("GCM Message")
+                .setContentTitle("GCM Messages")
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)

@@ -1,7 +1,7 @@
 package com.dddev.market.place.ui.model;
 
 import com.dddev.market.place.core.api.strongloop.Exclude;
-import com.dddev.market.place.core.api.strongloop.Messages;
+import com.dddev.market.place.core.api.strongloop.StreamModel;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
@@ -13,7 +13,7 @@ public class StreamMessageDataModel {
     @SerializedName("target")
     public int target;
     @SerializedName("data")
-    public Messages.ModelMessages data;
+    public StreamModel.ModelMessages data;
     @SerializedName("type")
     public String type;
     @SerializedName("class")
@@ -28,7 +28,7 @@ public class StreamMessageDataModel {
         this.className = messageDataModel.getClassName();
     }
 
-    public StreamMessageDataModel(int target, Messages.ModelMessages data, String type, String className) {
+    public StreamMessageDataModel(int target, StreamModel.ModelMessages data, String type, String className) {
         this.target = target;
         this.data = data;
         this.type = type;
@@ -43,11 +43,11 @@ public class StreamMessageDataModel {
         this.target = target;
     }
 
-    public Messages.ModelMessages getData() {
+    public StreamModel.ModelMessages getData() {
         return data;
     }
 
-    public void setData(Messages.ModelMessages data) {
+    public void setData(StreamModel.ModelMessages data) {
         this.data = data;
     }
 

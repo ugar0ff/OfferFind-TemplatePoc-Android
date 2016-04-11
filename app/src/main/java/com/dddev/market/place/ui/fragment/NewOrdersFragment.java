@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.AppOfferFind;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
 import com.dddev.market.place.core.api.strongloop.OpportunityPostRepository;
 import com.dddev.market.place.core.cache.CacheContentProvider;
@@ -118,11 +117,6 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     public void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-
     }
 
     private static final class TransformerItem {

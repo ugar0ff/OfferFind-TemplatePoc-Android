@@ -11,7 +11,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 29.02.16.
  */
-public class MessagesPostRepository extends com.strongloop.android.loopback.ModelRepository<Messages> {
+public class MessagesPostRepository extends com.strongloop.android.loopback.ModelRepository<StreamModel> {
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
@@ -20,7 +20,7 @@ public class MessagesPostRepository extends com.strongloop.android.loopback.Mode
     }
 
     public MessagesPostRepository() {
-        super("Messages", "Bids", Messages.class);
+        super("StreamModel", "Bids", StreamModel.class);
     }
 
     public void messages(String text, int id, final MessagesCallback callback) {
@@ -36,14 +36,14 @@ public class MessagesPostRepository extends com.strongloop.android.loopback.Mode
 
             @Override
             public void onSuccess(String response) {
-                callback.onSuccess(new Messages.ModelMessages(response));
+                callback.onSuccess(new StreamModel.ModelMessages(response));
                 Timber.i("onSuccess response=%s", response);
             }
         });
     }
 
     public interface MessagesCallback {
-        void onSuccess(Messages.ModelMessages response);
+        void onSuccess(StreamModel.ModelMessages response);
         void onError(Throwable t);
     }
 }

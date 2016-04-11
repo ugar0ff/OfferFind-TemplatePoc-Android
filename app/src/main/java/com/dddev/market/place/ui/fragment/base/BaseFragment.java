@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.inputmethod.InputMethodManager;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.service.AcceptBidsService;
 import com.dddev.market.place.core.service.CompleteBidsService;
 import com.dddev.market.place.core.service.UpdateService;
@@ -98,6 +97,4 @@ public abstract class BaseFragment extends Fragment {
             getActivity().startService(new Intent(getActivity(), CompleteBidsService.class).putExtra(StaticKeys.COMPLETE_BIDS_ID, bidId));
         }
     }
-
-    public abstract void onStreamMessage(Messages.ModelMessages message);
 }

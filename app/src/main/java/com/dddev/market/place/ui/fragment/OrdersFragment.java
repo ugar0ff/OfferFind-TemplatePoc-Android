@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.api.strongloop.Opportunities;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
@@ -82,11 +81,6 @@ public class OrdersFragment extends UpdateReceiverFragment implements View.OnCli
     public void onResume() {
         super.onResume();
         mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-
     }
 
     @Override

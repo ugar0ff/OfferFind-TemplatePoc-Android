@@ -37,6 +37,11 @@ public class CacheContentProvider extends ContentProvider {
     private static final int OWNER = 7;
     private static final int OWNER_ID = 8;
 
+    private static final String MESSAGE_PATCH = "message";
+    public static final Uri MESSAGE_URI = Uri.parse("content://" + AUTHORITY + "/" + MESSAGE_PATCH);
+    private static final int MESSAGE = 9;
+    private static final int MESSAGE_ID = 10;
+
     private static final UriMatcher uriMatcher;
 
     static {
@@ -49,6 +54,8 @@ public class CacheContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, CATEGORY_PATCH + "/#", CATEGORY_ID);
         uriMatcher.addURI(AUTHORITY, OWNER_PATCH, OWNER);
         uriMatcher.addURI(AUTHORITY, OWNER_PATCH + "/#", OWNER_ID);
+        uriMatcher.addURI(AUTHORITY, MESSAGE_PATCH, MESSAGE);
+        uriMatcher.addURI(AUTHORITY, OWNER_PATCH + "/#", MESSAGE_ID);
     }
 
     private CacheHelper cacheHelper;
@@ -98,6 +105,14 @@ public class CacheContentProvider extends ContentProvider {
             case OWNER_ID:
                 table = CacheHelper.TABLE_OWNER;
                 selection = CacheHelper.OWNER_ID + " = ?";
+                selectionArgs = new String[]{uri.getLastPathSegment()};
+                break;
+            case MESSAGE:
+                table = CacheHelper.TABLE_MESSAGE;
+                break;
+            case MESSAGE_ID:
+                table = CacheHelper.TABLE_MESSAGE;
+                selection = CacheHelper.MESSAGE_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
                 break;
             default:
@@ -154,6 +169,13 @@ public class CacheContentProvider extends ContentProvider {
                 if (id >= 0) {
                     _uri = ContentUris.withAppendedId(OWNER_URI, id);
                     currentUri = OWNER_URI;
+                }
+                break;
+            case MESSAGE:
+                id = sqLiteDatabase.replace(CacheHelper.TABLE_MESSAGE, null, values);
+                if (id >= 0) {
+                    _uri = ContentUris.withAppendedId(MESSAGE_URI, id);
+                    currentUri = MESSAGE_URI;
                 }
                 break;
             default:
@@ -223,6 +245,19 @@ public class CacheContentProvider extends ContentProvider {
                             CacheHelper.OWNER_ID + " = " + id + " and " + selection, selectionArgs);
                 }
                 break;
+            case MESSAGE:
+                rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_MESSAGE, selection, selectionArgs);
+                break;
+            case MESSAGE_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_MESSAGE,
+                            CacheHelper.MESSAGE_ID + " = " + id, null);
+                } else {
+                    rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_MESSAGE,
+                            CacheHelper.MESSAGE_ID + " = " + id + " and " + selection, selectionArgs);
+                }
+                break;
             default:
                 throw new IllegalArgumentException("Wrong URI: " + uri);
         }
@@ -288,6 +323,19 @@ public class CacheContentProvider extends ContentProvider {
                 } else {
                     rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_OWNER, values,
                             CacheHelper.OWNER_ID + " = " + id + " and " + selection, selectionArgs);
+                }
+                break;
+            case MESSAGE:
+                rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_MESSAGE, values, selection, selectionArgs);
+                break;
+            case MESSAGE_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_MESSAGE, values,
+                            CacheHelper.MESSAGE_ID + " = " + id, null);
+                } else {
+                    rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_MESSAGE, values,
+                            CacheHelper.MESSAGE_ID + " = " + id + " and " + selection, selectionArgs);
                 }
                 break;
             default:

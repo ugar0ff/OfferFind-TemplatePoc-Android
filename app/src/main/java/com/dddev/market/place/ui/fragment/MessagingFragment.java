@@ -13,13 +13,11 @@ import android.widget.ListView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.loader.MessagingAsyncTaskLoader;
 import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.MessagingAdapter;
 import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.StaticKeys;
 
 import java.util.ArrayList;
@@ -117,11 +115,6 @@ public class MessagingFragment extends UpdateReceiverFragment implements View.On
     public void onResume() {
         super.onResume();
         mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-
     }
 
     @Override

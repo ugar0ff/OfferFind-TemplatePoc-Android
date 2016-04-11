@@ -10,13 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Messages;
+import com.dddev.market.place.core.api.strongloop.StreamModel;
 import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.Utilities;
 import com.nhaarman.listviewanimations.ArrayAdapter;
 
 
-public class ChatAdapter extends ArrayAdapter<Messages.ModelMessages> {
+public class ChatAdapter extends ArrayAdapter<StreamModel.ModelMessages> {
 
     private LayoutInflater inflater;
     private int currentUserId;
@@ -31,7 +31,7 @@ public class ChatAdapter extends ArrayAdapter<Messages.ModelMessages> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        Messages.ModelMessages chatMessage = getItem(position);
+        StreamModel.ModelMessages chatMessage = getItem(position);
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_message_list, parent, false);
             holder = createViewHolder(convertView);

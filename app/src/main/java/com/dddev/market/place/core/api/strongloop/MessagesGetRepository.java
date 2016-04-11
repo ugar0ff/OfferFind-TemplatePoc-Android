@@ -10,7 +10,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 29.02.16.
  */
-public class MessagesGetRepository extends com.strongloop.android.loopback.ModelRepository<Messages> {
+public class MessagesGetRepository extends com.strongloop.android.loopback.ModelRepository<StreamModel> {
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
@@ -19,7 +19,7 @@ public class MessagesGetRepository extends com.strongloop.android.loopback.Model
     }
 
     public MessagesGetRepository() {
-        super("Messages", "Bids", Messages.class);
+        super("StreamModel", "Bids", StreamModel.class);
     }
 
     public void messages(int id, final MessagesCallback callback) {
@@ -33,14 +33,14 @@ public class MessagesGetRepository extends com.strongloop.android.loopback.Model
 
             @Override
             public void onSuccess(String response) {
-                callback.onSuccess(new Messages(response));
+                callback.onSuccess(new StreamModel(response));
                 Timber.i("onSuccess response=%s", response);
             }
         });
     }
 
     public interface MessagesCallback {
-        void onSuccess(Messages response);
+        void onSuccess(StreamModel response);
         void onError(Throwable t);
     }
 }

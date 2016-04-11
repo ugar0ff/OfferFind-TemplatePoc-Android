@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.strongloop.android.loopback.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,11 +58,13 @@ public class Bids extends Model {
         private Owner owner;
         @SerializedName("state")
         private String state;
+        @SerializedName("messages")
+        private ArrayList<Messages> messages;
 
         public ModelBids() {
         }
 
-        public ModelBids(int id, String title, String description, float price, int opportunityId, String createdAt, String state, int ownerId, Owner owner) {
+        public ModelBids(int id, String title, String description, float price, int opportunityId, String createdAt, String state, int ownerId, Owner owner, ArrayList<Messages> messages) {
             this.id = id;
             this.title = title;
             this.description = description;
@@ -71,6 +74,7 @@ public class Bids extends Model {
             this.state = state;
             this.ownerId = ownerId;
             this.owner = owner;
+            this.messages = messages;
         }
 
         public ModelBids(String jsonObject) {
@@ -85,6 +89,7 @@ public class Bids extends Model {
             this.owner = bid.getOwner();
             this.state = bid.getState();
             this.ownerId = bid.getOwnerId();
+            this.messages = bid.getMessages();
         }
 
         public int getId() {
@@ -159,6 +164,14 @@ public class Bids extends Model {
             this.ownerId = ownerId;
         }
 
+        public ArrayList<Messages> getMessages() {
+            return messages;
+        }
+
+        public void setMessages(ArrayList<Messages> messages) {
+            this.messages = messages;
+        }
+
         @Override
         public String toString() {
             return "ModelBids{" +
@@ -170,6 +183,7 @@ public class Bids extends Model {
                     ", date='" + createdAt + '\'' +
                     ", ownerId='" + ownerId + '\'' +
                     ", owner='" + owner + '\'' +
+                    ", messages='" + messages + '\'' +
                     ", state=" + state +
                     '}';
         }
@@ -190,6 +204,7 @@ public class Bids extends Model {
             dest.writeInt(this.ownerId);
             dest.writeParcelable(this.owner, flags);
             dest.writeString(this.state);
+            dest.writeTypedList(messages);
         }
 
         protected ModelBids(Parcel in) {
@@ -200,8 +215,9 @@ public class Bids extends Model {
             this.opportunityId = in.readInt();
             this.createdAt = in.readString();
             this.ownerId = in.readInt();
-            this.owner = in.readParcelable(Account.class.getClassLoader());
+            this.owner = in.readParcelable(Owner.class.getClassLoader());
             this.state = in.readString();
+            this.messages = in.createTypedArrayList(Messages.CREATOR);
         }
 
         public static final Parcelable.Creator<ModelBids> CREATOR = new Parcelable.Creator<ModelBids>() {

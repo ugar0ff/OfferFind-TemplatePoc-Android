@@ -9,10 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.model.PagerItemModel;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -56,10 +54,5 @@ public class PagerItemFragment extends BaseFragment {
         } else {
             Picasso.with(getActivity()).load(R.drawable.icon_view_pager).into(picture);
         }
-    }
-
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-
     }
 }

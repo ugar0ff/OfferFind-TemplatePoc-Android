@@ -6,6 +6,7 @@ import android.database.Cursor;
 
 import com.dddev.market.place.core.api.strongloop.Account;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.api.strongloop.Owner;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
@@ -59,7 +60,8 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
                                             cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper.BIDS_OWNER_ID)),
                                             new Owner(cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper.OWNER_ID)),
                                                     cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.OWNER_NAME)),
-                                                    cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.OWNER_AVATAR)))));
+                                                    cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.OWNER_AVATAR))),
+                                            null));
                                 }
                             } while (cursorBids.moveToNext());
                         }

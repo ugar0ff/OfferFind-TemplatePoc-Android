@@ -26,7 +26,6 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
@@ -168,11 +167,6 @@ public class ProposalFragment extends BaseFragment implements View.OnClickListen
             chatLayout.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
         }
         super.onPause();
-    }
-
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-
     }
 
     private void setChatFragment(int id) {

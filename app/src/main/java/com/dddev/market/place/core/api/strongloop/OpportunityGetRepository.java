@@ -24,12 +24,12 @@ public class OpportunityGetRepository extends com.strongloop.android.loopback.Mo
     }
 
     public void opportunities(final OpportunityCallback callback) {
-        invokeStaticMethod("opportunities", ImmutableMap.of("filter", "{\"include\": {\"bids\": \"owner\"}}"), new Adapter.Callback() {
+        invokeStaticMethod("opportunities", ImmutableMap.of("filter", "{\"include\": {\"bids\": [\"owner\", \"messages\"]}}"), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {
                 callback.onError(t);
-                Timber.i("onError t=%s", t.toString());
+//                Timber.i("onError t=%s", t.toString());
             }
 
             @Override

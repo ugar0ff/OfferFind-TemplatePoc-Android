@@ -20,10 +20,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.gestures.MoveGestureDetector;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.StaticKeys;
 
 import java.io.File;
@@ -249,11 +247,6 @@ public class CropFragment extends BaseFragment implements View.OnClickListener, 
         ImageView view = (ImageView) v;
         view.setImageMatrix(mMatrix);
         return true;
-    }
-
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {

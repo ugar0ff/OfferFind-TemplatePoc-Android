@@ -5,15 +5,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
-import com.dddev.market.place.ui.views.DelayAutoCompleteTextView;
-import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.PreferencesUtils;
 import com.squareup.picasso.Picasso;
 
@@ -80,10 +76,5 @@ public class AccountFragment extends BaseFragment implements View.OnClickListene
             bankInfo.setText(bankInfoText);
         }
         Picasso.with(getActivity()).load("http://cdn.superbwallpapers.com/wallpapers/meme/poker-face-41130-1920x1200.jpg").fit().centerCrop().into(avatar);
-    }
-
-    @Override
-    public void onStreamMessage(Messages.ModelMessages message) {
-
     }
 }

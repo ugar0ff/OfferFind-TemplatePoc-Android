@@ -3,21 +3,19 @@ package com.dddev.market.place.core.service;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.Account;
 import com.dddev.market.place.core.api.strongloop.AccountGetRepository;
-import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
-import com.dddev.market.place.core.receiver.MessageReceiver;
 import com.dddev.market.place.ui.views.eventsource_android.EventSource;
 import com.dddev.market.place.ui.views.eventsource_android.EventSourceHandler;
 import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.PreferencesUtils;
-import com.dddev.market.place.utils.StaticKeys;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -69,7 +67,8 @@ public class StreamService extends Service {
             @Override
             public void run() {
                 if (getBaseContext() != null) {
-                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Accounts/streamUpdates?_format=event-stream&access_token=" + PreferencesUtils.getUserToken(getBaseContext())), new SSEHandler(), null, true);
+                    eventSource = new EventSource(URI.create(AppOfferFind.API + "Accounts/streamUpdates?&_format=event-stream&access_token="
+                            + PreferencesUtils.getUserToken(getBaseContext())), new SSEHandler(), null, true);
                     eventSource.connect();
                 }
             }
@@ -89,6 +88,7 @@ public class StreamService extends Service {
     private class SSEHandler implements EventSourceHandler {
 
         public SSEHandler() {
+            Timber.v("SSE SSEHandler");
         }
 
         @Override
@@ -101,9 +101,9 @@ public class StreamService extends Service {
             if (message == null) {
                 return;
             }
-            Timber.v("SSE Message %s", event);
-            Timber.v("SSE Message: %s", message.lastEventId);
-            Timber.v("SSE Message: %s", message.data);
+            Timber.v("SSE Messages %s", event);
+            Timber.v("SSE Messages: %s", message.lastEventId);
+            Timber.v("SSE Messages: %s", message.data);
             Timber.v("SSE hashCode: %s, eventSource: %s", hashCode(), eventSource.hashCode());
             if (message.getMessageData() == null || message.getMessageData().getClassName() == null || message.getMessageData().getData() == null) {
                 return;
@@ -112,8 +112,8 @@ public class StreamService extends Service {
                 updateOpportunities(message);
             } else if (message.getMessageData().getClassName().equals("Bid")) {
                 updateBid(message);
-            } else if (message.getMessageData().getClassName().equals("Message")) {
-                sendMessageCallBack(message.getMessageData().getData());
+            } else if (message.getMessageData().getClassName().equals("Messages")) {
+                updateMessage(message);
             }
         }
 
@@ -165,34 +165,45 @@ public class StreamService extends Service {
         updateOwner(message.getMessageData().getData().getOwnerId());
     }
 
-    private void updateOwner(int ownerId) {
-        final AccountGetRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(AccountGetRepository.class);
-        repository.createContract();
-        repository.accounts(ownerId, new AccountGetRepository.UserCallback() {
-            @Override
-            public void onSuccess(Account account) {
-                if (account != null) {
-                    Timber.i("onSuccess response=%s", account.toString());
-                    ContentValues values = new ContentValues();
-                    values.put(CacheHelper.OWNER_ID, account.getId());
-                    values.put(CacheHelper.OWNER_AVATAR, account.getAvatar());
-                    values.put(CacheHelper.OWNER_NAME, account.getName());
-                    getBaseContext().getContentResolver().insert(CacheContentProvider.OWNER_URI, values);
-                }
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                Timber.e("onError Throwable: %s", t.toString());
-            }
-        });
+    private void updateMessage(MessageEvent message) {
+        ContentValues values = new ContentValues();
+        values.put(CacheHelper.MESSAGE_ID, message.getMessageData().getData().getId());
+        values.put(CacheHelper.MESSAGE_TEXT, message.getMessageData().getData().getText());
+        values.put(CacheHelper.MESSAGE_CREATE_AT, message.getMessageData().getData().getCreatedAt());
+        values.put(CacheHelper.MESSAGE_BID_ID, message.getMessageData().getData().getBidId());
+        values.put(CacheHelper.MESSAGE_OWNER_ID, message.getMessageData().getData().getOwnerId());
+        values.put(CacheHelper.MESSAGE_SENDER_ID, message.getMessageData().getData().getSenderId());
+        values.put(CacheHelper.MESSAGE_READ, message.getMessageData().getData().isRead());
+        getBaseContext().getContentResolver().insert(CacheContentProvider.MESSAGE_URI, values);
     }
 
+    private void updateOwner(final int ownerId) {
+        Handler mHandler = new Handler(getMainLooper());
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                final AccountGetRepository repository = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(AccountGetRepository.class);
+                repository.createContract();
+                repository.accounts(ownerId, new AccountGetRepository.UserCallback() {
+                    @Override
+                    public void onSuccess(Account account) {
+                        if (account != null) {
+                            Timber.i("onSuccess response=%s", account.toString());
+                            ContentValues values = new ContentValues();
+                            values.put(CacheHelper.OWNER_ID, account.getId());
+                            values.put(CacheHelper.OWNER_AVATAR, account.getAvatar());
+                            values.put(CacheHelper.OWNER_NAME, account.getName());
+                            getBaseContext().getContentResolver().insert(CacheContentProvider.OWNER_URI, values);
+                        }
+                    }
 
-    private void sendMessageCallBack(Messages.ModelMessages message) {
-        Intent intent = new Intent(MessageReceiver.BROADCAST_ACTION);
-        intent.putExtra(StaticKeys.KEY_MESSAGE, message);
-        sendBroadcast(intent);
+                    @Override
+                    public void onError(Throwable t) {
+                        Timber.e("onError Throwable: %s", t.toString());
+                    }
+                });
+            }
+        });
     }
 
 }

@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 import javax.net.ssl.SSLEngine;
 
 public class EventSource implements EventSourceHandler {
-    public static final long DEFAULT_RECONNECTION_TIME_MILLIS = 2000;
+    public static final long DEFAULT_RECONNECTION_TIME_MILLIS = 0;
 
     public static final int CONNECTING = 0;
     public static final int OPEN = 1;
