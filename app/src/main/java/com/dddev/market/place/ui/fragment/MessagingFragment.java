@@ -1,6 +1,7 @@
 package com.dddev.market.place.ui.fragment;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -21,6 +22,9 @@ import com.dddev.market.place.core.loader.MessagingAsyncTaskLoader;
 import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
 import com.dddev.market.place.ui.adapter.MessagingAdapter;
+import com.dddev.market.place.ui.controller.MessageCountController;
+import com.dddev.market.place.ui.controller.SwitchFragmentListener;
+import com.dddev.market.place.ui.controller.ToolbarController;
 import com.dddev.market.place.ui.fragment.base.UpdateReceiverFragment;
 import com.dddev.market.place.utils.StaticKeys;
 
@@ -92,6 +96,15 @@ public class MessagingFragment extends UpdateReceiverFragment implements View.On
                 case StaticKeys.LoaderId.ALL_BIDS_LOADER:
                     adapterList.clear();
                     if (data != null) {
+                        int messageCount = 0;
+                        for (int i = 0; i < data.size(); i++) {
+                            if (!data.get(i).isRead(getActivity())) {
+                                messageCount++;
+                            }
+                        }
+                        if (messageCountController != null) {
+                            messageCountController.setMessageCount(messageCount);
+                        }
                         adapterList.addAll(data);
                     }
                     adapter.notifyDataSetChanged();

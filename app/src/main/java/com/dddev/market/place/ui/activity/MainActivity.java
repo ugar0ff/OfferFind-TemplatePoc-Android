@@ -14,9 +14,8 @@ import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.ui.activity.base.BaseActivity;
 import com.dddev.market.place.ui.adapter.TabAdapter;
-import com.dddev.market.place.ui.fragment.AccountEditFragment;
+import com.dddev.market.place.ui.controller.MessageCountController;
 import com.dddev.market.place.ui.fragment.AccountRootFragment;
-import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.model.TabModel;
 import com.dddev.market.place.ui.views.smarttablayout.SmartTabLayout;
 import com.dddev.market.place.utils.PermissionHelper;
@@ -30,10 +29,11 @@ import timber.log.Timber;
 /**
  * Created by ugar on 10.02.16.
  */
-public class MainActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor>, MessageCountController {
 
     private ViewPager viewPager;
     private TabAdapter tabAdapter;
+    private SmartTabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +48,10 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         viewPager.setAdapter(tabAdapter);
         viewPager.setOffscreenPageLimit(3);
 
-        final SmartTabLayout tabLayout = (SmartTabLayout) findViewById(R.id.viewpager_tab);
+        tabLayout = (SmartTabLayout) findViewById(R.id.viewpager_tab);
         assert tabLayout != null;
         tabLayout.setViewPager(viewPager);
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -114,5 +115,10 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Timber.i("onLoaderReset");
+    }
+
+    @Override
+    public void setMessageCount(int messageCount) {
+        tabLayout.setMessageCount(messageCount);
     }
 }

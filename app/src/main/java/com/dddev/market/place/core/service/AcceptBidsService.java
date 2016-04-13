@@ -51,7 +51,7 @@ public class AcceptBidsService extends IntentService {
                         getContentResolver().insert(CacheContentProvider.BIDS_URI, values);
 
                         String[] projection = new String[]{CacheHelper.BIDS_ID + " as " + CacheHelper._ID, CacheHelper.BIDS_OPPORTUNITIES_ID};
-                        String selection = CacheHelper.BIDS_ID + " = ?";
+                        String selection = CacheHelper._ID + " = ?";
                         String[] selectionArg = new String[]{String.valueOf(id)};
                         Cursor cursor = getContentResolver().query(CacheContentProvider.OPPORTUNITIES_URI, projection, selection, selectionArg, null);
                         if (cursor != null) {

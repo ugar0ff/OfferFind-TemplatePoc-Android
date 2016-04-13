@@ -11,6 +11,7 @@ import com.dddev.market.place.R;
 import com.dddev.market.place.core.service.AcceptBidsService;
 import com.dddev.market.place.core.service.CompleteBidsService;
 import com.dddev.market.place.core.service.UpdateService;
+import com.dddev.market.place.ui.controller.MessageCountController;
 import com.dddev.market.place.ui.controller.SwitchFragmentListener;
 import com.dddev.market.place.ui.controller.ToolbarController;
 import com.dddev.market.place.utils.StaticKeys;
@@ -22,10 +23,14 @@ public abstract class BaseFragment extends Fragment {
 
     protected SwitchFragmentListener switchFragmentListener;
     protected ToolbarController toolbarController;
+    protected MessageCountController messageCountController;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof MessageCountController) {
+            messageCountController = (MessageCountController) context;
+        }
         if (context instanceof SwitchFragmentListener) {
             switchFragmentListener = (SwitchFragmentListener) context;
         }
@@ -37,6 +42,9 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        if (messageCountController != null) {
+            messageCountController = null;
+        }
         if (switchFragmentListener != null) {
             switchFragmentListener = null;
         }

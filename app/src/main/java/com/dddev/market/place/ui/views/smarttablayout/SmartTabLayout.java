@@ -17,7 +17,6 @@
 package com.dddev.market.place.ui.views.smarttablayout;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
@@ -29,6 +28,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,22 +41,22 @@ import com.dddev.market.place.ui.adapter.TabAdapter;
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as
  * to
  * the accounts's scroll progress.
- * <p>
+ * <p/>
  * To use the component, simply addModel it to your view hierarchy. Then in your
  * {@link android.app.Activity} or {@link android.app.Fragment}, {@link
  * android.support.v4.app.Fragment} call
  * {@link #setViewPager(android.support.v4.view.ViewPager)} providing it the ViewPager this layout
  * is being used for.
- * <p>
+ * <p/>
  * The colors can be customized in two ways. The first and simplest is to provide an array of
  * colors
  * via {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)}. The
  * alternative is via the {@link TabColorizer} interface which provides you complete control over
  * which color is used for any individual position.
- * <p>
+ * <p/>
  * The views used as tabs can be customized by calling {@link #setCustomTabView(int, int)},
  * providing the layout ID of your custom layout.
- * <p>
+ * <p/>
  * Forked from Google Samples &gt; SlidingTabsBasic &gt;
  * <a href="https://developer.android.com/samples/SlidingTabsBasic/src/com.example.android.common/view/SlidingTabLayout.html">SlidingTabLayout</a>
  */
@@ -66,18 +66,12 @@ public class SmartTabLayout extends HorizontalScrollView {
     private static final int TITLE_OFFSET_DIPS = 24;
     private static final int TITLE_OFFSET_AUTO_CENTER = -1;
     private static final int TAB_VIEW_PADDING_DIPS = 16;
-    private static final boolean TAB_VIEW_TEXT_ALL_CAPS = true;
-    private static final int TAB_VIEW_TEXT_SIZE_SP = 12;
-    private static final int TAB_VIEW_TEXT_COLOR = 0xFC000000;
     private static final int TAB_VIEW_TEXT_MIN_WIDTH = 0;
     private static final boolean TAB_CLICKABLE = true;
 
     protected final com.dddev.market.place.ui.views.smarttablayout.SmartTabStrip tabStrip;
     private int titleOffset;
     private int tabViewBackgroundResId;
-    private boolean tabViewTextAllCaps;
-    private ColorStateList tabViewTextColors;
-    private float tabViewTextSize;
     private int tabViewTextHorizontalPadding;
     private int tabViewTextMinWidth;
     private ViewPager viewPager;
@@ -87,6 +81,10 @@ public class SmartTabLayout extends HorizontalScrollView {
     private InternalTabClickListener internalTabClickListener;
     private OnTabClickListener onTabClickListener;
     private boolean distributeEvenly;
+
+    private int messageCount;
+    private TextView counter;
+    private ImageView messageBackground;
 
     public SmartTabLayout(Context context) {
         this(context, null);
@@ -106,10 +104,6 @@ public class SmartTabLayout extends HorizontalScrollView {
         final float density = dm.density;
 
         int tabBackgroundResId = NO_ID;
-        boolean textAllCaps = TAB_VIEW_TEXT_ALL_CAPS;
-        ColorStateList textColors;
-        float textSize = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP, dm);
         int textHorizontalPadding = (int) (TAB_VIEW_PADDING_DIPS * density);
         int textMinWidth = (int) (TAB_VIEW_TEXT_MIN_WIDTH * density);
         boolean distributeEvenly = DEFAULT_DISTRIBUTE_EVENLY;
@@ -118,39 +112,19 @@ public class SmartTabLayout extends HorizontalScrollView {
         boolean clickable = TAB_CLICKABLE;
         int titleOffset = (int) (TITLE_OFFSET_DIPS * density);
 
-        TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.stl_SmartTabLayout, defStyle, 0);
-        tabBackgroundResId = a.getResourceId(
-                R.styleable.stl_SmartTabLayout_stl_defaultTabBackground, tabBackgroundResId);
-        textAllCaps = a.getBoolean(
-                R.styleable.stl_SmartTabLayout_stl_defaultTabTextAllCaps, textAllCaps);
-        textColors = a.getColorStateList(
-                R.styleable.stl_SmartTabLayout_stl_defaultTabTextColor);
-        textSize = a.getDimension(
-                R.styleable.stl_SmartTabLayout_stl_defaultTabTextSize, textSize);
-        textHorizontalPadding = a.getDimensionPixelSize(
-                R.styleable.stl_SmartTabLayout_stl_defaultTabTextHorizontalPadding, textHorizontalPadding);
-        textMinWidth = a.getDimensionPixelSize(
-                R.styleable.stl_SmartTabLayout_stl_defaultTabTextMinWidth, textMinWidth);
-        customTabLayoutId = a.getResourceId(
-                R.styleable.stl_SmartTabLayout_stl_customTabTextLayoutId, customTabLayoutId);
-        customTabTextViewId = a.getResourceId(
-                R.styleable.stl_SmartTabLayout_stl_customTabTextViewId, customTabTextViewId);
-        distributeEvenly = a.getBoolean(
-                R.styleable.stl_SmartTabLayout_stl_distributeEvenly, distributeEvenly);
-        clickable = a.getBoolean(
-                R.styleable.stl_SmartTabLayout_stl_clickable, clickable);
-        titleOffset = a.getLayoutDimension(
-                R.styleable.stl_SmartTabLayout_stl_titleOffset, titleOffset);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.stl_SmartTabLayout, defStyle, 0);
+        tabBackgroundResId = a.getResourceId(R.styleable.stl_SmartTabLayout_stl_defaultTabBackground, tabBackgroundResId);
+        textHorizontalPadding = a.getDimensionPixelSize(R.styleable.stl_SmartTabLayout_stl_defaultTabTextHorizontalPadding, textHorizontalPadding);
+        textMinWidth = a.getDimensionPixelSize(R.styleable.stl_SmartTabLayout_stl_defaultTabTextMinWidth, textMinWidth);
+        customTabLayoutId = a.getResourceId(R.styleable.stl_SmartTabLayout_stl_customTabTextLayoutId, customTabLayoutId);
+        customTabTextViewId = a.getResourceId(R.styleable.stl_SmartTabLayout_stl_customTabTextViewId, customTabTextViewId);
+        distributeEvenly = a.getBoolean(R.styleable.stl_SmartTabLayout_stl_distributeEvenly, distributeEvenly);
+        clickable = a.getBoolean(R.styleable.stl_SmartTabLayout_stl_clickable, clickable);
+        titleOffset = a.getLayoutDimension(R.styleable.stl_SmartTabLayout_stl_titleOffset, titleOffset);
         a.recycle();
 
         this.titleOffset = titleOffset;
         this.tabViewBackgroundResId = tabBackgroundResId;
-        this.tabViewTextAllCaps = textAllCaps;
-        this.tabViewTextColors = (textColors != null)
-                ? textColors
-                : ColorStateList.valueOf(TAB_VIEW_TEXT_COLOR);
-        this.tabViewTextSize = textSize;
         this.tabViewTextHorizontalPadding = textHorizontalPadding;
         this.tabViewTextMinWidth = textMinWidth;
         this.internalTabClickListener = clickable ? new InternalTabClickListener() : null;
@@ -207,8 +181,6 @@ public class SmartTabLayout extends HorizontalScrollView {
 
     /**
      * Set the behavior of the Indicator scrolling feedback.
-     *
-     * @param interpolator {@link com.ogaclejapan.smarttablayout.SmartTabIndicationInterpolator}
      */
     public void setIndicationInterpolator(SmartTabIndicationInterpolator interpolator) {
         tabStrip.setIndicationInterpolator(interpolator);
@@ -216,33 +188,13 @@ public class SmartTabLayout extends HorizontalScrollView {
 
     /**
      * Set the custom {@link TabColorizer} to be used.
-     *
+     * <p/>
      * If you only require simple customisation then you can use
      * {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)} to achieve
      * similar effects.
      */
     public void setCustomTabColorizer(TabColorizer tabColorizer) {
         tabStrip.setCustomTabColorizer(tabColorizer);
-    }
-
-    /**
-     * Set the color used for styling the tab text. This will need to be called prior to calling
-     * {@link #setViewPager(android.support.v4.view.ViewPager)} otherwise it will not get set
-     *
-     * @param color to use for tab text
-     */
-    public void setDefaultTabTextColor(int color) {
-        tabViewTextColors = ColorStateList.valueOf(color);
-    }
-
-    /**
-     * Sets the colors used for styling the tab text. This will need to be called prior to calling
-     * {@link #setViewPager(android.support.v4.view.ViewPager)} otherwise it will not get set
-     *
-     * @param colors ColorStateList to use for tab text
-     */
-    public void setDefaultTabTextColor(ColorStateList colors) {
-        tabViewTextColors = colors;
     }
 
     /**
@@ -301,7 +253,7 @@ public class SmartTabLayout extends HorizontalScrollView {
      * Set the custom layout to be inflated for the tab views.
      *
      * @param layoutResId Layout id to be inflated
-     * @param textViewId id of the {@link android.widget.TextView} in the inflated view
+     * @param textViewId  id of the {@link android.widget.TextView} in the inflated view
      */
     public void setCustomTabView(int layoutResId, int textViewId) {
         tabProvider = new SimpleTabProvider(getContext(), layoutResId, textViewId);
@@ -330,6 +282,18 @@ public class SmartTabLayout extends HorizontalScrollView {
         }
     }
 
+    public void setMessageCount(int messageCount) {
+        this.messageCount = messageCount;
+        if (messageCount > 0) {
+            messageBackground.setVisibility(VISIBLE);
+            counter.setVisibility(VISIBLE);
+        } else {
+            messageBackground.setVisibility(GONE);
+            counter.setVisibility(GONE);
+        }
+        counter.setText(String.valueOf(messageCount));
+    }
+
     /**
      * Returns the view at the specified position in the tabs.
      *
@@ -356,8 +320,7 @@ public class SmartTabLayout extends HorizontalScrollView {
             // If we're running on Honeycomb or newer, then we can use the Theme's
             // selectableItemBackground to ensure that the View has a pressed state
             TypedValue outValue = new TypedValue();
-            getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
-                    outValue, true);
+            getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
             imageView.setBackgroundResource(outValue.resourceId);
         }
 
@@ -404,11 +367,35 @@ public class SmartTabLayout extends HorizontalScrollView {
                 }
             }
 
+
             if (internalTabClickListener != null) {
                 tabView.setOnClickListener(internalTabClickListener);
             }
 
-            tabStrip.addView(tabView);
+            if (i == 1) {
+                View view = LayoutInflater.from(getContext()).inflate(R.layout.counter, tabStrip, false);
+                FrameLayout counterLayout = (FrameLayout) view.findViewById(R.id.counter_layout);
+                messageBackground = (ImageView) view.findViewById(R.id.message_background);
+                counter = (TextView) view.findViewById(R.id.counter);
+                counter.setText(String.valueOf(messageCount));
+                ImageView imageView = new ImageView(getContext());
+                imageView.setImageResource(adapter.getDrawableId(i));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                counterLayout.addView(imageView, 0);
+                if (internalTabClickListener != null) {
+                    view.setOnClickListener(internalTabClickListener);
+                }
+                if (messageCount > 0) {
+                    messageBackground.setVisibility(VISIBLE);
+                    counter.setVisibility(VISIBLE);
+                } else {
+                    messageBackground.setVisibility(GONE);
+                    counter.setVisibility(GONE);
+                }
+                tabStrip.addView(view);
+            } else {
+                tabStrip.addView(tabView);
+            }
 
             if (i == viewPager.getCurrentItem()) {
                 tabView.setSelected(true);
@@ -522,7 +509,7 @@ public class SmartTabLayout extends HorizontalScrollView {
         /**
          * Called when the scroll position of a view changes.
          *
-         * @param scrollX Current horizontal scroll origin.
+         * @param scrollX    Current horizontal scroll origin.
          * @param oldScrollX Previous horizontal scroll origin.
          */
         void onScrollChanged(int scrollX, int oldScrollX);
@@ -543,7 +530,6 @@ public class SmartTabLayout extends HorizontalScrollView {
 
     /**
      * Create the custom tabs in the tab layout. Set with
-     * {@link #setCustomTabView(com.ogaclejapan.smarttablayout.SmartTabLayout.TabProvider)}
      */
     public interface TabProvider {
 
