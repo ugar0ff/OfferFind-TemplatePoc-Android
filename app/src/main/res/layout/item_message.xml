@@ -7,6 +7,7 @@
     android:padding="@dimen/proposal_list_divider_height">
 
     <LinearLayout
+        android:id="@+id/background_layout"
         android:layout_width="0dp"
         android:layout_height="90dp"
         android:layout_weight="1"

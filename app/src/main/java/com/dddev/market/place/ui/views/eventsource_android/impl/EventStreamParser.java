@@ -5,8 +5,6 @@ import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 
 import java.util.regex.Pattern;
 
-import timber.log.Timber;
-
 
 /**
  * <a href="http://dev.w3.org/html5/eventsource/#event-stream-interpretation">Interprets an event stream</a>
@@ -38,7 +36,6 @@ public class EventStreamParser {
     }
 
     public void line(String line) {
-        Timber.v(line);
         int leftBracketCount = line.length() - line.replace("{", "").length();
         int rightBracketCount = line.length() - line.replace("}", "").length();
         if (leftBracketCount > rightBracketCount) {

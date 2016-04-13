@@ -32,8 +32,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import timber.log.Timber;
-
 public class EventSourceChannelHandler extends SimpleChannelUpstreamHandler implements ConnectionHandler {
     private static final Pattern STATUS_PATTERN = Pattern.compile("HTTP/1.1 (\\d+) (.*)");
     private static final Pattern CONTENT_TYPE_PATTERN = Pattern.compile("Content-Type: text/event-stream");
@@ -105,7 +103,6 @@ public class EventSourceChannelHandler extends SimpleChannelUpstreamHandler impl
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         String line = (String) e.getMessage();
-        Timber.v(line);
         if (status == null) {
             Matcher statusMatcher = STATUS_PATTERN.matcher(line);
             if (statusMatcher.matches()) {

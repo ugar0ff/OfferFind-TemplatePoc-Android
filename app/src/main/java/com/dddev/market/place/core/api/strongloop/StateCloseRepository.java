@@ -14,7 +14,7 @@ public class StateCloseRepository extends com.strongloop.android.loopback.ModelR
 
     public RestContract createContract() {
         RestContract contract = super.createContract();
-        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:id/state/close", "POST"), getClassName() + ".Bids");
+        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:id/state/withdraw", "POST"), getClassName() + ".Bids");
         return contract;
     }
 

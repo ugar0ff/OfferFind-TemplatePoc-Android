@@ -50,7 +50,6 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
     private long opportunitiesId;
     private String statusOpportunities;
     private String title;
-//    private SwipeRefreshLayout mSwipeRefreshLayout;
     private ListView listView;
     private int lastPositionY;
     private int lastFirstVisibleItem;
@@ -121,9 +120,6 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
                 }
             }
         });
-//        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-//        mSwipeRefreshLayout.setOnRefreshListener(this);
-//        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.BIDS_LOADER, null, this);
         return view;
     }
@@ -276,34 +272,10 @@ public class ProposalListFragment extends BaseFragment implements AdapterView.On
     @Override
     public void onResume() {
         super.onResume();
-//        mSwipeRefreshLayout.setRefreshing(false);
         if (title != null) {
             toolbarController.setToolbarTitle(title);
         }
         toolbar.setY(0);
     }
 
-//    @Override
-//    public void onRefresh() {
-//        mSwipeRefreshLayout.setRefreshing(true);
-//        startUpdateService();
-//    }
-//
-//    @Override
-//    public void onHandleServerRequest() {
-//        if (getActivity() != null && mSwipeRefreshLayout != null) {
-//            mSwipeRefreshLayout.setRefreshing(false);
-//        }
-//    }
-//
-//    @Override
-//    public void onHandleServerRequestError() {
-//        if (getActivity() != null && mSwipeRefreshLayout != null) {
-//            mSwipeRefreshLayout.setRefreshing(false);
-//        }
-//    }
-//
-//    private boolean isLastItem() {
-//        return listView.getLastVisiblePosition() == (adapterList.size() - 1);
-//    }
 }

@@ -42,6 +42,8 @@ public class StreamModel extends Model {
         private int bidId;
         @SerializedName("senderId")
         private int senderId;
+        @SerializedName("receiverId")
+        private int receiverId;
         @SerializedName("createdAt")
         private String createdAt;
         @SerializedName("read")
@@ -71,6 +73,7 @@ public class StreamModel extends Model {
             this.bidId = messages.getBidId();
             this.ownerId = messages.getOwnerId();
             this.senderId = messages.getSenderId();
+            this.receiverId = messages.getReceiverId();
             this.createdAt = messages.getCreatedAt();
             this.title = messages.getTitle();
             this.description = messages.getDescription();
@@ -206,6 +209,14 @@ public class StreamModel extends Model {
             this.read = read;
         }
 
+        public int getReceiverId() {
+            return receiverId;
+        }
+
+        public void setReceiverId(int receiverId) {
+            this.receiverId = receiverId;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -218,6 +229,7 @@ public class StreamModel extends Model {
             dest.writeInt(this.ownerId);
             dest.writeInt(this.bidId);
             dest.writeInt(this.senderId);
+            dest.writeInt(this.receiverId);
             dest.writeString(this.createdAt);
             dest.writeByte(read ? (byte) 1 : (byte) 0);
             dest.writeString(this.title);
@@ -236,6 +248,7 @@ public class StreamModel extends Model {
             this.ownerId = in.readInt();
             this.bidId = in.readInt();
             this.senderId = in.readInt();
+            this.receiverId = in.readInt();
             this.createdAt = in.readString();
             this.read = in.readByte() != 0;
             this.title = in.readString();

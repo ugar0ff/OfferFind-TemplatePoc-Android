@@ -16,6 +16,7 @@ import com.dddev.market.place.ui.views.eventsource_android.EventSource;
 import com.dddev.market.place.ui.views.eventsource_android.EventSourceHandler;
 import com.dddev.market.place.ui.views.eventsource_android.MessageEvent;
 import com.dddev.market.place.utils.PreferencesUtils;
+import com.dddev.market.place.utils.StaticKeys;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -112,8 +113,10 @@ public class StreamService extends Service {
                 updateOpportunities(message);
             } else if (message.getMessageData().getClassName().equals("Bid")) {
                 updateBid(message);
-            } else if (message.getMessageData().getClassName().equals("Messages")) {
-                updateMessage(message);
+            } else if (message.getMessageData().getClassName().equals("Message")) {
+                if (!message.getMessageData().getType().equals(StaticKeys.StreamType.UPDATE)) {
+                    updateMessage(message);
+                }
             }
         }
 
@@ -173,7 +176,8 @@ public class StreamService extends Service {
         values.put(CacheHelper.MESSAGE_BID_ID, message.getMessageData().getData().getBidId());
         values.put(CacheHelper.MESSAGE_OWNER_ID, message.getMessageData().getData().getOwnerId());
         values.put(CacheHelper.MESSAGE_SENDER_ID, message.getMessageData().getData().getSenderId());
-        values.put(CacheHelper.MESSAGE_READ, message.getMessageData().getData().isRead());
+        values.put(CacheHelper.MESSAGE_READ, message.getMessageData().getData().isRead() ? 1 : 0);
+        values.put(CacheHelper.MESSAGE_RECEIVER_ID, message.getMessageData().getData().getReceiverId());
         getBaseContext().getContentResolver().insert(CacheContentProvider.MESSAGE_URI, values);
     }
 

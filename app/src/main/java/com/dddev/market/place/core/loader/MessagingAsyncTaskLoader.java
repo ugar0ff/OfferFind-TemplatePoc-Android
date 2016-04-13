@@ -4,7 +4,6 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.dddev.market.place.core.api.strongloop.Account;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.Messages;
 import com.dddev.market.place.core.api.strongloop.Owner;
@@ -20,6 +19,18 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
 
     public MessagingAsyncTaskLoader(Context context) {
         super(context);
+        onContentChanged();
+    }
+
+    @Override
+    protected void onStartLoading() {
+        if (takeContentChanged())
+            forceLoad();
+    }
+
+    @Override
+    protected void onStopLoading() {
+//        cancelLoad();
     }
 
     @Override
@@ -50,6 +61,7 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
                             do {
                                 String bidStatus = cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_STATUS));
                                 if (opportunitiesStatus.equals(bidStatus)) {
+                                    ArrayList<Messages> messagesList = getMessagesList(cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper._ID)));
                                     list.add(new Bids.ModelBids(cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper._ID)),
                                             cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_TITLE)),
                                             cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.BIDS_DESCRIPTION)),
@@ -61,7 +73,7 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
                                             new Owner(cursorBids.getInt(cursorBids.getColumnIndex(CacheHelper.OWNER_ID)),
                                                     cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.OWNER_NAME)),
                                                     cursorBids.getString(cursorBids.getColumnIndex(CacheHelper.OWNER_AVATAR))),
-                                            null));
+                                            messagesList));
                                 }
                             } while (cursorBids.moveToNext());
                         }
@@ -72,5 +84,26 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
             cursorOpportunities.close();
         }
         return list;
+    }
+
+    private ArrayList<Messages> getMessagesList(int bidId) {
+        ArrayList<Messages> messagesList = new ArrayList<>();
+        String[] projection = new String[]{CacheHelper.MESSAGE_ID + " as " + CacheHelper._ID, CacheHelper.MESSAGE_RECEIVER_ID, CacheHelper.MESSAGE_READ};
+        String selection = CacheHelper.MESSAGE_BID_ID + " = ?";
+        String[] selectionArg = new String[]{String.valueOf(bidId)};
+        Cursor cursor = getContext().getContentResolver().query(CacheContentProvider.MESSAGE_URI, projection, selection, selectionArg, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Messages messages = new Messages();
+                    messages.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
+                    messages.setReceiverId(cursor.getInt(cursor.getColumnIndex(CacheHelper.MESSAGE_RECEIVER_ID)));
+                    messages.setRead(cursor.getInt(cursor.getColumnIndex(CacheHelper.MESSAGE_READ)) == 1);
+                    messagesList.add(messages);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return messagesList;
     }
 }

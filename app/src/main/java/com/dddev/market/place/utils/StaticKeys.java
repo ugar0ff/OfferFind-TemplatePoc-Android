@@ -16,6 +16,8 @@ public class StaticKeys {
     public static final String KEY_MESSAGE = "key_message";
     public static final String ACCEPT_BIDS_ID = "accept_bids_id";
     public static final String COMPLETE_BIDS_ID = "complete_bids_id";
+    public static final String BID_ID = "bid_id";
+    public static final String MESSAGE_ID = "message_id";
 
     public class LoaderId {
         public static final int TAB_LOADER = 1;
@@ -25,11 +27,17 @@ public class StaticKeys {
         public static final int OPPORTUNITIES_LOADER = 5;
         public static final int ACCEPT_STATE_LOADER = 6;
         public static final int MESSAGE_LOADER = 7;
+        public static final int CHANGE_MESSAGE_LOADER = 8;
     }
 
     public class State {
         public static final String PUBLISHED = "published";
         public static final String ACCEPTED = "accepted";
         public static final String CLOSED = "closed";
+    }
+
+    public class StreamType {
+        public static final String CREATE = "create";
+        public static final String UPDATE = "update";
     }
 }

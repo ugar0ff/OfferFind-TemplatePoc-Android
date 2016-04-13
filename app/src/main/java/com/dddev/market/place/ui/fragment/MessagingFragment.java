@@ -1,7 +1,9 @@
 package com.dddev.market.place.ui.fragment;
 
 import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,6 +15,8 @@ import android.widget.ListView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.api.strongloop.Bids;
+import com.dddev.market.place.core.cache.CacheContentProvider;
+import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.core.loader.MessagingAsyncTaskLoader;
 import com.dddev.market.place.ui.activity.NewOrdersActivity;
 import com.dddev.market.place.ui.activity.ProposalActivity;
@@ -28,7 +32,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 09.02.16.
  */
-public class MessagingFragment extends UpdateReceiverFragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<ArrayList<Bids.ModelBids>>, AdapterView.OnItemClickListener {
+public class MessagingFragment extends UpdateReceiverFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private List<Bids.ModelBids> adapterList;
     private MessagingAdapter adapter;
@@ -56,7 +60,7 @@ public class MessagingFragment extends UpdateReceiverFragment implements View.On
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
-        getActivity().getLoaderManager().initLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER, null, this).forceLoad();
+        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.CHANGE_MESSAGE_LOADER, null, changeMessageLoader);
         return view;
     }
 
@@ -69,37 +73,68 @@ public class MessagingFragment extends UpdateReceiverFragment implements View.On
         }
     }
 
-    @Override
-    public Loader<ArrayList<Bids.ModelBids>> onCreateLoader(int id, Bundle args) {
-        Timber.i("onCreateLoader");
-        switch (id) {
-            case StaticKeys.LoaderId.ALL_BIDS_LOADER:
-                return new MessagingAsyncTaskLoader(getActivity());
-            default:
-                return null;
+    private LoaderManager.LoaderCallbacks<ArrayList<Bids.ModelBids>> allBidsLoader = new LoaderManager.LoaderCallbacks<ArrayList<Bids.ModelBids>>() {
+        @Override
+        public Loader<ArrayList<Bids.ModelBids>> onCreateLoader(int id, Bundle args) {
+            Timber.i("onCreateLoader id = %s", id);
+            switch (id) {
+                case StaticKeys.LoaderId.ALL_BIDS_LOADER:
+                    return new MessagingAsyncTaskLoader(getActivity());
+                default:
+                    return null;
+            }
         }
-    }
 
-    @Override
-    public void onLoadFinished(Loader<ArrayList<Bids.ModelBids>> loader, ArrayList<Bids.ModelBids> data) {
-        Timber.i("onLoadFinished, loader.getId() = %s, data.size = %s", loader.getId(), data.size());
-        switch (loader.getId()) {
-            case StaticKeys.LoaderId.ALL_BIDS_LOADER:
-                adapterList.clear();
-                if (data != null) {
-                    for (Bids.ModelBids modelBids : data) {
-                        adapterList.add(modelBids);
+        @Override
+        public void onLoadFinished(Loader<ArrayList<Bids.ModelBids>> loader, ArrayList<Bids.ModelBids> data) {
+            Timber.i("onLoadFinished, loader.getId() = %s, data.size = %s", loader.getId(), data.size());
+            switch (loader.getId()) {
+                case StaticKeys.LoaderId.ALL_BIDS_LOADER:
+                    adapterList.clear();
+                    if (data != null) {
+                        adapterList.addAll(data);
                     }
-                }
-                adapter.notifyDataSetChanged();
-                break;
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
         }
-    }
 
-    @Override
-    public void onLoaderReset(Loader<ArrayList<Bids.ModelBids>> loader) {
-        Timber.i("onLoaderReset");
-    }
+        @Override
+        public void onLoaderReset(Loader<ArrayList<Bids.ModelBids>> loader) {
+            Timber.i("onLoaderReset");
+        }
+    };
+
+    private LoaderManager.LoaderCallbacks<Cursor> changeMessageLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            Timber.i("onCreateLoader id = %s", id);
+            switch (id) {
+                case StaticKeys.LoaderId.CHANGE_MESSAGE_LOADER:
+                    String[] projection = new String[]{CacheHelper.MESSAGE_ID + " as _id "};
+                    return new CursorLoader(getActivity(), CacheContentProvider.MESSAGE_URI, projection, null, null, null);
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            Timber.i("onLoadFinished loader.getId() = %s", loader.getId());
+            switch (loader.getId()) {
+                case StaticKeys.LoaderId.CHANGE_MESSAGE_LOADER:
+                    if (getActivity() != null) {
+                        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER, null, allBidsLoader);
+                    }
+                    break;
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+            Timber.i("onLoaderReset");
+        }
+    };
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

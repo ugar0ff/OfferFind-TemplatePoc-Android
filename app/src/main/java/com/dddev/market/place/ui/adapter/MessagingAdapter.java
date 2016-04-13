@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
@@ -52,6 +53,7 @@ public class MessagingAdapter extends BaseAdapter {
     public class ViewHolder {
         public TextView title, createAt, state, provider;
         public ImageView picture;
+        public LinearLayout backgroundLayout;
     }
 
     @Override
@@ -65,6 +67,7 @@ public class MessagingAdapter extends BaseAdapter {
             viewHolder.state = (TextView) convertView.findViewById(R.id.text_state);
             viewHolder.provider = (TextView) convertView.findViewById(R.id.owner);
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.image_state);
+            viewHolder.backgroundLayout = (LinearLayout) convertView.findViewById(R.id.background_layout);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -109,6 +112,8 @@ public class MessagingAdapter extends BaseAdapter {
                     viewHolder.state.setTextColor(ContextCompat.getColor(context, R.color.colorStateYellow));
                     Picasso.with(context).load(R.drawable.icon_proposal_selecting).into(viewHolder.picture);
             }
+
+            viewHolder.backgroundLayout.setBackgroundResource(list.get(position).isRead(context) ? R.color.colorProposalItem : R.color.colorNewMessage);
         }
         return convertView;
     }

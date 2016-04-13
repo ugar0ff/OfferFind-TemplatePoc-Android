@@ -1,8 +1,10 @@
 package com.dddev.market.place.core.api.strongloop;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.dddev.market.place.utils.PreferencesUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -170,6 +172,18 @@ public class Bids extends Model {
 
         public void setMessages(ArrayList<Messages> messages) {
             this.messages = messages;
+        }
+
+        public boolean isRead(Context context) {
+            int userId = PreferencesUtils.getUserId(context);
+            if (getMessages() != null) {
+                for (Messages messages : getMessages()) {
+                    if (!messages.isRead() && messages.getReceiverId() == userId) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         @Override

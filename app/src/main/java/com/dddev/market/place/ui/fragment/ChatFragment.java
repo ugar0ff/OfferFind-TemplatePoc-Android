@@ -2,6 +2,7 @@ package com.dddev.market.place.ui.fragment;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,13 +16,15 @@ import android.widget.ListView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.AppOfferFind;
-import com.dddev.market.place.core.api.strongloop.StreamModel;
-import com.dddev.market.place.core.api.strongloop.MessagesGetRepository;
 import com.dddev.market.place.core.api.strongloop.MessagesPostRepository;
+import com.dddev.market.place.core.api.strongloop.StreamModel;
 import com.dddev.market.place.core.cache.CacheContentProvider;
 import com.dddev.market.place.core.cache.CacheHelper;
+import com.dddev.market.place.core.service.PutMessageService;
+import com.dddev.market.place.core.service.UpdateService;
 import com.dddev.market.place.ui.adapter.ChatAdapter;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
+import com.dddev.market.place.utils.PreferencesUtils;
 import com.dddev.market.place.utils.StaticKeys;
 import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
 
@@ -84,6 +87,18 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        startPutMessagesService();
+    }
+
+    @Override
+    public void onPause() {
+        startPutMessagesService();
+        super.onPause();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chat_send_button:
@@ -93,32 +108,6 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
                 }
                 break;
         }
-    }
-
-    private void getMessages() {
-        final MessagesGetRepository messagesGetRepository = AppOfferFind.getRestAdapter(getActivity()).createRepository(MessagesGetRepository.class);
-        messagesGetRepository.createContract();
-        messagesGetRepository.messages(id, new MessagesGetRepository.MessagesCallback() {
-            @Override
-            public void onSuccess(StreamModel messages) {
-                adapter.clear();
-                addAdapterHeaderView();
-                if (messages != null && messages.getList() != null) {
-                    adapter.addAll(messages.getList());
-                }
-                if (adapter.getCount() > 0) {
-                    if (swingBottomInAnimationAdapter.getViewAnimator() != null) {
-                        swingBottomInAnimationAdapter.getViewAnimator().setShouldAnimateFromPosition(adapter.getCount() - 1);
-                    }
-                    listView.smoothScrollToPosition(adapter.getCount() - 1);
-                }
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                Timber.e("onError Throwable: %s", t.toString());
-            }
-        });
     }
 
     private void sendMessage(String message) {
@@ -153,9 +142,10 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
                 String[] projection = new String[]{CacheHelper.MESSAGE_ID + " as _id ",
                         CacheHelper.MESSAGE_TEXT,
                         CacheHelper.MESSAGE_SENDER_ID,
+                        CacheHelper.MESSAGE_READ,
                         CacheHelper.MESSAGE_OWNER_ID};
                 String selection = CacheHelper.MESSAGE_BID_ID + " = ?";
-                String[] selectionArg = new String[]{String.valueOf(id)};
+                String[] selectionArg = new String[]{String.valueOf(ChatFragment.this.id)};
                 return new CursorLoader(getActivity(), CacheContentProvider.MESSAGE_URI, projection, selection, selectionArg, null);
             default:
                 return null;
@@ -171,11 +161,17 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
                 addAdapterHeaderView();
                 if (cursor.moveToFirst()) {
                     do {
+                        int id = cursor.getInt(cursor.getColumnIndex(CacheHelper._ID));
+                        boolean isRead = cursor.getInt(cursor.getColumnIndex(CacheHelper.MESSAGE_READ)) == 1;
                         StreamModel.ModelMessages modelMessages = new StreamModel.ModelMessages();
-                        modelMessages.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
+                        modelMessages.setId(id);
                         modelMessages.setText(cursor.getString(cursor.getColumnIndex(CacheHelper.MESSAGE_TEXT)));
                         modelMessages.setOwnerId(cursor.getInt(cursor.getColumnIndex(CacheHelper.MESSAGE_OWNER_ID)));
                         modelMessages.setSenderId(cursor.getInt(cursor.getColumnIndex(CacheHelper.MESSAGE_SENDER_ID)));
+                        modelMessages.setRead(isRead);
+//                        if (!isRead && getActivity() != null && !PreferencesUtils.isFirstLoad(getActivity())) {
+//                            startPutMessageService(id);
+//                        }
                         adapter.add(modelMessages);
                     } while (cursor.moveToNext());
                 }
@@ -192,5 +188,16 @@ public class ChatFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Timber.i("onLoaderReset");
+    }
+
+    public void startPutMessagesService() {
+        if (getActivity() != null) {
+            getActivity().startService(new Intent(getActivity(), PutMessageService.class).putExtra(StaticKeys.BID_ID, id));
+        }
+    }
+    public void startPutMessageService(int id) {
+        if (getActivity() != null) {
+            getActivity().startService(new Intent(getActivity(), PutMessageService.class).putExtra(StaticKeys.MESSAGE_ID, id));
+        }
     }
 }

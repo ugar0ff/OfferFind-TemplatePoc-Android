@@ -26,6 +26,7 @@ public class MessagesPostRepository extends com.strongloop.android.loopback.Mode
     public void messages(String text, int id, final MessagesCallback callback) {
         invokeStaticMethod("messages", ImmutableMap.of("text", text,
                 "senderId", PreferencesUtils.getUserId(getApplicationContext()),
+                "read", true,
                 "bidId", id), new Adapter.Callback() {
 
             @Override

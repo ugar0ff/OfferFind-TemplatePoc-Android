@@ -55,7 +55,7 @@ public class CacheContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, OWNER_PATCH, OWNER);
         uriMatcher.addURI(AUTHORITY, OWNER_PATCH + "/#", OWNER_ID);
         uriMatcher.addURI(AUTHORITY, MESSAGE_PATCH, MESSAGE);
-        uriMatcher.addURI(AUTHORITY, OWNER_PATCH + "/#", MESSAGE_ID);
+        uriMatcher.addURI(AUTHORITY, MESSAGE_PATCH + "/#", MESSAGE_ID);
     }
 
     private CacheHelper cacheHelper;
@@ -72,6 +72,7 @@ public class CacheContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         String table = null;
+        Uri _uri = null;
         switch (uriMatcher.match(uri)) {
             case OPPORTUNITIES:
                 table = CacheHelper.TABLE_OPPORTUNITIES;
@@ -84,12 +85,14 @@ public class CacheContentProvider extends ContentProvider {
             case BIDS:
                 table = CacheHelper.TABLE_BIDS + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_BIDS + "." + CacheHelper.BIDS_OWNER_ID + " = " +
                         CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
+//                _uri = MESSAGE_URI;
                 break;
             case BIDS_ID:
                 table = CacheHelper.TABLE_BIDS + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_BIDS + "." + CacheHelper.BIDS_OWNER_ID + " = " +
                         CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
                 selection = CacheHelper.BIDS_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
+//                _uri = MESSAGE_URI;
                 break;
             case CATEGORY:
                 table = CacheHelper.TABLE_CATEGORY;
@@ -126,6 +129,9 @@ public class CacheContentProvider extends ContentProvider {
         }
         if (cursor != null && getContext() != null) {
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
+            if (_uri != null) {
+                getContext().getContentResolver().notifyChange(MESSAGE_URI, null);
+            }
         }
         return cursor;
     }
@@ -233,7 +239,7 @@ public class CacheContentProvider extends ContentProvider {
                 }
                 break;
             case OWNER:
-                rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_CATEGORY, selection, selectionArgs);
+                rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_OWNER, selection, selectionArgs);
                 break;
             case OWNER_ID:
                 id = uri.getLastPathSegment();
@@ -313,7 +319,7 @@ public class CacheContentProvider extends ContentProvider {
                 }
                 break;
             case OWNER:
-                rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_CATEGORY, values, selection, selectionArgs);
+                rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_OWNER, values, selection, selectionArgs);
                 break;
             case OWNER_ID:
                 id = uri.getLastPathSegment();

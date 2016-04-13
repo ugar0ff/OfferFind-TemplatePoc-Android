@@ -13,6 +13,7 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final int DB_VERSION = 1;
 
     public static final String _ID = "_id";
+    public static final String TIMESTAMP = "timestamp";
 
     //status:
     //0 - selecting
@@ -27,7 +28,7 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String OPPORTUNITIES_CATEGORY_ID = "opportunities_category";
     public static final String OPPORTUNITIES_STATUS = "opportunities_status";
     private final String CREATE_OPPORTUNITIES = "CREATE TABLE " + TABLE_OPPORTUNITIES + " (" + OPPORTUNITIES_ID + " integer primary key, " + OPPORTUNITIES_TITLE + " text, " + OPPORTUNITIES_DESCRIPTION + " text, " +
-            OPPORTUNITIES_ACCOUNT_ID + " integer, " + OPPORTUNITIES_CREATE_AT + " text NOT NULL DEFAULT '0', " + OPPORTUNITIES_STATUS + " text, " + OPPORTUNITIES_CATEGORY_ID + " integer);";
+            OPPORTUNITIES_ACCOUNT_ID + " integer, " + OPPORTUNITIES_CREATE_AT + " text NOT NULL DEFAULT '0', " + OPPORTUNITIES_STATUS + " text, " + OPPORTUNITIES_CATEGORY_ID + " integer, " + TIMESTAMP + " integer);";
     private final String DROP_OPPORTUNITIES = "DROP TABLE IF EXISTS " + TABLE_OPPORTUNITIES + ";";
 
     public static final String TABLE_BIDS = "bids";
@@ -40,7 +41,7 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String BIDS_CREATE_AT = "bids_create_at";
     public static final String BIDS_OWNER_ID = "bids_owner_id";
     private final String CREATE_BIDS = "CREATE TABLE " + TABLE_BIDS + " (" + BIDS_ID + " integer primary key, " + BIDS_TITLE + " text, " + BIDS_DESCRIPTION + " text, " +
-            BIDS_PRICE + " real, " + BIDS_OPPORTUNITIES_ID + " integer, " + BIDS_STATUS + " text, " + BIDS_CREATE_AT + " text NOT NULL DEFAULT '0'," + BIDS_OWNER_ID + " integer);";
+            BIDS_PRICE + " real, " + BIDS_OPPORTUNITIES_ID + " integer, " + BIDS_STATUS + " text, " + BIDS_CREATE_AT + " text NOT NULL DEFAULT '0'," + BIDS_OWNER_ID + " integer, " + TIMESTAMP + " integer);";
     private final String DROP_BIDS = "DROP TABLE IF EXISTS " + TABLE_BIDS + ";";
 
     public static final String TABLE_CATEGORY = "category";
@@ -57,7 +58,7 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String OWNER_AVATAR = "owner_avatar";
     public static final String OWNER_NAME = "owner_name";
     private final String CREATE_OWNER = "CREATE TABLE " + TABLE_OWNER + " (" + OWNER_ID + " integer primary key, " + OWNER_AVATAR + " text, " +
-            OWNER_NAME + " text);";
+            OWNER_NAME + " text, " + TIMESTAMP + " integer);";
     private final String DROP_OWNER = "DROP TABLE IF EXISTS " + TABLE_OWNER + ";";
 
     public static final String TABLE_MESSAGE = "message";
@@ -68,8 +69,9 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String MESSAGE_BID_ID = "message_bid_id";
     public static final String MESSAGE_OWNER_ID = "message_owner_id";
     public static final String MESSAGE_SENDER_ID = "message_sender_id";
-    private final String CREATE_MESSAGE = "CREATE TABLE " + TABLE_MESSAGE + " (" + MESSAGE_ID + " integer primary key, " + MESSAGE_READ + " integer, " +
-            MESSAGE_TEXT + " text, " + MESSAGE_CREATE_AT + " text, " + MESSAGE_BID_ID + " integer, " + MESSAGE_OWNER_ID + " integer, " + MESSAGE_SENDER_ID + " integer);";
+    public static final String MESSAGE_RECEIVER_ID = "message_receiver_id";
+    private final String CREATE_MESSAGE = "CREATE TABLE " + TABLE_MESSAGE + " (" + MESSAGE_ID + " integer primary key, " + MESSAGE_READ + " integer, " + MESSAGE_RECEIVER_ID + " integer, " +
+            MESSAGE_TEXT + " text, " + MESSAGE_CREATE_AT + " text, " + MESSAGE_BID_ID + " integer, " + MESSAGE_OWNER_ID + " integer, " + MESSAGE_SENDER_ID + " integer, " + TIMESTAMP + " integer);";
     private final String DROP_MESSAGE = "DROP TABLE IF EXISTS " + TABLE_MESSAGE + ";";
 
     public CacheHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {

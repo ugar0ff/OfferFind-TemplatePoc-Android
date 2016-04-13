@@ -20,17 +20,24 @@ public class Messages implements Parcelable {
     private int bidId;
     @SerializedName("senderId")
     private int senderId;
+    @SerializedName("receiverId")
+    private int receiverId;
     @SerializedName("createdAt")
     private String createdAt;
     @SerializedName("read")
     private boolean read;
 
-    public Messages(int id, String text, int ownerId, int bidId, int senderId, String createdAt, boolean read) {
+    public Messages() {
+
+    }
+
+    public Messages(int id, String text, int ownerId, int bidId, int senderId, int receiverId, String createdAt, boolean read) {
         this.id = id;
         this.text = text;
         this.ownerId = ownerId;
         this.bidId = bidId;
         this.senderId = senderId;
+        this.receiverId = receiverId;
         this.createdAt = createdAt;
         this.read = read;
     }
@@ -91,6 +98,14 @@ public class Messages implements Parcelable {
         this.read = read;
     }
 
+    public int getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -103,6 +118,7 @@ public class Messages implements Parcelable {
         dest.writeInt(this.ownerId);
         dest.writeInt(this.bidId);
         dest.writeInt(this.senderId);
+        dest.writeInt(this.receiverId);
         dest.writeString(this.createdAt);
         dest.writeByte(read ? (byte) 1 : (byte) 0);
     }
@@ -113,6 +129,7 @@ public class Messages implements Parcelable {
         this.ownerId = in.readInt();
         this.bidId = in.readInt();
         this.senderId = in.readInt();
+        this.receiverId = in.readInt();
         this.createdAt = in.readString();
         this.read = in.readByte() != 0;
     }
@@ -128,4 +145,18 @@ public class Messages implements Parcelable {
             return new Messages[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "Messages{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", ownerId=" + ownerId +
+                ", bidId=" + bidId +
+                ", senderId=" + senderId +
+                ", receiverId=" + receiverId +
+                ", createdAt='" + createdAt + '\'' +
+                ", read=" + read +
+                '}';
+    }
 }

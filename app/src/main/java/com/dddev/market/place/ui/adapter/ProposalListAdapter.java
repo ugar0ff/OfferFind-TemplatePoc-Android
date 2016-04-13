@@ -124,7 +124,6 @@ public class ProposalListAdapter extends BaseAdapter {
             }
             viewHolder.price.setText(priceText);
 
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 viewHolder.title.setTransitionName(String.format("title%s", list.get(position).getId()));
                 viewHolder.price.setTransitionName(String.format("price%s", list.get(position).getId()));

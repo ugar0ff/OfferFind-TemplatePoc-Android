@@ -1,9 +1,13 @@
 package com.dddev.market.place.core.service;
 
 import android.app.IntentService;
+import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.OperationApplicationException;
+import android.database.Cursor;
 import android.os.Handler;
+import android.os.RemoteException;
 
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.retrofit.ApiRetrofit;
@@ -31,6 +35,8 @@ import timber.log.Timber;
  */
 public class UpdateService extends IntentService {
 
+    private ArrayList<ContentProviderOperation> providerOperations;
+
     public UpdateService() {
         super("com.dddev.market.place.core.service.UpdateService");
     }
@@ -57,27 +63,33 @@ public class UpdateService extends IntentService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (opportunities != null ) {
+        if (opportunities != null) {
             Timber.i("onSuccess response=s");
-            getContentResolver().delete(CacheContentProvider.BIDS_URI, null, null);
-            getContentResolver().delete(CacheContentProvider.MESSAGE_URI, null, null);
-            ContentValues[] opportunitiesValues = new ContentValues[opportunities.size()];
+            long currentTime = System.currentTimeMillis();
+            providerOperations = new ArrayList<>();
             for (int i = 0; i < opportunities.size(); i++) {
-                ContentValues values = new ContentValues();
-                values.put(CacheHelper.OPPORTUNITIES_ID, opportunities.get(i).getId());
-                values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunities.get(i).getTitle());
-                values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunities.get(i).getDescription());
-                values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunities.get(i).getOwnerId());
-                values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunities.get(i).getCreatedAt());
-                values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunities.get(i).getCategoryId());
-                values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunities.get(i).getState());
-
-                updateBids(opportunities.get(i).getBids(), opportunities.get(i).getTitle());
-
-                opportunitiesValues[i] = values;
+                providerOperations.add(ContentProviderOperation.newInsert(CacheContentProvider.OPPORTUNITIES_URI)
+                        .withValue(CacheHelper.OPPORTUNITIES_ID, opportunities.get(i).getId())
+                        .withValue(CacheHelper.OPPORTUNITIES_TITLE, opportunities.get(i).getTitle())
+                        .withValue(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunities.get(i).getDescription())
+                        .withValue(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunities.get(i).getOwnerId())
+                        .withValue(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunities.get(i).getCreatedAt())
+                        .withValue(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunities.get(i).getCategoryId())
+                        .withValue(CacheHelper.OPPORTUNITIES_STATUS, opportunities.get(i).getState())
+                        .withValue(CacheHelper.TIMESTAMP, currentTime)
+                        .withYieldAllowed(true)
+                        .build());
+                updateBids(opportunities.get(i).getBids(), opportunities.get(i).getTitle(), currentTime);
             }
-            getContentResolver().delete(CacheContentProvider.OPPORTUNITIES_URI, null, null);
-            getContentResolver().bulkInsert(CacheContentProvider.OPPORTUNITIES_URI, opportunitiesValues);
+
+            try {
+                getContentResolver().applyBatch(CacheContentProvider.AUTHORITY, providerOperations);
+                deleteOldData(currentTime);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            } catch (OperationApplicationException e) {
+                e.printStackTrace();
+            }
             requestStatus = RequestStatus.TASK_OK;
         } else {
             requestStatus = RequestStatus.TASK_ERROR;
@@ -85,53 +97,56 @@ public class UpdateService extends IntentService {
         sendMessageCallBack(requestStatus);
     }
 
-    private void updateBids(List<Bids.ModelBids> modelBids, String title) {
-        ContentValues[] bidsContentValues = new ContentValues[modelBids.size()];
+    private void updateBids(List<Bids.ModelBids> modelBids, String title, long currentTime) {
         for (int j = 0; j < modelBids.size(); j++) {
-            ContentValues bidsValues = new ContentValues();
-            bidsValues.put(CacheHelper.BIDS_ID, modelBids.get(j).getId());
-            bidsValues.put(CacheHelper.BIDS_TITLE, title);
-            bidsValues.put(CacheHelper.BIDS_DESCRIPTION, modelBids.get(j).getDescription());
-            bidsValues.put(CacheHelper.BIDS_OPPORTUNITIES_ID, modelBids.get(j).getOpportunityId());
-            bidsValues.put(CacheHelper.BIDS_PRICE, modelBids.get(j).getPrice());
-            bidsValues.put(CacheHelper.BIDS_STATUS, modelBids.get(j).getState());
-            bidsValues.put(CacheHelper.BIDS_CREATE_AT, modelBids.get(j).getCreatedAt());
-            bidsValues.put(CacheHelper.BIDS_OWNER_ID, modelBids.get(j).getOwnerId());
-            bidsContentValues[j] = bidsValues;
-            updateOwner(modelBids.get(j).getOwner());
-            updateMessages(modelBids.get(j).getMessages());
+            providerOperations.add(ContentProviderOperation.newInsert(CacheContentProvider.BIDS_URI)
+                    .withValue(CacheHelper.BIDS_ID, modelBids.get(j).getId())
+                    .withValue(CacheHelper.BIDS_TITLE, title)
+                    .withValue(CacheHelper.BIDS_DESCRIPTION, modelBids.get(j).getDescription())
+                    .withValue(CacheHelper.BIDS_OPPORTUNITIES_ID, modelBids.get(j).getOpportunityId())
+                    .withValue(CacheHelper.BIDS_PRICE, modelBids.get(j).getPrice())
+                    .withValue(CacheHelper.BIDS_STATUS, modelBids.get(j).getState())
+                    .withValue(CacheHelper.BIDS_CREATE_AT, modelBids.get(j).getCreatedAt())
+                    .withValue(CacheHelper.BIDS_OWNER_ID, modelBids.get(j).getOwnerId())
+                    .withValue(CacheHelper.TIMESTAMP, currentTime)
+                    .withYieldAllowed(true)
+                    .build());
+            updateOwner(modelBids.get(j).getOwner(), currentTime);
+            updateMessages(modelBids.get(j).getMessages(), currentTime);
         }
-        getContentResolver().bulkInsert(CacheContentProvider.BIDS_URI, bidsContentValues);
     }
 
-    private void updateOwner(Owner owner) {
+    private void updateOwner(Owner owner, long currentTime) {
         if (owner == null) {
             return;
         }
-        ContentValues values = new ContentValues();
-        values.put(CacheHelper.OWNER_ID, owner.getId());
-        values.put(CacheHelper.OWNER_AVATAR, owner.getAvatar());
-        values.put(CacheHelper.OWNER_NAME, owner.getName());
-        getBaseContext().getContentResolver().insert(CacheContentProvider.OWNER_URI, values);
+        providerOperations.add(ContentProviderOperation.newInsert(CacheContentProvider.OWNER_URI)
+                .withValue(CacheHelper.OWNER_ID, owner.getId())
+                .withValue(CacheHelper.OWNER_AVATAR, owner.getAvatar())
+                .withValue(CacheHelper.OWNER_NAME, owner.getName())
+                .withValue(CacheHelper.TIMESTAMP, currentTime)
+                .withYieldAllowed(true)
+                .build());
     }
 
-    private void updateMessages(ArrayList<Messages> messages) {
+    private void updateMessages(ArrayList<Messages> messages, long currentTime) {
         if (messages == null) {
             return;
         }
-        ContentValues[] contentValues = new ContentValues[messages.size()];
         for (int i = 0; i < messages.size(); i++) {
-            ContentValues values = new ContentValues();
-            values.put(CacheHelper.MESSAGE_ID, messages.get(i).getId());
-            values.put(CacheHelper.MESSAGE_TEXT, messages.get(i).getText());
-            values.put(CacheHelper.MESSAGE_CREATE_AT, messages.get(i).getCreatedAt());
-            values.put(CacheHelper.MESSAGE_OWNER_ID, messages.get(i).getOwnerId());
-            values.put(CacheHelper.MESSAGE_SENDER_ID, messages.get(i).getSenderId());
-            values.put(CacheHelper.MESSAGE_BID_ID, messages.get(i).getBidId());
-            values.put(CacheHelper.MESSAGE_READ, messages.get(i).isRead());
-            contentValues[i] = values;
+            providerOperations.add(ContentProviderOperation.newInsert(CacheContentProvider.MESSAGE_URI)
+                    .withValue(CacheHelper.MESSAGE_ID, messages.get(i).getId())
+                    .withValue(CacheHelper.MESSAGE_TEXT, messages.get(i).getText())
+                    .withValue(CacheHelper.MESSAGE_CREATE_AT, messages.get(i).getCreatedAt())
+                    .withValue(CacheHelper.MESSAGE_OWNER_ID, messages.get(i).getOwnerId())
+                    .withValue(CacheHelper.MESSAGE_SENDER_ID, messages.get(i).getSenderId())
+                    .withValue(CacheHelper.MESSAGE_BID_ID, messages.get(i).getBidId())
+                    .withValue(CacheHelper.MESSAGE_READ, messages.get(i).isRead() ? 1 : 0)
+                    .withValue(CacheHelper.MESSAGE_RECEIVER_ID, messages.get(i).getReceiverId())
+                    .withValue(CacheHelper.TIMESTAMP, currentTime)
+                    .withYieldAllowed(true)
+                    .build());
         }
-        getBaseContext().getContentResolver().bulkInsert(CacheContentProvider.MESSAGE_URI, contentValues);
     }
 
     private void updateAccountData() {
@@ -160,6 +175,15 @@ public class UpdateService extends IntentService {
                 });
             }
         });
+    }
+
+    private void deleteOldData(long currentTime) {
+        String selection = CacheHelper.TIMESTAMP + " < ?";
+        String[] selectionArg = new String[]{String.valueOf(currentTime)};
+        getContentResolver().delete(CacheContentProvider.OPPORTUNITIES_URI, selection, selectionArg);
+        getContentResolver().delete(CacheContentProvider.BIDS_URI, selection, selectionArg);
+        getContentResolver().delete(CacheContentProvider.MESSAGE_URI, selection, selectionArg);
+        getContentResolver().delete(CacheContentProvider.OWNER_URI, selection, selectionArg);
     }
 
     private void sendMessageCallBack(RequestStatus requestStatus) {

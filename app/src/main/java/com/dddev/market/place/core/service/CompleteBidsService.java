@@ -1,13 +1,17 @@
 package com.dddev.market.place.core.service;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.core.api.strongloop.StateAcceptRepository;
 import com.dddev.market.place.core.api.strongloop.Bids;
 import com.dddev.market.place.core.api.strongloop.StateCloseRepository;
+import com.dddev.market.place.core.cache.CacheContentProvider;
+import com.dddev.market.place.core.cache.CacheHelper;
 import com.dddev.market.place.utils.StaticKeys;
 
 import timber.log.Timber;
