@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.AppOfferFind;
 import com.dddev.market.place.ui.controller.SwitchFragmentListener;
+import com.dddev.market.place.utils.PreferencesUtils;
 
 import timber.log.Timber;
 
@@ -23,6 +24,8 @@ import timber.log.Timber;
  * Created by ugar on 09.02.16.
  */
 public class BaseActivity extends AppCompatActivity implements SwitchFragmentListener, FragmentManager.OnBackStackChangedListener{
+
+    private boolean isBind;
 
     @Override
     public void switchFragment(Fragment fragment, boolean add, String tag) {
@@ -74,12 +77,16 @@ public class BaseActivity extends AppCompatActivity implements SwitchFragmentLis
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.i("activity create");
-        bindService(((AppOfferFind)getApplicationContext()).getStreamServiceIntent(), streamServiceConnect, Context.BIND_AUTO_CREATE);
+        if (PreferencesUtils.getUserToken(this) != null) {
+            isBind = bindService(((AppOfferFind) getApplicationContext()).getStreamServiceIntent(), streamServiceConnect, Context.BIND_AUTO_CREATE);
+        }
     }
 
     @Override
     protected void onDestroy() {
-        unbindService(streamServiceConnect);
+        if (streamServiceConnect != null && isBind) {
+            unbindService(streamServiceConnect);
+        }
         Timber.i("activity destroy");
         super.onDestroy();
     }
