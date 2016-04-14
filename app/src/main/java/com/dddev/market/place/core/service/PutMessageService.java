@@ -43,7 +43,7 @@ public class PutMessageService extends IntentService {
     private void readMessage(Messages message, int userId) {
         if (!message.isRead() && message.getReceiverId() == userId) {
             try {
-                Messages messagesResponse = ApiRetrofit.putMessage(message.getId(), false, PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
+                Messages messagesResponse = ApiRetrofit.putMessage(message.getId(), true, PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
                 Timber.i(messagesResponse.toString());
             } catch (Exception e) {
                 e.printStackTrace();

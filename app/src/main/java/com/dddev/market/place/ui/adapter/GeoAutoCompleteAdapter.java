@@ -1,8 +1,8 @@
 package com.dddev.market.place.ui.adapter;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
+import com.bricolsoftconsulting.geocoderplus.Address;
+import com.bricolsoftconsulting.geocoderplus.Geocoder;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +18,6 @@ import com.dddev.market.place.ui.model.GeoSearchResult;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -110,25 +109,20 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
         List<GeoSearchResult> geo_search_results = new ArrayList<>();
 
-        Geocoder geocoder = new Geocoder(context, context.getResources().getConfiguration().locale);
-        List<Address> addresses = null;
+        Geocoder geocoder = new Geocoder(context.getResources().getConfiguration().locale);
+        geocoder.setUseRegionBias(false);
+        List<Address> addresses;
 
         try {
             Timber.i("location == null ? %s", location == null);
-            if (location == null) {
-                addresses = geocoder.getFromLocationName(query_text, MAX_RESULTS);
-            } else {
-                addresses = geocoder.getFromLocationName(query_text, MAX_RESULTS, location.getLatitude() - 0.5, location.getLongitude() - 0.5, location.getLatitude() + 0.5, location.getLongitude() + 0.5);
-//                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), MAX_RESULTS);
-            }
+                addresses = geocoder.getFromLocationName(query_text);
 
-            for (int i = 0; i < addresses.size(); i++) {
-                Address address = addresses.get(i);
-                if (address.getMaxAddressLineIndex() != -1) {
+            if (addresses != null) {
+                for (int i = 0; i < addresses.size(); i++) {
+                    Address address = addresses.get(i);
                     geo_search_results.add(new GeoSearchResult(address));
                 }
             }
-
 
         } catch (IOException e) {
             e.printStackTrace();

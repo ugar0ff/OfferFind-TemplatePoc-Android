@@ -1,6 +1,6 @@
 package com.dddev.market.place.ui.model;
 
-import android.location.Address;
+import com.bricolsoftconsulting.geocoderplus.Address;
 
 /**
  * Created by ugar on 09.03.16.
@@ -18,31 +18,9 @@ public class GeoSearchResult {
 
         String display_address = "";
 
-        display_address += address.getAddressLine(0) + "\n";
-
-        for(int i = 1; i < address.getMaxAddressLineIndex(); i++)
-        {
-            display_address += address.getAddressLine(i) + ", ";
-        }
-
-        display_address = display_address.substring(0, display_address.length() - 2);
+        display_address += address.getFormattedAddress();
 
         return display_address;
     }
 
-    public String toString(){
-        String display_address = "";
-
-        if(address.getFeatureName() != null)
-        {
-            display_address += address + ", ";
-        }
-
-        for(int i = 0; i < address.getMaxAddressLineIndex(); i++)
-        {
-            display_address += address.getAddressLine(i);
-        }
-
-        return display_address;
-    }
 }

@@ -108,6 +108,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         switch (loader.getId()) {
             case StaticKeys.LoaderId.TAB_LOADER:
                 tabAdapter.setOrdersList(cursor.getCount() > 0);
+                if (cursor.getCount() > 0) {
+                    getLoaderManager().destroyLoader(StaticKeys.LoaderId.TAB_LOADER);
+                }
                 break;
         }
     }
