@@ -1,13 +1,11 @@
-package com.dddev.market.place.core.api.strongloop;
+package com.dddev.market.place.core.api.retrofit;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
-import com.strongloop.android.loopback.Model;
 
 /**
  * Created by ugar on 23.02.16.
  */
-public class Installation extends Model {
+public class Installation {
     @SerializedName("appId")
     private String appId;
     @SerializedName("created")
@@ -22,18 +20,6 @@ public class Installation extends Model {
     private String userId;
     @SerializedName("id")
     private int id;
-
-    public Installation(String jsonObject) {
-        Exclude exclude = new Exclude();
-        Installation installation = new GsonBuilder().addDeserializationExclusionStrategy(exclude).addSerializationExclusionStrategy(exclude).create().fromJson(jsonObject, Installation.class);
-        this.appId = installation.getAppId();
-        this.created = installation.getCreated();
-        this.deviceToken = installation.getDeviceToken();
-        this.deviceType = installation.getDeviceType();
-        this.modified = installation.getModified();
-        this.userId = installation.getUserId();
-        this.id = installation.getIdInstall();
-    }
 
     public String getAppId() {
         return appId;
