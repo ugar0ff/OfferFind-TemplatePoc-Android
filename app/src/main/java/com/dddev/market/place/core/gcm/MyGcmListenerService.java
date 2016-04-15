@@ -1,17 +1,23 @@
 package com.dddev.market.place.core.gcm;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.ui.activity.MainActivity;
 import com.google.android.gms.gcm.GcmListenerService;
+
+import java.util.Arrays;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -30,6 +36,9 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        if (checkApp()) {
+            return;
+        }
         String message = data.getString("message");
         String id = data.getString("id");
         Timber.d("From: %s", from);
@@ -91,4 +100,30 @@ public class MyGcmListenerService extends GcmListenerService {
 //        }
 //        return inboxStyle;
 //    }
+
+    public boolean checkApp(){
+        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
+            ActivityManager.RunningAppProcessInfo processInfo = processInfos.get(0);
+            if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                if (Arrays.asList(processInfo.pkgList).get(0).equalsIgnoreCase(getPackageName())) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+            ComponentName componentInfo = taskInfo.get(0).topActivity;
+            if (componentInfo.getPackageName().equalsIgnoreCase(getPackageName())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 }
