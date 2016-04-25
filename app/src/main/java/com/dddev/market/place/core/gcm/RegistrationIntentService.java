@@ -25,7 +25,6 @@ import timber.log.Timber;
 public class RegistrationIntentService extends IntentService {
 
     private static final String TAG = "RegIntentService";
-    private static final String[] TOPICS = {"global"};
 
     public RegistrationIntentService() {
         super(TAG);
@@ -38,7 +37,6 @@ public class RegistrationIntentService extends IntentService {
             String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             Timber.i("GCM Registration Token: %s", token);
             sendRegistrationToServer(token);
-            subscribeTopics(token);
         } catch (Exception e) {
             Timber.e("Failed to complete token refresh " + e);
             PreferencesUtils.setSendToken(getApplicationContext(), false);
@@ -73,23 +71,4 @@ public class RegistrationIntentService extends IntentService {
             sendRegistrationComplete();
         }
     }
-
-    /**
-     * Subscribe to any GCM topics of interest, as defined by the TOPICS constant.
-     *
-     * @param token GCM token
-     *              IOException if unable to reach the GCM PubSub service
-     */
-    // [START subscribe_topics]
-    private void subscribeTopics(String token) {
-        GcmPubSub pubSub = GcmPubSub.getInstance(this);
-        for (String topic : TOPICS) {
-            try {
-                pubSub.subscribe(token, "/topics/" + topic, null);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    // [END subscribe_topics]
 }

@@ -15,10 +15,24 @@
         android:footerDividersEnabled="true"
         android:padding="@dimen/proposal_list_divider_height" />
 
-    <TextView
+    <LinearLayout
         android:id="@+id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/no_bids_available" />
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="50dp"
+            android:text="@string/no_bids_available" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </LinearLayout>
 </RelativeLayout>
