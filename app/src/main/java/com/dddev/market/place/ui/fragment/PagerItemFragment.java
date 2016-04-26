@@ -1,5 +1,7 @@
 package com.dddev.market.place.ui.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
@@ -35,7 +38,7 @@ public class PagerItemFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null && itemModel == null) {
             itemModel = getArguments().getParcelable(ITEM_MODEL);
         }
     }
@@ -58,16 +61,20 @@ public class PagerItemFragment extends BaseFragment implements View.OnClickListe
             Picasso.with(getActivity()).load(R.drawable.icon_view_pager).into(picture);
         }
         ImageButton mapButton = (ImageButton) view.findViewById(R.id.maps);
+        Switch switchTest = (Switch) view.findViewById(R.id.switchTest);
         mapButton.setOnClickListener(this);
         switch (itemModel.getType()) {
             case StaticKeys.CategoryType.MAP:
                 mapButton.setVisibility(View.VISIBLE);
+                switchTest.setVisibility(View.GONE);
                 break;
             case StaticKeys.CategoryType.CHECKED:
                 mapButton.setVisibility(View.GONE);
+                switchTest.setVisibility(View.VISIBLE);
                 break;
             default:
                 mapButton.setVisibility(View.GONE);
+                switchTest.setVisibility(View.GONE);
 
         }
     }
@@ -80,4 +87,19 @@ public class PagerItemFragment extends BaseFragment implements View.OnClickListe
                 break;
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (getArguments() != null && itemModel == null) {
+                itemModel = getArguments().getParcelable(ITEM_MODEL);
+            }
+            itemModel.setAddress(data.getExtras().getString(StaticKeys.MAP_ADDRESS));
+            itemModel.setLatitude(data.getExtras().getDouble(StaticKeys.MAP_LATITUDE, 0));
+            itemModel.setLongitude(data.getExtras().getDouble(StaticKeys.MAP_LONGITUDE, 0));
+        }
+    }
+
+
 }

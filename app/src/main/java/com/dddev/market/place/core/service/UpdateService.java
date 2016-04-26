@@ -79,6 +79,9 @@ public class UpdateService extends IntentService {
                         .withValue(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunities.get(i).getCreatedAt())
                         .withValue(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunities.get(i).getCategoryId())
                         .withValue(CacheHelper.OPPORTUNITIES_STATUS, opportunities.get(i).getState())
+                        .withValue(CacheHelper.OPPORTUNITIES_ADDRESS, opportunities.get(i).getLocation() == null ? null : opportunities.get(i).getLocation().getAddress())
+                        .withValue(CacheHelper.OPPORTUNITIES_LATITUDE, opportunities.get(i).getLocation() == null ? null : opportunities.get(i).getLocation().getLatitude())
+                        .withValue(CacheHelper.OPPORTUNITIES_LONGITUDE, opportunities.get(i).getLocation() == null ? null : opportunities.get(i).getLocation().getLongitude())
                         .withValue(CacheHelper.TIMESTAMP, currentTime)
                         .withYieldAllowed(true)
                         .build());
@@ -170,7 +173,9 @@ public class UpdateService extends IntentService {
                             PreferencesUtils.setUserName(getApplicationContext(), account.getName());
                             PreferencesUtils.setUserBankInfo(getApplicationContext(), account.getBankInfo());
                             PreferencesUtils.setUserEmail(getApplicationContext(), account.getEmail());
-                            PreferencesUtils.setUserAddress(getApplicationContext(), account.getAddress());
+                            PreferencesUtils.setUserAddress(getApplicationContext(), account.getLocation().getAddress());
+                            PreferencesUtils.setUserLatitude(getApplicationContext(), account.getLocation().getLatitude());
+                            PreferencesUtils.setUserLongitude(getApplicationContext(), account.getLocation().getLongitude());
                         }
                     }
 

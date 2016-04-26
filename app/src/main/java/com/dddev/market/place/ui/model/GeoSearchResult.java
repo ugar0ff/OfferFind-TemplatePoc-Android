@@ -9,18 +9,22 @@ public class GeoSearchResult {
 
     private Address address;
 
-    public GeoSearchResult(Address address)
-    {
+    public GeoSearchResult(Address address) {
         this.address = address;
     }
 
-    public String getAddress(){
-
+    public String getAddress() {
         String display_address = "";
-
         display_address += address.getFormattedAddress();
-
         return display_address;
+    }
+
+    public double getLatitude() {
+        return address.getLatitude();
+    }
+
+    public double getLongitude() {
+        return address.getLongitude();
     }
 
 }

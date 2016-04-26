@@ -47,4 +47,9 @@ public class StaticKeys {
         public static final int MAP = 1;
         public static final int CHECKED = 2;
     }
+
+    public static final String MAP_RESULT_DATA = "map_result_data";
+    public static final String MAP_ADDRESS = "map_address";
+    public static final String MAP_LATITUDE = "map_latitude";
+    public static final String MAP_LONGITUDE = "map_longitude";
 }

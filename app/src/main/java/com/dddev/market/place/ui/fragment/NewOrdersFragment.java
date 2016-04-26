@@ -3,11 +3,13 @@ package com.dddev.market.place.ui.fragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -184,31 +186,31 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                 adapterList.clear();
                 if (cursor.moveToFirst()) {
                     do {
-                        PagerItemModel model = new PagerItemModel();
-                        model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
-                        model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)));
-                        model.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)));
-                        model.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
-                        model.setType(cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
+                        PagerItemModel model = new PagerItemModel(
+                        cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)),
+                        cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)),
+                        cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)),
+                        cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
                         adapterList.add(model);
                     } while (cursor.moveToNext());
                     //copy last element to first position
                     cursor.moveToLast();
-                    PagerItemModel modelLast = new PagerItemModel();
-                    modelLast.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
-                    modelLast.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)));
-                    modelLast.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)));
-                    modelLast.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
-                    modelLast.setType(cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
+                    PagerItemModel modelLast = new PagerItemModel(
+                    cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)),
+                    cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)),
+                    cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)),
+                    cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)),
+                    cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
                     adapterList.add(0, modelLast);
                     //copy first element to last position
                     cursor.moveToFirst();
-                    PagerItemModel modelFirst = new PagerItemModel();
-                    modelFirst.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
-                    modelFirst.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)));
-                    modelFirst.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)));
-                    modelFirst.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
-                    modelFirst.setType(cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
+                    PagerItemModel modelFirst = new PagerItemModel(
+                    cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)),
+                    cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)),
+                    cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)),
+                    cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)),
+                    cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
                     adapterList.add(modelFirst);
                 }
 
@@ -225,39 +227,58 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     private void createNewOrders(String address) {
         final OpportunityPostRepository repository = AppOfferFind.getRestAdapter(getActivity()).createRepository(OpportunityPostRepository.class);
         repository.createContract();
-        repository.opportunities(adapterList.get(viewPager.getCurrentItem()).getTitle(),
-                adapterList.get(viewPager.getCurrentItem()).getDescription(), address,
-                new OpportunityPostRepository.OpportunityCallback() {
-                    @Override
-                    public void onSuccess(Opportunities.ModelOpportunity opportunity) {
-                        if (opportunity != null) {
-                            Timber.i("onSuccess response=%s", opportunity.toString());
-                            ContentValues values = new ContentValues();
-                            values.put(CacheHelper.OPPORTUNITIES_ID, opportunity.getId());
-                            values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunity.getTitle());
-                            values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunity.getDescription());
-                            values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getOwnerId());
-                            values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunity.getCreatedAt());
-                            values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getState());
-                            values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunity.getCategoryId());
-                            getActivity().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
-                            ProposalActivity.launch(getActivity(), opportunity.getId(), opportunity.getTitle());
-                            progressBar.setVisibility(View.GONE);
-                            if (getActivity() instanceof NewOrdersActivity) {
-                                getActivity().finish();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        Timber.e("onError Throwable: %s", t.toString());
-                        progressBar.setVisibility(View.GONE);
-                        showDialog(getString(R.string.server_connect_failure));
-                    }
-                });
+        PagerItemModel itemModel = adapterList.get(viewPager.getCurrentItem());
+        com.dddev.market.place.core.api.strongloop.Location location = new com.dddev.market.place.core.api.strongloop.Location();
+        switch (itemModel.getType()) {
+            case StaticKeys.CategoryType.MAP:
+                location.setAddress(itemModel.getAddress());
+                location.setLatitude(itemModel.getLatitude());
+                location.setLongitude(itemModel.getLongitude());
+                break;
+            case StaticKeys.CategoryType.CHECKED:
+                location.setAddress(address);
+                break;
+            case StaticKeys.CategoryType.NONE:
+                location.setAddress(address);
+                break;
+            default:
+                location.setAddress(address);
+        }
+        repository.opportunities(itemModel.getTitle(), itemModel.getDescription(), location, opportunityCallback);
     }
 
+    private OpportunityPostRepository.OpportunityCallback opportunityCallback = new OpportunityPostRepository.OpportunityCallback() {
+        @Override
+        public void onSuccess(Opportunities.ModelOpportunity opportunity) {
+            if (opportunity != null) {
+                Timber.i("onSuccess response=%s", opportunity.toString());
+                ContentValues values = new ContentValues();
+                values.put(CacheHelper.OPPORTUNITIES_ID, opportunity.getId());
+                values.put(CacheHelper.OPPORTUNITIES_TITLE, opportunity.getTitle());
+                values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, opportunity.getDescription());
+                values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, opportunity.getOwnerId());
+                values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, opportunity.getCreatedAt());
+                values.put(CacheHelper.OPPORTUNITIES_STATUS, opportunity.getState());
+                values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, opportunity.getCategoryId());
+                values.put(CacheHelper.OPPORTUNITIES_ADDRESS, opportunity.getLocation().getAddress());
+                values.put(CacheHelper.OPPORTUNITIES_LATITUDE, opportunity.getLocation().getLatitude());
+                values.put(CacheHelper.OPPORTUNITIES_LONGITUDE, opportunity.getLocation().getLongitude());
+                getActivity().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
+                ProposalActivity.launch(getActivity(), opportunity.getId(), opportunity.getTitle());
+                progressBar.setVisibility(View.GONE);
+                if (getActivity() instanceof NewOrdersActivity) {
+                    getActivity().finish();
+                }
+            }
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            Timber.e("onError Throwable: %s", t.toString());
+            progressBar.setVisibility(View.GONE);
+            showDialog(getString(R.string.server_connect_failure));
+        }
+    };
 
     @Override
     public void addressReceiveResult(String result) {
@@ -274,5 +295,11 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     protected void noLocation() {
         progressBar.setVisibility(View.GONE);
         createNewOrders("");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        pagerAdapter.getItem(viewPager.getCurrentItem()).onActivityResult(requestCode, resultCode, data);
     }
 }

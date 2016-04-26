@@ -16,21 +16,21 @@ public class Account extends Model implements Parcelable {
     private String id;
     @SerializedName("name")
     private String name;
-    @SerializedName("address")
-    private String address;
     @SerializedName("bankInfo")
     private String bankInfo;
     @SerializedName("email")
     private String email;
     @SerializedName("avatar")
     private String avatar;
+    @SerializedName("location")
+    private Location location;
 
     public Account(String jsonObject) {
         Exclude exclude = new Exclude();
         Account user = new GsonBuilder().addDeserializationExclusionStrategy(exclude).addSerializationExclusionStrategy(exclude).create().fromJson(jsonObject, Account.class);
         this.id = user.getId();
         this.name = user.getName();
-        this.address = user.getAddress();
+        this.location = user.getLocation();
         this.bankInfo = user.getBankInfo();
         this.email = user.getEmail();
         this.avatar = user.getAvatar();
@@ -53,12 +53,12 @@ public class Account extends Model implements Parcelable {
         this.name = name;
     }
 
-    public String getAddress() {
-        return address;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getBankInfo() {
@@ -90,7 +90,7 @@ public class Account extends Model implements Parcelable {
         return "Account{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
+                ", location='" + location + '\'' +
                 ", bankInfo='" + bankInfo + '\'' +
                 ", email='" + email + '\'' +
                 ", avatar='" + avatar + '\'' +
@@ -106,22 +106,22 @@ public class Account extends Model implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.id);
         dest.writeString(this.name);
-        dest.writeString(this.address);
         dest.writeString(this.bankInfo);
         dest.writeString(this.email);
         dest.writeString(this.avatar);
+        dest.writeParcelable(this.location, flags);
     }
 
     protected Account(Parcel in) {
         this.id = in.readString();
         this.name = in.readString();
-        this.address = in.readString();
         this.bankInfo = in.readString();
         this.email = in.readString();
         this.avatar = in.readString();
+        this.location = in.readParcelable(Location.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Account> CREATOR = new Parcelable.Creator<Account>() {
+    public static final Creator<Account> CREATOR = new Creator<Account>() {
         @Override
         public Account createFromParcel(Parcel source) {
             return new Account(source);

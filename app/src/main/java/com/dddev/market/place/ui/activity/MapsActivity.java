@@ -1,5 +1,6 @@
 package com.dddev.market.place.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -26,7 +27,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private GoogleMap mMap;
     private TextView addressView;
@@ -34,19 +35,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private float downX, downY;
     private float previousZoomLevel;
     private boolean needChangeAddress;
-    private SupportMapFragment mapFragment;
+    private String address;
+    private double latitude, longitude;
 
-    public static void launch(Context context) {
-        context.startActivity(new Intent(context, MapsActivity.class));
+    public static void launch(Activity activity) {
+        activity.startActivityForResult(new Intent(activity, MapsActivity.class), 0);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setResult(RESULT_CANCELED);
         setContentView(R.layout.activity_maps);
         TouchableWrapper touchView = (TouchableWrapper) findViewById(R.id.touchWrapper);
         touchView.setTouchEventListener(touchEvent);
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        findViewById(R.id.address).setOnClickListener(this);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         addressView = (TextView) findViewById(R.id.address);
         geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
@@ -123,10 +127,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void changeAddress() {
         LatLng center = mMap.getCameraPosition().target;
         List<Address> addresses;
-        String address = null;
         try {
             addresses = geocoder.getFromLocation(center.latitude, center.longitude, 1);
             if (addresses.size() > 0) {
+                latitude = center.latitude;
+                longitude = center.longitude;
                 address = addresses.get(0).getAddressLine(0);
             }
         } catch (IOException e) {
@@ -134,6 +139,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         if (address != null && address.length() > 0) {
             addressView.setText(address);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.address) {
+            Intent resultIntent = getIntent();
+            resultIntent.putExtra(StaticKeys.MAP_ADDRESS, address);
+            resultIntent.putExtra(StaticKeys.MAP_LATITUDE, latitude);
+            resultIntent.putExtra(StaticKeys.MAP_LONGITUDE, longitude);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         }
     }
 

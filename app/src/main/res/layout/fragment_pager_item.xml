@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.dddev.market.place.ui.views.CardViewImageLayout
@@ -19,7 +19,14 @@
             android:id="@+id/maps"
             android:layout_width="70dp"
             android:layout_height="50dp"
-            android:contentDescription="@null"/>
+            android:contentDescription="@null" />
+
+        <Switch
+            android:id="@+id/switchTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom" />
+
     </FrameLayout>
 
     <TextView

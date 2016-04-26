@@ -151,6 +151,9 @@ public class StreamService extends Service {
         values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, message.getMessageData().getData().getCreatedAt());
         values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, message.getMessageData().getData().getCategoryId());
         values.put(CacheHelper.OPPORTUNITIES_STATUS, message.getMessageData().getData().getState());
+        values.put(CacheHelper.OPPORTUNITIES_ADDRESS, message.getMessageData().getData().getLocation() == null ? null : message.getMessageData().getData().getLocation().getAddress());
+        values.put(CacheHelper.OPPORTUNITIES_LATITUDE, message.getMessageData().getData().getLocation() == null ? null : message.getMessageData().getData().getLocation().getLatitude());
+        values.put(CacheHelper.OPPORTUNITIES_LONGITUDE, message.getMessageData().getData().getLocation() == null ? null : message.getMessageData().getData().getLocation().getLongitude());
         getBaseContext().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
     }
 

@@ -19,6 +19,8 @@ public class PreferencesUtils {
     public final static String USER_NAME = "user_name";
     public final static String USER_BANK_INFO = "user_bank_info";
     public final static String USER_ADDRESS = "user_address";
+    public final static String USER_LATITUDE = "user_latitude";
+    public final static String USER_LONGITUDE = "user_longitude";
 
     private static String getPrefName(Context context) {
         return context.getPackageName() + "_preferences";
@@ -198,5 +200,37 @@ public class PreferencesUtils {
         }
         SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
         return sharedPref.getString(USER_ADDRESS, "");
+    }
+
+    public static boolean setUserLatitude(Context context, double latitude) {
+        if (context == null) {
+            return false;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.edit().putLong(USER_LATITUDE, Double.doubleToRawLongBits(latitude)).commit();
+    }
+
+    public static double getUserLatitude(Context context) {
+        if (context == null) {
+            return 0;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return Double.longBitsToDouble(sharedPref.getLong(USER_LATITUDE, 0));
+    }
+
+    public static boolean setUserLongitude(Context context, double longitude) {
+        if (context == null) {
+            return false;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return sharedPref.edit().putLong(USER_LONGITUDE, Double.doubleToRawLongBits(longitude)).commit();
+    }
+
+    public static double getUserLongitude(Context context) {
+        if (context == null) {
+            return 0;
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences(getPrefName(context), Context.MODE_PRIVATE);
+        return Double.longBitsToDouble(sharedPref.getLong(USER_LONGITUDE, 0));
     }
 }

@@ -27,8 +27,12 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String OPPORTUNITIES_CREATE_AT = "opportunities_create_at";
     public static final String OPPORTUNITIES_CATEGORY_ID = "opportunities_category";
     public static final String OPPORTUNITIES_STATUS = "opportunities_status";
+    public static final String OPPORTUNITIES_ADDRESS = "opportunities_address";
+    public static final String OPPORTUNITIES_LATITUDE = "opportunities_latitude";
+    public static final String OPPORTUNITIES_LONGITUDE = "opportunities_longitude";
     private final String CREATE_OPPORTUNITIES = "CREATE TABLE " + TABLE_OPPORTUNITIES + " (" + OPPORTUNITIES_ID + " integer primary key, " + OPPORTUNITIES_TITLE + " text, " + OPPORTUNITIES_DESCRIPTION + " text, " +
-            OPPORTUNITIES_ACCOUNT_ID + " integer, " + OPPORTUNITIES_CREATE_AT + " text NOT NULL DEFAULT '0', " + OPPORTUNITIES_STATUS + " text, " + OPPORTUNITIES_CATEGORY_ID + " integer, " + TIMESTAMP + " integer);";
+            OPPORTUNITIES_ACCOUNT_ID + " integer, " + OPPORTUNITIES_CREATE_AT + " text NOT NULL DEFAULT '0', " + OPPORTUNITIES_STATUS + " text, " + OPPORTUNITIES_CATEGORY_ID + " integer, " + TIMESTAMP + " integer, " +
+            OPPORTUNITIES_ADDRESS + " text, " + OPPORTUNITIES_LATITUDE + " real, " + OPPORTUNITIES_LONGITUDE + " real);";
     private final String DROP_OPPORTUNITIES = "DROP TABLE IF EXISTS " + TABLE_OPPORTUNITIES + ";";
 
     public static final String TABLE_BIDS = "bids";

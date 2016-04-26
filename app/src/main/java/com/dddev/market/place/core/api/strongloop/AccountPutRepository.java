@@ -23,8 +23,11 @@ public class AccountPutRepository extends com.strongloop.android.loopback.ModelR
         super("Account", null, Account.class);
     }
 
-    public void accounts(String name, String bankInfo, String email, String address, final UserCallback callback) {
-        invokeStaticMethod("accounts", ImmutableMap.of("id", PreferencesUtils.getUserId(getApplicationContext()), "name", name, "bankInfo", bankInfo, "email", email, "address", address), new Adapter.Callback() {
+    public void accounts(String name, String bankInfo, String email, Location location, final UserCallback callback) {
+        invokeStaticMethod("accounts", ImmutableMap.of("id", PreferencesUtils.getUserId(getApplicationContext()), "name", name, "bankInfo", bankInfo, "email", email,
+                "location", ImmutableMap.of("address", location.getAddress(),
+                "latitude", location.getLatitude(),
+                "longitude", location.getLongitude())), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

@@ -64,6 +64,7 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     private TextInputLayout inputNameLayout, inputEmailLayout, inputBankInfoLayout, inputAddressLayout;
     private CheckBox checkBoxLocale;
     private ImageView avatar;
+    private double latitude, longitude;
 
     public static AccountEditFragment newInstance() {
         return new AccountEditFragment();
@@ -95,6 +96,8 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 GeoSearchResult result = (GeoSearchResult) adapterView.getItemAtPosition(position);
                 inputAddress.setText(result.getAddress());
+                latitude = result.getLatitude();
+                longitude = result.getLongitude();
             }
         });
         inputAddress.addTextChangedListener(new TextWatcher() {
@@ -236,7 +239,7 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
                     });
         } else {
             accountPutRepository.accounts(inputName.getText().toString(), inputBankInfo.getText().toString(),
-                    inputEmail.getText().toString(), inputAddress.getText().toString(), new AccountPutRepository.UserCallback() {
+                    inputEmail.getText().toString(), new com.dddev.market.place.core.api.strongloop.Location(inputAddress.getText().toString(), latitude, longitude), new AccountPutRepository.UserCallback() {
                         @Override
                         public void onSuccess(Account account) {
                             Timber.i("onSuccess response=%s", account.toString());
@@ -245,7 +248,9 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
                                 PreferencesUtils.setUserName(getActivity(), account.getName());
                                 PreferencesUtils.setUserBankInfo(getActivity(), account.getBankInfo());
                                 PreferencesUtils.setUserEmail(getActivity(), account.getEmail());
-                                PreferencesUtils.setUserAddress(getActivity(), account.getAddress());
+                                PreferencesUtils.setUserAddress(getActivity(), account.getLocation().getAddress());
+                                PreferencesUtils.setUserLatitude(getActivity(), account.getLocation().getLatitude());
+                                PreferencesUtils.setUserLongitude(getActivity(), account.getLocation().getLongitude());
                                 PreferencesUtils.setLocaleCheckBoxState(getActivity(), checkBoxLocale.isChecked());
                             }
                         }

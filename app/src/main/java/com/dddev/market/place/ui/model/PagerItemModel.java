@@ -13,9 +13,9 @@ public class PagerItemModel implements Parcelable {
     private String description;
     private String imageUrl;
     private int type;
-
-    public PagerItemModel() {
-    }
+    private double latitude;
+    private double longitude;
+    private  String address;
 
     public PagerItemModel(int id, String title, String description, String imageUrl, int type) {
         this.id = id;
@@ -65,6 +65,30 @@ public class PagerItemModel implements Parcelable {
         this.type = type;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -77,21 +101,29 @@ public class PagerItemModel implements Parcelable {
         dest.writeString(this.description);
         dest.writeString(this.imageUrl);
         dest.writeInt(this.type);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+        dest.writeString(this.address);
     }
 
-    private PagerItemModel(Parcel in) {
+    protected PagerItemModel(Parcel in) {
         this.id = in.readInt();
         this.title = in.readString();
         this.description = in.readString();
         this.imageUrl = in.readString();
         this.type = in.readInt();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
+        this.address = in.readString();
     }
 
-    public static final Parcelable.Creator<PagerItemModel> CREATOR = new Parcelable.Creator<PagerItemModel>() {
+    public static final Creator<PagerItemModel> CREATOR = new Creator<PagerItemModel>() {
+        @Override
         public PagerItemModel createFromParcel(Parcel source) {
             return new PagerItemModel(source);
         }
 
+        @Override
         public PagerItemModel[] newArray(int size) {
             return new PagerItemModel[size];
         }

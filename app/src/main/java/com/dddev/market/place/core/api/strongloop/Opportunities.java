@@ -48,13 +48,13 @@ public class Opportunities extends Model {
         private int categoryId;
         @SerializedName("state")
         private String state;
-        @SerializedName("Address")
-        private String address;
+        @SerializedName("location")
+        private Location location;
 
         public ModelOpportunity() {
         }
 
-        public ModelOpportunity(int id, String title, String description, int ownerId, ArrayList<Bids.ModelBids> bids, String createAt, int categoryId, String status, String address) {
+        public ModelOpportunity(int id, String title, String description, int ownerId, ArrayList<Bids.ModelBids> bids, String createAt, int categoryId, String status, Location location) {
             this.id = id;
             this.title = title;
             this.description = description;
@@ -63,7 +63,7 @@ public class Opportunities extends Model {
             this.createdAt = createAt;
             this.categoryId = categoryId;
             this.state = status;
-            this.address = address;
+            this.location = location;
         }
 
         public ModelOpportunity(String jsonObject) {
@@ -77,7 +77,7 @@ public class Opportunities extends Model {
             this.createdAt = opportunity.getCreatedAt();
             this.categoryId = opportunity.getCategoryId();
             this.state = opportunity.getState();
-            this.address = opportunity.getAddress();
+            this.location = opportunity.getLocation();
         }
 
         public int getId() {
@@ -144,12 +144,12 @@ public class Opportunities extends Model {
             this.state = state;
         }
 
-        public String getAddress() {
-            return address;
+        public Location getLocation() {
+            return location;
         }
 
-        public void setAddress(String address) {
-            this.address = address;
+        public void setLocation(Location location) {
+            this.location = location;
         }
 
         @Override
@@ -163,7 +163,7 @@ public class Opportunities extends Model {
                     ", createdAt='" + createdAt + '\'' +
                     ", categoryId=" + categoryId +
                     ", state=" + state +
-                    ", address=" + address +
+                    ", location=" + location +
                     '}';
         }
 
@@ -182,7 +182,7 @@ public class Opportunities extends Model {
             dest.writeString(this.createdAt);
             dest.writeInt(this.categoryId);
             dest.writeString(this.state);
-            dest.writeString(this.address);
+            dest.writeParcelable(this.location, flags);
         }
 
         protected ModelOpportunity(Parcel in) {
@@ -194,14 +194,16 @@ public class Opportunities extends Model {
             this.createdAt = in.readString();
             this.categoryId = in.readInt();
             this.state = in.readString();
-            this.address = in.readString();
+            this.location = in.readParcelable(Location.class.getClassLoader());
         }
 
         public static final Parcelable.Creator<ModelOpportunity> CREATOR = new Parcelable.Creator<ModelOpportunity>() {
+            @Override
             public ModelOpportunity createFromParcel(Parcel source) {
                 return new ModelOpportunity(source);
             }
 
+            @Override
             public ModelOpportunity[] newArray(int size) {
                 return new ModelOpportunity[size];
             }

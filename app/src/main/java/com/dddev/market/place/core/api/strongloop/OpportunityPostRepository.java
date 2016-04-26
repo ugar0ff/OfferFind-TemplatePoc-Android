@@ -1,6 +1,7 @@
 package com.dddev.market.place.core.api.strongloop;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
 import com.strongloop.android.remoting.adapters.Adapter;
 import com.strongloop.android.remoting.adapters.RestContract;
 import com.strongloop.android.remoting.adapters.RestContractItem;
@@ -22,10 +23,12 @@ public class OpportunityPostRepository extends com.strongloop.android.loopback.M
         super("Opportunity", null, Opportunities.class);
     }
 
-    public void opportunities(String title, String description, String address, final OpportunityCallback callback) {
+    public void opportunities(String title, String description, Location location, final OpportunityCallback callback) {
         invokeStaticMethod("opportunities", ImmutableMap.of("title", title,
                 "description", description,
-                "address", address), new Adapter.Callback() {
+                "location", ImmutableMap.of("address", location.getAddress(),
+                        "latitude", location.getLatitude(),
+                        "longitude", location.getLongitude())), new Adapter.Callback() {
 
             @Override
             public void onError(Throwable t) {

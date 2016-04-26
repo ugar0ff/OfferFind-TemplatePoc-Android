@@ -3,6 +3,7 @@ package com.dddev.market.place.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
@@ -11,6 +12,7 @@ import com.dddev.market.place.R;
 import com.dddev.market.place.ui.activity.base.BaseActivity;
 import com.dddev.market.place.ui.controller.ToolbarController;
 import com.dddev.market.place.ui.fragment.NewOrdersFragment;
+import com.dddev.market.place.ui.fragment.PagerItemFragment;
 
 /**
  * Created by ugar on 24.02.16.
@@ -78,5 +80,14 @@ public class NewOrdersActivity extends BaseActivity implements ToolbarController
         super.onResume();
         setToolbarTitle(getString(R.string.new_order));
         toolbar.setY(0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (fragment instanceof NewOrdersFragment) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

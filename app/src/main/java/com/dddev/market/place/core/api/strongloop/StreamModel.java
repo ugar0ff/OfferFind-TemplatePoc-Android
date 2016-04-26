@@ -54,8 +54,6 @@ public class StreamModel extends Model {
         private String description;
         @SerializedName("state")
         private String state;
-        @SerializedName("address")
-        private String address;
         @SerializedName("categoryId")
         private int categoryId;
         @SerializedName("owner")
@@ -64,6 +62,8 @@ public class StreamModel extends Model {
         private float price;
         @SerializedName("opportunityId")
         private int opportunityId;
+        @SerializedName("location")
+        private Location location;
 
         public ModelMessages(String jsonObject) {
             Exclude exclude = new Exclude();
@@ -78,12 +78,12 @@ public class StreamModel extends Model {
             this.title = messages.getTitle();
             this.description = messages.getDescription();
             this.state = messages.getState();
-            this.address = messages.getAddress();
             this.categoryId = messages.getCategoryId();
             this.owner = messages.getOwner();
             this.price = messages.getPrice();
             this.opportunityId = messages.getOpportunityId();
             this.read = messages.isRead();
+            this.location = messages.getLocation();
         }
 
         public ModelMessages() {
@@ -161,14 +161,6 @@ public class StreamModel extends Model {
             this.state = state;
         }
 
-        public String getAddress() {
-            return address;
-        }
-
-        public void setAddress(String address) {
-            this.address = address;
-        }
-
         public int getCategoryId() {
             return categoryId;
         }
@@ -217,6 +209,14 @@ public class StreamModel extends Model {
             this.receiverId = receiverId;
         }
 
+        public Location getLocation() {
+            return location;
+        }
+
+        public void setLocation(Location location) {
+            this.location = location;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -235,11 +235,11 @@ public class StreamModel extends Model {
             dest.writeString(this.title);
             dest.writeString(this.description);
             dest.writeString(this.state);
-            dest.writeString(this.address);
             dest.writeInt(this.categoryId);
             dest.writeParcelable(this.owner, flags);
             dest.writeFloat(this.price);
             dest.writeInt(this.opportunityId);
+            dest.writeParcelable(this.location, flags);
         }
 
         protected ModelMessages(Parcel in) {
@@ -254,11 +254,11 @@ public class StreamModel extends Model {
             this.title = in.readString();
             this.description = in.readString();
             this.state = in.readString();
-            this.address = in.readString();
             this.categoryId = in.readInt();
             this.owner = in.readParcelable(Owner.class.getClassLoader());
             this.price = in.readFloat();
             this.opportunityId = in.readInt();
+            this.location = in.readParcelable(Location.class.getClassLoader());
         }
 
         public static final Parcelable.Creator<ModelMessages> CREATOR = new Parcelable.Creator<ModelMessages>() {
@@ -273,4 +273,5 @@ public class StreamModel extends Model {
             }
         };
     }
+
 }
