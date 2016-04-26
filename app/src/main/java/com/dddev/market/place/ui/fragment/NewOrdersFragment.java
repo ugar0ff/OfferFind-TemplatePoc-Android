@@ -168,7 +168,8 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                 String[] projection = new String[]{CacheHelper.CATEGORY_ID + " as _id ",
                         CacheHelper.CATEGORY_TITLE,
                         CacheHelper.CATEGORY_DESCRIPTION,
-                        CacheHelper.CATEGORY_IMAGE_URL};
+                        CacheHelper.CATEGORY_IMAGE_URL,
+                        CacheHelper.CATEGORY_TYPE};
                 return new CursorLoader(getActivity(), CacheContentProvider.CATEGORY_URI, projection, null, null, null);
             default:
                 return null;
@@ -188,6 +189,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                         model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)));
                         model.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)));
                         model.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
+                        model.setType(cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
                         adapterList.add(model);
                     } while (cursor.moveToNext());
                     //copy last element to first position
@@ -197,6 +199,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                     modelLast.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)));
                     modelLast.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)));
                     modelLast.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
+                    modelLast.setType(cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
                     adapterList.add(0, modelLast);
                     //copy first element to last position
                     cursor.moveToFirst();
@@ -205,6 +208,7 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
                     modelFirst.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_TITLE)));
                     modelFirst.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_DESCRIPTION)));
                     modelFirst.setImageUrl(cursor.getString(cursor.getColumnIndex(CacheHelper.CATEGORY_IMAGE_URL)));
+                    modelFirst.setType(cursor.getInt(cursor.getColumnIndex(CacheHelper.CATEGORY_TYPE)));
                     adapterList.add(modelFirst);
                 }
 

@@ -5,18 +5,21 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dddev.market.place.R;
+import com.dddev.market.place.ui.activity.MapsActivity;
 import com.dddev.market.place.ui.fragment.base.BaseFragment;
 import com.dddev.market.place.ui.model.PagerItemModel;
+import com.dddev.market.place.utils.StaticKeys;
 import com.squareup.picasso.Picasso;
 
 /**
  * Created by ugar on 10.02.16.
  */
-public class PagerItemFragment extends BaseFragment {
+public class PagerItemFragment extends BaseFragment implements View.OnClickListener{
 
     private final static String ITEM_MODEL = "item_model";
     private PagerItemModel itemModel;
@@ -53,6 +56,28 @@ public class PagerItemFragment extends BaseFragment {
             Picasso.with(getActivity()).load(itemModel.getImageUrl()).into(picture);
         } else {
             Picasso.with(getActivity()).load(R.drawable.icon_view_pager).into(picture);
+        }
+        ImageButton mapButton = (ImageButton) view.findViewById(R.id.maps);
+        mapButton.setOnClickListener(this);
+        switch (itemModel.getType()) {
+            case StaticKeys.CategoryType.MAP:
+                mapButton.setVisibility(View.VISIBLE);
+                break;
+            case StaticKeys.CategoryType.CHECKED:
+                mapButton.setVisibility(View.GONE);
+                break;
+            default:
+                mapButton.setVisibility(View.GONE);
+
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.maps:
+                MapsActivity.launch(getActivity());
+                break;
         }
     }
 }

@@ -5,21 +5,32 @@
     android:background="@drawable/background_card_fragment"
     android:orientation="vertical">
 
-    <com.dddev.market.place.ui.views.CardViewImageLayout
-        android:id="@+id/picture"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="fitCenter"/>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.dddev.market.place.ui.views.CardViewImageLayout
+            android:id="@+id/picture"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="fitCenter" />
+
+        <ImageButton
+            android:id="@+id/maps"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:contentDescription="@null"/>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:layout_marginLeft="19dp"
-        android:layout_marginStart="19dp"
-        android:layout_marginRight="19dp"
         android:layout_marginEnd="19dp"
+        android:layout_marginLeft="19dp"
+        android:layout_marginRight="19dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="19dp"
         android:gravity="center_horizontal"
         android:textSize="@dimen/text_size_16"
         android:textStyle="bold" />

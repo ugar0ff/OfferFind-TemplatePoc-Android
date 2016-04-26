@@ -49,8 +49,9 @@ public class CacheHelper extends SQLiteOpenHelper {
     public static final String CATEGORY_TITLE = "category_title";
     public static final String CATEGORY_DESCRIPTION = "category_description";
     public static final String CATEGORY_IMAGE_URL = "category_image_url";
+    public static final String CATEGORY_TYPE = "category_type";
     private final String CREATE_WORK_CATEGORY = "CREATE TABLE " + TABLE_CATEGORY + " (" + CATEGORY_ID + " integer primary key, " + CATEGORY_TITLE + " text, " +
-            CATEGORY_DESCRIPTION + " text, " + CATEGORY_IMAGE_URL + " text);";
+            CATEGORY_DESCRIPTION + " text, " + CATEGORY_IMAGE_URL + " text, " + CATEGORY_TYPE + " integer);";
     private final String DROP_WORK_CATEGORY = "DROP TABLE IF EXISTS " + TABLE_CATEGORY + ";";
 
     public static final String TABLE_OWNER = "owner";
@@ -98,9 +99,9 @@ public class CacheHelper extends SQLiteOpenHelper {
     }
 
     private void setCategory(SQLiteDatabase db) {
-        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (1, 'Basic (regular)\ncleaning', 'You d like us to clean for you.\nBasic cleaning will make your home sparkle', null);");
-        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (2, 'Move-in or move-out\ncleaning', 'A move-in or move-out cleaning is a great way to ease the stress of packing and moving', null);");
-        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (3, 'Construction\nclean-up', 'When your contractor has left your home in what the industry calls a broom clean state', null);");
+        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (1, 'Basic (regular)\ncleaning', 'You d like us to clean for you.\nBasic cleaning will make your home sparkle', null, 1);");
+        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (2, 'Move-in or move-out\ncleaning', 'A move-in or move-out cleaning is a great way to ease the stress of packing and moving', null, 2);");
+        db.execSQL("REPLACE INTO " + CacheHelper.TABLE_CATEGORY + " VALUES (3, 'Construction\nclean-up', 'When your contractor has left your home in what the industry calls a broom clean state', null, 3);");
     }
 
 }

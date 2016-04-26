@@ -18,6 +18,7 @@ public class StaticKeys {
     public static final String COMPLETE_BIDS_ID = "complete_bids_id";
     public static final String BID_ID = "bid_id";
     public static final String MESSAGE_ID = "message_id";
+    public static final int MAP_MOVE_DELTA = 30;
 
     public class LoaderId {
         public static final int TAB_LOADER = 1;
@@ -39,5 +40,11 @@ public class StaticKeys {
     public class StreamType {
         public static final String CREATE = "create";
         public static final String UPDATE = "update";
+    }
+
+    public class CategoryType {
+        public static final int NONE = 0;
+        public static final int MAP = 1;
+        public static final int CHECKED = 2;
     }
 }
