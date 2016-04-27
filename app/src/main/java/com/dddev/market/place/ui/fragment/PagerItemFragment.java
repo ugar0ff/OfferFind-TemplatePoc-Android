@@ -24,7 +24,7 @@ import com.squareup.picasso.Picasso;
  */
 public class PagerItemFragment extends BaseFragment implements View.OnClickListener{
 
-    private final static String ITEM_MODEL = "item_model";
+    public final static String ITEM_MODEL = "item_model";
     private PagerItemModel itemModel;
 
     public static PagerItemFragment newInstance(PagerItemModel itemModel) {
@@ -60,6 +60,13 @@ public class PagerItemFragment extends BaseFragment implements View.OnClickListe
         } else {
             Picasso.with(getActivity()).load(R.drawable.icon_view_pager).into(picture);
         }
+        TextView location = (TextView) view.findViewById(R.id.locationText);
+        if (itemModel.getAddress() == null || itemModel.getAddress().length() == 0) {
+            location.setVisibility(View.GONE);
+        } else {
+            location.setText(itemModel.getAddress());
+            location.setVisibility(View.VISIBLE);
+        }
         ImageButton mapButton = (ImageButton) view.findViewById(R.id.maps);
         Switch switchTest = (Switch) view.findViewById(R.id.switchTest);
         mapButton.setOnClickListener(this);
@@ -88,18 +95,18 @@ public class PagerItemFragment extends BaseFragment implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (getArguments() != null && itemModel == null) {
-                itemModel = getArguments().getParcelable(ITEM_MODEL);
-            }
-            itemModel.setAddress(data.getExtras().getString(StaticKeys.MAP_ADDRESS));
-            itemModel.setLatitude(data.getExtras().getDouble(StaticKeys.MAP_LATITUDE, 0));
-            itemModel.setLongitude(data.getExtras().getDouble(StaticKeys.MAP_LONGITUDE, 0));
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (getArguments() != null && itemModel == null) {
+//                itemModel = getArguments().getParcelable(ITEM_MODEL);
+//            }
+//            itemModel.setAddress(data.getExtras().getString(StaticKeys.MAP_ADDRESS));
+//            itemModel.setLatitude(data.getExtras().getDouble(StaticKeys.MAP_LATITUDE, 0));
+//            itemModel.setLongitude(data.getExtras().getDouble(StaticKeys.MAP_LONGITUDE, 0));
+//        }
+//    }
 
 
 }

@@ -22,8 +22,7 @@ public class AddressResultReceiver extends ResultReceiver {
 
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
-        addressReceiveResult.addressReceiveResult(resultData.getString(FetchAddressIntentService.RESULT_DATA_KEY));
-        addressReceiveResult.locationReceiveResult((Location) resultData.getParcelable(FetchAddressIntentService.LOCATION_DATA_EXTRA));
+        addressReceiveResult.addressReceiveResult(resultData.getString(FetchAddressIntentService.RESULT_DATA_KEY), (Location) resultData.getParcelable(FetchAddressIntentService.LOCATION_DATA_EXTRA));
         Timber.i(resultData.getString(FetchAddressIntentService.RESULT_DATA_KEY));
     }
 
@@ -32,7 +31,6 @@ public class AddressResultReceiver extends ResultReceiver {
     }
 
     public interface AddressReceiveResult {
-        void addressReceiveResult(String result);
-        void locationReceiveResult(Location location);
+        void addressReceiveResult(String result, Location location);
     }
 }

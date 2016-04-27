@@ -14,11 +14,13 @@ import android.widget.Toast;
 import com.dddev.market.place.R;
 import com.dddev.market.place.core.receiver.AddressResultReceiver;
 import com.dddev.market.place.core.service.FetchAddressIntentService;
+import com.dddev.market.place.utils.PreferencesUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import timber.log.Timber;
 
@@ -94,24 +96,28 @@ public abstract class BaseLocationFragment extends BaseFragment implements Googl
     }
 
     protected void getAddress() {
-        int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            if (mGoogleApiClient != null && mGoogleApiClient.isConnected() && mLastLocation != null) {
-                startIntentService();
+        if (PreferencesUtils.isLocaleCheckBoxEnable(getActivity())) {
+            int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                if (mGoogleApiClient != null && mGoogleApiClient.isConnected() && mLastLocation != null) {
+                    startIntentService();
+                } else {
+                    buildGoogleApiClient();
+                }
             } else {
-                buildGoogleApiClient();
+                noLocation();
             }
         } else {
-            noLocation();
-//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+            Location location = new Location("");
+            location.setLatitude(PreferencesUtils.getUserLatitude(getActivity()));
+            location.setLongitude(PreferencesUtils.getUserLongitude(getActivity()));
+            addressReceiveResult(PreferencesUtils.getUserAddress(getActivity()), location);
         }
     }
 
     protected void loadPermissions(String perm, int requestCode) {
         if (ContextCompat.checkSelfPermission(getActivity(), perm) != PackageManager.PERMISSION_GRANTED) {
-//            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), perm)) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{perm}, requestCode);
-//            }
+            ActivityCompat.requestPermissions(getActivity(), new String[]{perm}, requestCode);
         }
     }
 

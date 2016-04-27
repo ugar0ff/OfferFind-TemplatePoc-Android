@@ -447,12 +447,8 @@ public class AccountEditFragment extends BaseLocationFragment implements View.On
     }
 
     @Override
-    public void addressReceiveResult(String result) {
+    public void addressReceiveResult(String result, Location location) {
         Timber.i("addressReceiveResult = %s", result);
-    }
-
-    @Override
-    public void locationReceiveResult(Location location) {
         Timber.i("locationReceiveResult = %s", location);
         if (getActivity() != null && PreferencesUtils.isLocaleCheckBoxEnable(getActivity())) {
             geoAutoCompleteAdapter.setLocation(location);

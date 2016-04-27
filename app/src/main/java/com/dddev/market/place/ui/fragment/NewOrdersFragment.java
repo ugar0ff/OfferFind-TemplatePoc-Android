@@ -224,25 +224,45 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
         Timber.i("onLoaderReset");
     }
 
-    private void createNewOrders(String address) {
+    private void createNewOrders(String address, Location addressLocation) {
         final OpportunityPostRepository repository = AppOfferFind.getRestAdapter(getActivity()).createRepository(OpportunityPostRepository.class);
         repository.createContract();
         PagerItemModel itemModel = adapterList.get(viewPager.getCurrentItem());
         com.dddev.market.place.core.api.strongloop.Location location = new com.dddev.market.place.core.api.strongloop.Location();
         switch (itemModel.getType()) {
             case StaticKeys.CategoryType.MAP:
-                location.setAddress(itemModel.getAddress());
-                location.setLatitude(itemModel.getLatitude());
-                location.setLongitude(itemModel.getLongitude());
+                if (itemModel.getAddress() != null) {
+                    location.setAddress(itemModel.getAddress());
+                    location.setLatitude(itemModel.getLatitude());
+                    location.setLongitude(itemModel.getLongitude());
+                } else {
+                    location.setAddress(address);
+                    if (addressLocation != null) {
+                        location.setLatitude(addressLocation.getLatitude());
+                        location.setLongitude(addressLocation.getLongitude());
+                    }
+                }
                 break;
             case StaticKeys.CategoryType.CHECKED:
                 location.setAddress(address);
+                if (addressLocation != null) {
+                    location.setLatitude(addressLocation.getLatitude());
+                    location.setLongitude(addressLocation.getLongitude());
+                }
                 break;
             case StaticKeys.CategoryType.NONE:
                 location.setAddress(address);
+                if (addressLocation != null) {
+                    location.setLatitude(addressLocation.getLatitude());
+                    location.setLongitude(addressLocation.getLongitude());
+                }
                 break;
             default:
                 location.setAddress(address);
+                if (addressLocation != null) {
+                    location.setLatitude(addressLocation.getLatitude());
+                    location.setLongitude(addressLocation.getLongitude());
+                }
         }
         repository.opportunities(itemModel.getTitle(), itemModel.getDescription(), location, opportunityCallback);
     }
@@ -281,25 +301,33 @@ public class NewOrdersFragment extends BaseLocationFragment implements View.OnCl
     };
 
     @Override
-    public void addressReceiveResult(String result) {
+    public void addressReceiveResult(String result, Location location) {
         Timber.i("addressReceiveResult = %s", result);
-        createNewOrders(result);
-    }
-
-    @Override
-    public void locationReceiveResult(Location location) {
         Timber.i("locationReceiveResult = %s", location);
+        createNewOrders(result, location);
     }
 
     @Override
     protected void noLocation() {
         progressBar.setVisibility(View.GONE);
-        createNewOrders("");
+        createNewOrders("", null);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        pagerAdapter.getItem(viewPager.getCurrentItem()).onActivityResult(requestCode, resultCode, data);
+        PagerItemFragment pagerItemFragment = (PagerItemFragment)pagerAdapter.getItem(viewPager.getCurrentItem());
+        pagerItemFragment.onActivityResult(requestCode, resultCode, data);
+        PagerItemModel itemModel = pagerItemFragment.getArguments().getParcelable(PagerItemFragment.ITEM_MODEL);
+        if (data != null && itemModel != null) {
+            for (int i = 0; i < adapterList.size(); i++) {
+                if (adapterList.get(i).getId() == itemModel.getId()) {
+                    adapterList.get(i).setAddress(data.getExtras().getString(StaticKeys.MAP_ADDRESS));
+                    adapterList.get(i).setLatitude(data.getExtras().getDouble(StaticKeys.MAP_LATITUDE, 0));
+                    adapterList.get(i).setLongitude(data.getExtras().getDouble(StaticKeys.MAP_LONGITUDE, 0));
+                }
+            }
+            pagerAdapter.notifyDataSetChanged();
+        }
     }
 }
