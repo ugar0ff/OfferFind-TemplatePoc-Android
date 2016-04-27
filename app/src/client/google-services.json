@@ -1,17 +1,17 @@
 {
   "project_info": {
-    "project_id": "marketplacesprovider",
-    "project_number": "404443237301",
-    "name": "MarketPlacesProvider"
+    "project_id": "marketplacesclient",
+    "project_number": "522136833466",
+    "name": "MarketPlacesClient"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:404443237301:android:cb2185fe77dd5d4f",
-        "client_id": "android:co.mrktplaces.providers.android",
+        "mobilesdk_app_id": "1:522136833466:android:25b9fd00d85bbe4d",
+        "client_id": "android:co.mrktplaces.clients.android",
         "client_type": 1,
         "android_client_info": {
-          "package_name": "co.mrktplaces.providers.android",
+          "package_name": "co.mrktplaces.clients.android",
           "certificate_hash": []
         }
       },
