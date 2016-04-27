@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
             }
         });
         PermissionHelper.verifyStoragePermissions(this);
+        PermissionHelper.verifyMapPermissions(this);
 
         getLoaderManager().restartLoader(StaticKeys.LoaderId.TAB_LOADER, null, this);
     }

@@ -1,12 +1,15 @@
 package com.dddev.market.place.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 
 import com.dddev.market.place.R;
 import com.dddev.market.place.ui.views.TouchableWrapper;
+import com.dddev.market.place.utils.PermissionHelper;
 import com.dddev.market.place.utils.StaticKeys;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,10 +53,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         TouchableWrapper touchView = (TouchableWrapper) findViewById(R.id.touchWrapper);
         touchView.setTouchEventListener(touchEvent);
-        findViewById(R.id.address).setOnClickListener(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         addressView = (TextView) findViewById(R.id.address);
+        addressView.setOnClickListener(this);
         geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
     }
 
@@ -91,36 +95,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void setUpMapIfNeeded() {
         if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
-            mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+                mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
 
-                @Override
-                public void onMyLocationChange(Location arg0) {
-                    CameraUpdate myLoc = CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(new LatLng(arg0.getLatitude(),
-                            arg0.getLongitude())).zoom(15).build());
-                    mMap.moveCamera(myLoc);
+                    @Override
+                    public void onMyLocationChange(Location arg0) {
+                        CameraUpdate myLoc = CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(new LatLng(arg0.getLatitude(),
+                                arg0.getLongitude())).zoom(15).build());
+                        mMap.moveCamera(myLoc);
 //                        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(arg0.getLatitude(), arg0.getLongitude())));
-                    mMap.setOnMyLocationChangeListener(null);
-                    mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-                        @Override
-                        public void onCameraChange(CameraPosition cameraPosition) {
-                            if (previousZoomLevel != cameraPosition.zoom || needChangeAddress) {
-                                changeAddress();
-                                addressView.setVisibility(View.VISIBLE);
+                        mMap.setOnMyLocationChangeListener(null);
+                        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                            @Override
+                            public void onCameraChange(CameraPosition cameraPosition) {
+                                if (previousZoomLevel != cameraPosition.zoom || needChangeAddress) {
+                                    changeAddress();
+                                    addressView.setVisibility(View.VISIBLE);
+                                }
+                                previousZoomLevel = cameraPosition.zoom;
                             }
-                            previousZoomLevel = cameraPosition.zoom;
-                        }
-                    });
-                    mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                        @Override
-                        public boolean onMyLocationButtonClick() {
-                            addressView.setVisibility(View.GONE);
-                            needChangeAddress = true;
-                            return false;
-                        }
-                    });
-                }
-            });
+                        });
+                        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                            @Override
+                            public boolean onMyLocationButtonClick() {
+                                addressView.setVisibility(View.GONE);
+                                needChangeAddress = true;
+                                return false;
+                            }
+                        });
+                    }
+                });
+            } else {
+                PermissionHelper.verifyMapPermissions(this);
+                finish();
+            }
         }
     }
 
