@@ -1,0 +1,105 @@
+package co.mrktplaces.android.ui.activity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
+
+import co.mrktplaces.android.R;
+import co.mrktplaces.android.core.api.strongloop.Bids;
+import co.mrktplaces.android.core.api.strongloop.Opportunities;
+import co.mrktplaces.android.core.cache.CacheContentProvider;
+import co.mrktplaces.android.core.cache.CacheHelper;
+import co.mrktplaces.android.ui.activity.base.BaseActivity;
+import co.mrktplaces.android.ui.controller.ToolbarController;
+import co.mrktplaces.android.ui.fragment.ProposalFragment;
+
+/**
+ * Created by ugar on 10.02.16.
+ */
+public class ProposalActivity extends BaseActivity implements ToolbarController {
+
+    public final static String IS_BIDS = "is_bids";
+    private Bids.ModelBids itemModel;
+    private Toolbar toolbar;
+
+    public static void launch(Context context, Bids.ModelBids itemModel) {
+        context.startActivity(new Intent(context, ProposalActivity.class).putExtra(IS_BIDS, itemModel));
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_container);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+        if (getIntent() != null) {
+            if (getIntent().hasExtra(IS_BIDS)) {
+                itemModel = getIntent().getParcelableExtra(IS_BIDS);
+            }
+        }
+        Opportunities.ModelOpportunity opportunities = getStatus(itemModel.getOpportunityId());
+        switchFragment(ProposalFragment.newInstance(itemModel, opportunities.getState(), opportunities.getTitle()), false, null);
+        onBackStackChanged();
+    }
+
+    private Opportunities.ModelOpportunity getStatus(int opportunitiesId) {
+        Opportunities.ModelOpportunity opportunities = new Opportunities.ModelOpportunity();
+        String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as " + CacheHelper._ID, CacheHelper.OPPORTUNITIES_STATUS, CacheHelper.OPPORTUNITIES_TITLE};
+        String selection = CacheHelper.OPPORTUNITIES_ID + " = ?";
+        String[] selectionArg = new String[]{String.valueOf(opportunitiesId)};
+        Cursor cursor = getContentResolver().query(CacheContentProvider.OPPORTUNITIES_URI, projection, selection, selectionArg, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                opportunities.setState(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS)));
+                opportunities.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
+            }
+            cursor.close();
+        }
+        return opportunities;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        if (id == android.R.id.home) {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                onBackPressed();
+                onBackStackChanged();
+                return true;
+            } else {
+                finish();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
+}

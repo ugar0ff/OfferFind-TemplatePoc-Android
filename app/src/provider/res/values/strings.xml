@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MarketPlaceProvider</string>
+    <string name="i_am_client">I\'m  client</string>
+    <string name="facebook_app_id">265470633796679</string>
+    <string name="apply">Apply</string>
+    <string name="enter_your_message">Enter your message</string>
+</resources>

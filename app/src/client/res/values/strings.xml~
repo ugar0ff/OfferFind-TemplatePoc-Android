@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">MarketPlace</string>
+    <string name="facebook_app_id">470520513147982</string>
+    <!--<string name="gcm_defaultSenderId">194068891808</string>-->
+
+    <string name="ok">Ok</string>
+    <string name="facebook_authentication_error">Facebook authentication error</string>
+    <string name="i_am_provider">I\'m owner</string>
+    <string name="order">Order</string>
+    <string name="press_here_to_claim">Press here to claim service right away</string>
+    <!--<string name="basic_cleaning">Basic (regular)\ncleaning</string>-->
+    <!--<string name="move_in_out_cleaning">Move-in or move-out\ncleaning</string>-->
+    <!--<string name="construction_clean_up">Construction\nclean-up</string>-->
+    <!--<string name="when_your_contractor">When your contractor has left your home in what the industry calls a broom clean state</string>-->
+    <!--<string name="you_like_us_to_clean_for_you">You\'d like us to clean for you.\nBasic cleaning will make your home sparkle</string>-->
+    <!--<string name="move_in_or_move_out">A move-in or move-out cleaning is a great way to ease the stress of packing and moving</string>-->
+    <string name="accept">Accept</string>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="banking_info">Banking info</string>
+    <string name="email">Email</string>
+    <string name="location">Location</string>
+    <string name="banking_info_upper">BANKING INFO</string>
+    <string name="email_upper">EMAIL</string>
+    <string name="address_upper">ADDRESS</string>
+    <string name="name">Name</string>
+    <string name="use_device_location">Use device location</string>
+    <string name="bad_file_format">Bad file format</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="new_order">New order</string>
+    <string name="selecting">Selecting</string>
+    <string name="complete">Complete</string>
+    <string name="awarded">Awarded</string>
+    <string name="server_connect_failure">Server connect failure</string>
+    <string name="service_not_available">Service not available</string>
+    <string name="invalid_lat_long_used">Invalid lat long used</string>
+    <string name="no_address_found">No address found</string>
+    <string name="address_found">Address found</string>
+    <string name="no_geocoder_available">No geocoder available</string>
+    <string name="device_location">Device location</string>
+    <string name="invalid_name">Invalid name</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="location_is_not_entered">Location is not entered</string>
+    <string name="bank_info_is_empty">Banking info is empty</string>
+    <string name="no_bids_available">No bids yet. Please be patient, someone will respond to you shortly</string>
+    <string name="message_text">message text</string>
+
+    <string name="tag_status">tag state</string>
+</resources>

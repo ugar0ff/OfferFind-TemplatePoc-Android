@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorProposalItem"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/colorTransparent"
+            android:dividerHeight="0dp"
+            android:clickable="false"
+            android:descendantFocusability="afterDescendants"
+            android:footerDividersEnabled="false" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

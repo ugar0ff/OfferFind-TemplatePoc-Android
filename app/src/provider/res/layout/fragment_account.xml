@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorProposalItem"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="60dp"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin">
+
+            <FrameLayout
+                android:layout_width="@dimen/photo_size"
+                android:layout_height="@dimen/photo_size"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin">
+
+                <ImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/placeholder_user_photo"
+                    android:contentDescription="@null" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:src="@drawable/mask_avatar" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="Name"
+                android:textColor="@color/colorInputText"
+                android:textSize="@dimen/text_size_18" />
+
+            <TextView
+                android:id="@+id/location_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="ADDRESS"
+                android:textColor="@color/colorInputHint"
+                android:textSize="@dimen/text_size_12" />
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                android:textColor="@color/colorInputText"
+                android:textSize="@dimen/text_size_16" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorInputHint" />
+
+            <TextView
+                android:id="@+id/email_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="EMAIL"
+                android:textColor="@color/colorInputHint"
+                android:textSize="@dimen/text_size_12" />
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="email"
+                android:textColor="@color/colorInputText"
+                android:textSize="@dimen/text_size_16" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorInputHint" />
+
+            <TextView
+                android:id="@+id/banking_info_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="BANK INFO"
+                android:textColor="@color/colorInputHint"
+                android:textSize="@dimen/text_size_12" />
+
+            <TextView
+                android:id="@+id/banking_info"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Bank info"
+                android:textColor="@color/colorInputText"
+                android:textSize="@dimen/text_size_16" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/edit"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/background_accept_button"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:text="@string/edit"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_size_16" />
+</LinearLayout>

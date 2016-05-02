@@ -1,0 +1,40 @@
+<resources>
+    <string name="token_error_message">An error occurred while either fetching the InstanceID token,
+        sending the fetched token to the server or subscribing to the PubSub topic. Please try
+        running the sample again.</string>
+    <string name="facebook_authentication_error">Facebook authentication error</string>
+    <string name="ok">Ok</string>
+    <string name="server_connect_failure">Server connect failure</string>
+    <string name="no_address_found">No address found</string>
+    <string name="invalid_lat_long_used">Invalid lat long used</string>
+    <string name="service_not_available">Service not available</string>
+    <string name="no_geocoder_available">No geocoder available</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="location">Location</string>
+    <string name="banking_info">Banking info</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="use_device_location">Use device location</string>
+    <string name="edit">Edit</string>
+    <string name="selecting">Selecting</string>
+    <string name="complete">Complete</string>
+    <string name="awarded">Awarded</string>
+    <string name="accept">Accept</string>
+    <string name="device_location">Device location</string>
+    <string name="invalid_name">Invalid name</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="bad_file_format">Bad file format</string>
+    <string name="location_is_not_entered">Location is not entered</string>
+    <string name="bank_info_is_empty">Banking info is empty</string>
+    <string name="banking_info_upper">BANKING INFO</string>
+    <string name="email_upper">EMAIL</string>
+    <string name="address_upper">ADDRESS</string>
+    <string name="message_text">message text</string>
+    <string name="name_colon">Name:</string>
+    <string name="address_colon">Address:</string>
+    <string name="dates_colon">Date:</string>
+    <string name="skip">Skip</string>
+</resources>
