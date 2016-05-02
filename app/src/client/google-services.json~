@@ -1,29 +1,36 @@
 {
   "project_info": {
+    "project_id": "marketplacesclient",
     "project_number": "522136833466",
-    "project_id": "marketplacesclient"
+    "name": "MarketPlacesClient"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:522136833466:android:25b9fd00d85bbe4d",
+        "client_id": "android:co.mrktplaces.clients.android",
+        "client_type": 1,
         "android_client_info": {
-          "package_name": "co.mrktplaces.clients.android"
+          "package_name": "co.mrktplaces.clients.android",
+          "certificate_hash": []
         }
       },
       "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD49NZrbiZeGfSiOld31ejFIU0K20O6hKM"
-        }
-      ],
+      "api_key": [],
       "services": {
         "analytics_service": {
           "status": 1
         },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
         },
         "ads_service": {
           "status": 1
@@ -31,5 +38,6 @@
       }
     }
   ],
-  "configuration_version": "1"
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
 }

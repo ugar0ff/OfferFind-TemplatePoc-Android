@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <co.mrktplaces.clients.android.ui.views.CardViewImageLayout
+        <co.mrktplaces.android.ui.views.CardViewImageLayout
             android:id="@+id/picture"
             android:layout_width="match_parent"
             android:layout_height="0dp"

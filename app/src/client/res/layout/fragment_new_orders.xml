@@ -10,7 +10,7 @@
         android:background="@color/colorProposalItem"
         android:orientation="vertical">
 
-        <co.mrktplaces.clients.android.ui.views.CardViewPagerLayout
+        <co.mrktplaces.android.ui.views.CardViewPagerLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_viewpager_card">
@@ -25,7 +25,7 @@
                 android:layout_marginRight="13dp"
                 android:layout_marginStart="13dp"
                 android:layout_marginTop="13dp" />
-        </co.mrktplaces.clients.android.ui.views.CardViewPagerLayout>
+        </co.mrktplaces.android.ui.views.CardViewPagerLayout>
 
         <LinearLayout
             android:id="@+id/add_orders"

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <co.mrktplaces.clients.android.ui.views.TouchableWrapper
+    <co.mrktplaces.android.ui.views.TouchableWrapper
         android:id="@+id/touchWrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context="co.mrktplaces.clients.android.ui.activity.MapsActivity" />
-    </co.mrktplaces.clients.android.ui.views.TouchableWrapper>
+    </co.mrktplaces.android.ui.views.TouchableWrapper>
 
     <LinearLayout
         android:layout_width="match_parent"
