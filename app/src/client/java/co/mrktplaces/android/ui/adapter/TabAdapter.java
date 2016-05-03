@@ -9,6 +9,7 @@ import co.mrktplaces.android.R;
 
 import co.mrktplaces.android.ui.fragment.AccountRootFragment;
 import co.mrktplaces.android.ui.fragment.MessagingFragment;
+import co.mrktplaces.android.ui.fragment.NewOrdersFragment;
 import co.mrktplaces.android.ui.fragment.OrdersFragment;
 import co.mrktplaces.android.ui.model.TabModel;
 

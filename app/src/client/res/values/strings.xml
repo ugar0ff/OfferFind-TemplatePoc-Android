@@ -2,7 +2,7 @@
     <string name="app_name">MarketPlaceClient</string>
     <string name="facebook_app_id">470520513147982</string>
 
-    <string name="i_am_provider">I\'m owner</string>
+    <string name="i_am_provider">I\'m provider</string>
     <string name="order">Order</string>
     <string name="press_here_to_claim">Press here to claim service right away</string>
     <string name="new_order">New order</string>

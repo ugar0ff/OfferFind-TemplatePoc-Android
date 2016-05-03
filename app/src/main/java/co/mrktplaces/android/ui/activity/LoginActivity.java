@@ -1,9 +1,12 @@
 package co.mrktplaces.android.ui.activity;
 
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
@@ -18,6 +21,7 @@ import co.mrktplaces.android.core.gcm.RegistrationIntentService;
 import co.mrktplaces.android.core.receiver.UpdateReceiver;
 import co.mrktplaces.android.utils.StaticKeys;
 import co.mrktplaces.android.utils.Utilities;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -26,6 +30,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+
 import co.mrktplaces.android.R;
 import co.mrktplaces.android.core.api.strongloop.Accounts;
 import co.mrktplaces.android.core.api.strongloop.AccountsRepository;
@@ -234,6 +239,35 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 progressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    public void onClickClient(View view) {
+        startOtherApp("co.mrktplaces.clients.android");
+    }
+
+    public void onClickProvider(View view) {
+        startOtherApp("co.mrktplaces.providers.android");
+    }
+
+    private void startOtherApp(String packageName) {
+        try {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(packageName, "co.mrktplaces.android.ui.activity.LoginActivity"));
+            startActivity(intent);
+            finish();
+        } catch (ActivityNotFoundException e) {
+            startMarketAppPage(packageName);
+        }
+    }
+
+    private void startMarketAppPage(String packageName) {
+        Uri uri = Uri.parse("market://details?id=" + packageName);
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
+        }
     }
 }
 

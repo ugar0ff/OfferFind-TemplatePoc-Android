@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import co.mrktplaces.android.R;
 import co.mrktplaces.android.ui.activity.base.BaseActivity;
 import co.mrktplaces.android.ui.controller.ToolbarController;
+import co.mrktplaces.android.ui.fragment.NewOrdersFragment;
 
 /**
  * Created by ugar on 24.02.16.

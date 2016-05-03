@@ -36,6 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/login_button_margin"
             android:text="@string/i_am_client"
+            android:padding="5dp"
+            android:onClick="onClickClient"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_16" />
     </LinearLayout>
