@@ -141,6 +141,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorProposalItem"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:elevation="1dp"
         android:translationZ="3dp">
 
@@ -187,8 +189,6 @@
                 android:background="@drawable/background_apply"
                 android:padding="5dp"
                 android:text="@string/apply"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:textColor="@color/colorWhite" />
         </LinearLayout>
 

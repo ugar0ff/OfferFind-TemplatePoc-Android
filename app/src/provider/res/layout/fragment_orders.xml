@@ -18,7 +18,6 @@
             android:layout_height="match_parent"
             android:divider="@color/colorTransparent"
             android:dividerHeight="0dp"
-            android:clickable="false"
             android:descendantFocusability="afterDescendants"
             android:footerDividersEnabled="false" />
     </android.support.v4.widget.SwipeRefreshLayout>
