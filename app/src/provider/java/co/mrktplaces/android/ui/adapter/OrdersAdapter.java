@@ -2,6 +2,7 @@ package co.mrktplaces.android.ui.adapter;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +31,13 @@ public class OrdersAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
     private List<Opportunities.ModelOpportunity> list;
     private Context context;
+    private View.OnClickListener clickListener;
 
-    public OrdersAdapter(Context context, List<Opportunities.ModelOpportunity> list) {
+    public OrdersAdapter(Context context, List<Opportunities.ModelOpportunity> list, View.OnClickListener clickListener) {
         mInflater = LayoutInflater.from(context);
         this.list = list;
         this.context = context;
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -53,7 +56,7 @@ public class OrdersAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        public TextView name, date, address, description;
+        public TextView name, date, address, title;
         public ImageView picture;
         public EditText price, message;
         public Button apply, skip;
@@ -70,29 +73,35 @@ public class OrdersAdapter extends BaseAdapter {
             viewHolder.date = (TextView) convertView.findViewById(R.id.date);
             viewHolder.address = (TextView) convertView.findViewById(R.id.address);
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.picture);
-            viewHolder.description = (TextView) convertView.findViewById(R.id.description);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.title);
             viewHolder.price = (EditText) convertView.findViewById(R.id.price);
             viewHolder.message = (EditText) convertView.findViewById(R.id.message);
             viewHolder.apply = (Button) convertView.findViewById(R.id.btnApply);
             viewHolder.skip = (Button) convertView.findViewById(R.id.btnSkip);
+            viewHolder.apply.setOnClickListener(clickListener);
+            viewHolder.skip.setOnClickListener(clickListener);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
         if (list != null) {
+            viewHolder.apply.setTag(position);
+            viewHolder.skip.setTag(position);
             if (list.get(position).getAccounts().getName() != null) {
-                viewHolder.name.setText(list.get(position).getAccounts().getName());
+                String text = "<font color=#666666>" + context.getString(R.string.name_colon) + "</font> <font color=#000000> " + list.get(position).getAccounts().getName() + "</font>";
+                viewHolder.name.setText(Html.fromHtml(text));
             } else {
                 viewHolder.name.setText("");
             }
-            if (list.get(position).getDescription() != null) {
-                viewHolder.description.setText(list.get(position).getDescription());
+            if (list.get(position).getTitle() != null) {
+                viewHolder.title.setText(list.get(position).getTitle());
             } else {
-                viewHolder.description.setText("");
+                viewHolder.title.setText("");
             }
             if (list.get(position).getLocation().getAddress() != null) {
-                viewHolder.address.setText(list.get(position).getLocation().getAddress());
+                String text = "<font color=#666666>" + context.getString(R.string.address_colon) + "</font> <font color=#000000> " + list.get(position).getLocation().getAddress() + "</font>";
+                viewHolder.address.setText(Html.fromHtml(text));
             } else {
                 viewHolder.address.setText("");
             }
@@ -103,7 +112,8 @@ public class OrdersAdapter extends BaseAdapter {
                 e.printStackTrace();
             }
             if (date != null) {
-                viewHolder.date.setText(Utilities.output.format(date));
+                String text = "<font color=#666666>" + context.getString(R.string.dates_colon) + "</font> <font color=#000000> " + Utilities.output.format(date) + "</font>";
+                viewHolder.date.setText(Html.fromHtml(text));
             } else {
                 viewHolder.date.setText("");
             }

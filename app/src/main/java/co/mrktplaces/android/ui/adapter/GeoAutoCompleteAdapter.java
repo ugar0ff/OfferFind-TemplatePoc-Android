@@ -26,7 +26,6 @@ import timber.log.Timber;
  */
 public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
-    private static final int MAX_RESULTS = 15;
     private Context mContext;
     private List<GeoSearchResult> resultList;
     private LayoutInflater inflater;

@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorProposalItem"
-        android:orientation="horizontal">
+        android:elevation="1dp"
+        android:orientation="horizontal"
+        android:translationZ="3dp">
 
         <ImageView
             android:id="@+id/picture"
@@ -79,12 +81,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorProposalItem"
+        android:elevation="1dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:paddingBottom="9dp"
-        android:paddingLeft="9dp"
-        android:paddingStart="9dp"
-        android:paddingTop="9dp">
+        android:padding="9dp"
+        android:translationZ="3dp">
 
         <EditText
             android:id="@+id/message"
@@ -118,9 +119,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingEnd="9dp"
-            android:paddingRight="9dp">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/btnApply"

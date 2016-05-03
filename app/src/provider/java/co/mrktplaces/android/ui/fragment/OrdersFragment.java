@@ -31,7 +31,7 @@ import timber.log.Timber;
 /**
  * Created by ugar on 10.02.16.
  */
-public class OrdersFragment extends UpdateReceiverFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class OrdersFragment extends UpdateReceiverFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private List<Opportunities.ModelOpportunity> adapterList;
     private OrdersAdapter adapter;
@@ -52,9 +52,8 @@ public class OrdersFragment extends UpdateReceiverFragment implements AdapterVie
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_orders, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list);
-        adapter = new OrdersAdapter(getActivity(), adapterList);
+        adapter = new OrdersAdapter(getActivity(), adapterList, adapterClickListener);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -71,11 +70,6 @@ public class OrdersFragment extends UpdateReceiverFragment implements AdapterVie
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
         getActivity().getLoaderManager().initLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
         return view;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        ProposalActivity.launch(getActivity(), adapterList.get(position).getId(), adapterList.get(position).getTitle());
     }
 
     @Override
@@ -139,7 +133,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements AdapterVie
                         Location location = new Location();
                         location.setAddress(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_ADDRESS)));
                         model.setLocation(location);
-                        model.setDescription(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_DESCRIPTION)));
+                        model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
                         model.setCreatedAt(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
                         adapterList.add(model);
                     } while (cursor.moveToNext());
@@ -153,4 +147,20 @@ public class OrdersFragment extends UpdateReceiverFragment implements AdapterVie
     public void onLoaderReset(Loader<Cursor> loader) {
         Timber.i("onLoaderReset");
     }
+
+    private View.OnClickListener adapterClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (int) v.getTag();
+            switch (v.getId()) {
+                case R.id.btnApply:
+                    Opportunities.ModelOpportunity opportunity = adapterList.get(position);
+                    break;
+                case  R.id.btnSkip:
+                    break;
+            }
+        }
+    };
+
+
 }

@@ -6,11 +6,13 @@
     android:orientation="vertical"
     android:padding="@dimen/proposal_list_divider_height">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorProposalItem"
-        android:orientation="horizontal">
+        android:elevation="1dp"
+        android:orientation="horizontal"
+        android:translationZ="3dp">
 
         <ImageView
             android:id="@+id/picture"
@@ -24,19 +26,12 @@
             android:scaleType="centerInside" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/picture"
-            android:layout_toStartOf="@+id/btnSkip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="vertical"
+            android:paddingBottom="9dp"
             android:paddingTop="5dp">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/name"
@@ -54,6 +49,23 @@
                 android:layout_marginRight="5dp"
                 android:textSize="@dimen/text_size_14" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="9dp"
+            android:paddingTop="5dp">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_14" />
+
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
@@ -61,35 +73,40 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:textSize="@dimen/text_size_14" />
-
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnSkip"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="9dp"
-            android:background="@drawable/background_skip"
-            android:text="@string/skip" />
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="9dp">
+
+            <Button
+                android:id="@+id/btnSkip"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:background="@drawable/background_skip"
+                android:text="@string/skip" />
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorProposalItem"
+        android:elevation="1dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:paddingBottom="9dp"
-        android:paddingLeft="9dp"
-        android:paddingStart="9dp"
-        android:paddingTop="9dp">
+        android:paddingLeft="@dimen/proposal_item_height"
+        android:paddingStart="@dimen/proposal_item_height"
+        android:translationZ="3dp">
 
         <EditText
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="9dp"
+            android:layout_marginTop="9dp"
             android:layout_weight="1"
             android:background="@drawable/background_edit"
             android:focusable="true"
@@ -103,10 +120,7 @@
             android:id="@+id/price"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="9dp"
-            android:layout_marginLeft="9dp"
-            android:layout_marginRight="9dp"
-            android:layout_marginStart="9dp"
+            android:layout_margin="9dp"
             android:background="@drawable/background_edit"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -118,6 +132,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical"
             android:paddingEnd="9dp"
             android:paddingRight="9dp">
