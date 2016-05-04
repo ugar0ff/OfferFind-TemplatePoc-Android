@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import co.mrktplaces.android.core.api.retrofit.Account;
 import co.mrktplaces.android.core.api.strongloop.Location;
 import co.mrktplaces.android.core.cache.CacheContentProvider;
 import co.mrktplaces.android.core.cache.CacheHelper;
+import co.mrktplaces.android.core.loader.OpportunitiesAsyncTaskLoader;
 import co.mrktplaces.android.ui.adapter.OrdersAdapter;
 import co.mrktplaces.android.ui.fragment.base.UpdateReceiverFragment;
 import co.mrktplaces.android.utils.StaticKeys;
@@ -36,6 +36,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
     private List<Opportunities.ModelOpportunity> adapterList;
     private OrdersAdapter adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private final static String OPPORTUNITIES_LIST = "opportunities_list";
 
     public static OrdersFragment newInstance() {
         return new OrdersFragment();
@@ -68,7 +69,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
-        getActivity().getLoaderManager().initLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
+        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
         return view;
     }
 
@@ -105,12 +106,11 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
             case StaticKeys.LoaderId.OPPORTUNITIES_LOADER:
                 String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as " + CacheHelper._ID,
                         CacheHelper.OPPORTUNITIES_TITLE,
+                        CacheHelper.OPPORTUNITIES_ACCOUNT_ID,
                         CacheHelper.OPPORTUNITIES_CREATE_AT,
                         CacheHelper.OPPORTUNITIES_DESCRIPTION,
-                        CacheHelper.OPPORTUNITIES_ADDRESS,
-                        CacheHelper.OWNER_AVATAR,
-                        CacheHelper.OWNER_NAME};
-                return new CursorLoader(getActivity(), CacheContentProvider.OPPORTUNITIES_AND_USER_URI, projection, null, null, null);
+                        CacheHelper.OPPORTUNITIES_ADDRESS};
+                return new CursorLoader(getActivity(), CacheContentProvider.OPPORTUNITIES_URI, projection, null, null, CacheHelper.OPPORTUNITIES_CREATE_AT + " DESC");
             default:
                 return null;
         }
@@ -121,24 +121,25 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
         Timber.i("onLoadFinished, loader.getId() = %s", loader.getId());
         switch (loader.getId()) {
             case StaticKeys.LoaderId.OPPORTUNITIES_LOADER:
-                adapterList.clear();
-                if (cursor.moveToFirst()) {
-                    do {
-                        Opportunities.ModelOpportunity model = new Opportunities.ModelOpportunity();
-                        model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
-                        Account account = new Account();
-                        account.setName(cursor.getString(cursor.getColumnIndex(CacheHelper.OWNER_NAME)));
-                        account.setAvatar(cursor.getString(cursor.getColumnIndex(CacheHelper.OWNER_AVATAR)));
-                                model.setAccounts(account);
-                        Location location = new Location();
-                        location.setAddress(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_ADDRESS)));
-                        model.setLocation(location);
-                        model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
-                        model.setCreatedAt(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
-                        adapterList.add(model);
-                    } while (cursor.moveToNext());
+                if (getActivity() != null) {
+                    ArrayList<Opportunities.ModelOpportunity> opportunities = new ArrayList<>();
+                    if (cursor.moveToFirst()) {
+                        do {
+                            Opportunities.ModelOpportunity model = new Opportunities.ModelOpportunity();
+                            model.setId(cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)));
+                            model.setOwnerId(cursor.getInt(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_ACCOUNT_ID)));
+                            Location location = new Location();
+                            location.setAddress(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_ADDRESS)));
+                            model.setLocation(location);
+                            model.setTitle(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE)));
+                            model.setCreatedAt(cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_CREATE_AT)));
+                            opportunities.add(model);
+                        } while (cursor.moveToNext());
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList(OPPORTUNITIES_LIST, opportunities);
+                    getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER, bundle, ownerLoader);
                 }
-                adapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -148,6 +149,28 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
         Timber.i("onLoaderReset");
     }
 
+    private LoaderManager.LoaderCallbacks<ArrayList<Opportunities.ModelOpportunity>> ownerLoader = new LoaderManager.LoaderCallbacks<ArrayList<Opportunities.ModelOpportunity>>() {
+        @Override
+        public Loader<ArrayList<Opportunities.ModelOpportunity>> onCreateLoader(int id, Bundle args) {
+            Timber.i("onCreateLoader");
+            ArrayList<Opportunities.ModelOpportunity> opportunities = args.getParcelableArrayList(OPPORTUNITIES_LIST);
+            return new OpportunitiesAsyncTaskLoader(getActivity(), opportunities);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ArrayList<Opportunities.ModelOpportunity>> loader, ArrayList<Opportunities.ModelOpportunity> opportunities) {
+            Timber.i("onLoadFinished");
+            adapterList.clear();
+            adapterList.addAll(opportunities);
+            adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onLoaderReset(Loader loader) {
+            Timber.i("onLoaderReset");
+        }
+    };
+
     private View.OnClickListener adapterClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -156,7 +179,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
                 case R.id.btnApply:
                     Opportunities.ModelOpportunity opportunity = adapterList.get(position);
                     break;
-                case  R.id.btnSkip:
+                case R.id.btnSkip:
                     break;
             }
         }

@@ -91,12 +91,14 @@ public class UpdateService extends IntentService {
             updateBids();
             try {
                 getContentResolver().applyBatch(CacheContentProvider.AUTHORITY, providerOperations);
+                requestStatus = RequestStatus.TASK_OK;
             } catch (RemoteException e) {
                 e.printStackTrace();
+                requestStatus = RequestStatus.TASK_ERROR;
             } catch (OperationApplicationException e) {
                 e.printStackTrace();
+                requestStatus = RequestStatus.TASK_ERROR;
             }
-            requestStatus = RequestStatus.TASK_OK;
         } else {
             requestStatus = RequestStatus.TASK_ERROR;
         }

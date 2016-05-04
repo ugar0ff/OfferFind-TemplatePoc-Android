@@ -155,6 +155,7 @@ public class StreamService extends Service {
         values.put(CacheHelper.OPPORTUNITIES_LATITUDE, message.getMessageData().getData().getLocation() == null ? null : message.getMessageData().getData().getLocation().getLatitude());
         values.put(CacheHelper.OPPORTUNITIES_LONGITUDE, message.getMessageData().getData().getLocation() == null ? null : message.getMessageData().getData().getLocation().getLongitude());
         getBaseContext().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
+        updateOwner(message.getMessageData().getData().getOwnerId());
     }
 
     private void updateBid(MessageEvent message) {

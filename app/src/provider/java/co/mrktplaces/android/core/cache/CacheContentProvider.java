@@ -92,14 +92,12 @@ public class CacheContentProvider extends ContentProvider {
             case BIDS:
                 table = CacheHelper.TABLE_BIDS + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_BIDS + "." + CacheHelper.BIDS_OWNER_ID + " = " +
                         CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
-//                _uri = MESSAGE_URI;
                 break;
             case BIDS_ID:
                 table = CacheHelper.TABLE_BIDS + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_BIDS + "." + CacheHelper.BIDS_OWNER_ID + " = " +
                         CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
                 selection = CacheHelper.BIDS_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
-//                _uri = MESSAGE_URI;
                 break;
             case CATEGORY:
                 table = CacheHelper.TABLE_CATEGORY;
@@ -125,16 +123,16 @@ public class CacheContentProvider extends ContentProvider {
                 selection = CacheHelper.MESSAGE_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
                 break;
-            case OPPORTUNITIES_AND_USER:
-                table = CacheHelper.TABLE_OPPORTUNITIES + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_OPPORTUNITIES + "." + CacheHelper.OPPORTUNITIES_ACCOUNT_ID + " = " +
-                        CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
-                break;
-            case OPPORTUNITIES_AND_USER_ID:
-                table = CacheHelper.TABLE_OPPORTUNITIES + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_OPPORTUNITIES + "." + CacheHelper.OPPORTUNITIES_ACCOUNT_ID + " = " +
-                        CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
-                selection = CacheHelper.MESSAGE_ID + " = ?";
-                selectionArgs = new String[]{uri.getLastPathSegment()};
-                break;
+//            case OPPORTUNITIES_AND_USER:
+//                table = CacheHelper.TABLE_OPPORTUNITIES + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_OPPORTUNITIES + "." + CacheHelper.OPPORTUNITIES_ACCOUNT_ID + " = " +
+//                        CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
+//                break;
+//            case OPPORTUNITIES_AND_USER_ID:
+//                table = CacheHelper.TABLE_OPPORTUNITIES + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_OPPORTUNITIES + "." + CacheHelper.OPPORTUNITIES_ACCOUNT_ID + " = " +
+//                        CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
+//                selection = CacheHelper.OPPORTUNITIES_ID + " = ?";
+//                selectionArgs = new String[]{uri.getLastPathSegment()};
+//                break;
             default:
                 throw new IllegalArgumentException("Wrong URI: " + uri);
         }
@@ -147,7 +145,7 @@ public class CacheContentProvider extends ContentProvider {
         if (cursor != null && getContext() != null) {
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
             if (_uri != null) {
-                getContext().getContentResolver().notifyChange(MESSAGE_URI, null);
+                getContext().getContentResolver().notifyChange(_uri, null);
             }
         }
         return cursor;
