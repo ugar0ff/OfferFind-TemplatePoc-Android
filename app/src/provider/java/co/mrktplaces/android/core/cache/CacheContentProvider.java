@@ -42,10 +42,10 @@ public class CacheContentProvider extends ContentProvider {
     private static final int MESSAGE = 9;
     private static final int MESSAGE_ID = 10;
 
-    private static final String OPPORTUNITIES_AND_USER_PATCH = "opportunities_and_user";
-    public static final Uri OPPORTUNITIES_AND_USER_URI = Uri.parse("content://" + AUTHORITY + "/" + OPPORTUNITIES_AND_USER_PATCH);
-    private static final int OPPORTUNITIES_AND_USER = 11;
-    private static final int OPPORTUNITIES_AND_USER_ID = 12;
+    private static final String SKIP_PATCH = "skip";
+    public static final Uri SKIP_URI = Uri.parse("content://" + AUTHORITY + "/" + SKIP_PATCH);
+    private static final int SKIP = 11;
+    private static final int SKIP_ID = 12;
 
     private static final UriMatcher uriMatcher;
 
@@ -61,8 +61,8 @@ public class CacheContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, OWNER_PATCH + "/#", OWNER_ID);
         uriMatcher.addURI(AUTHORITY, MESSAGE_PATCH, MESSAGE);
         uriMatcher.addURI(AUTHORITY, MESSAGE_PATCH + "/#", MESSAGE_ID);
-        uriMatcher.addURI(AUTHORITY, OPPORTUNITIES_AND_USER_PATCH, OPPORTUNITIES_AND_USER);
-        uriMatcher.addURI(AUTHORITY, OPPORTUNITIES_AND_USER_PATCH + "/#", OPPORTUNITIES_AND_USER_ID);
+        uriMatcher.addURI(AUTHORITY, SKIP_PATCH, SKIP);
+        uriMatcher.addURI(AUTHORITY, SKIP_PATCH + "/#", SKIP_ID);
     }
 
     private CacheHelper cacheHelper;
@@ -123,16 +123,14 @@ public class CacheContentProvider extends ContentProvider {
                 selection = CacheHelper.MESSAGE_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
                 break;
-//            case OPPORTUNITIES_AND_USER:
-//                table = CacheHelper.TABLE_OPPORTUNITIES + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_OPPORTUNITIES + "." + CacheHelper.OPPORTUNITIES_ACCOUNT_ID + " = " +
-//                        CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
-//                break;
-//            case OPPORTUNITIES_AND_USER_ID:
-//                table = CacheHelper.TABLE_OPPORTUNITIES + " INNER JOIN " + CacheHelper.TABLE_OWNER + " on " + CacheHelper.TABLE_OPPORTUNITIES + "." + CacheHelper.OPPORTUNITIES_ACCOUNT_ID + " = " +
-//                        CacheHelper.TABLE_OWNER + "." + CacheHelper.OWNER_ID;
-//                selection = CacheHelper.OPPORTUNITIES_ID + " = ?";
-//                selectionArgs = new String[]{uri.getLastPathSegment()};
-//                break;
+            case SKIP:
+                table = CacheHelper.TABLE_SKIP;
+                break;
+            case SKIP_ID:
+                table = CacheHelper.TABLE_SKIP;
+                selection = CacheHelper.SKIP_OPPORTUNITIES_ID + " = ?";
+                selectionArgs = new String[]{uri.getLastPathSegment()};
+                break;
             default:
                 throw new IllegalArgumentException("Wrong URI: " + uri);
         }
@@ -197,6 +195,13 @@ public class CacheContentProvider extends ContentProvider {
                 if (id >= 0) {
                     _uri = ContentUris.withAppendedId(MESSAGE_URI, id);
                     currentUri = MESSAGE_URI;
+                }
+                break;
+            case SKIP:
+                id = sqLiteDatabase.replace(CacheHelper.TABLE_SKIP, null, values);
+                if (id >= 0) {
+                    _uri = ContentUris.withAppendedId(SKIP_URI, id);
+                    currentUri = SKIP_URI;
                 }
                 break;
             default:
@@ -279,6 +284,19 @@ public class CacheContentProvider extends ContentProvider {
                             CacheHelper.MESSAGE_ID + " = " + id + " and " + selection, selectionArgs);
                 }
                 break;
+            case SKIP:
+                rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_SKIP, selection, selectionArgs);
+                break;
+            case SKIP_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_SKIP,
+                            CacheHelper.SKIP_OPPORTUNITIES_ID + " = " + id, null);
+                } else {
+                    rowsDeleted = sqLiteDatabase.delete(CacheHelper.TABLE_SKIP,
+                            CacheHelper.SKIP_OPPORTUNITIES_ID + " = " + id + " and " + selection, selectionArgs);
+                }
+                break;
             default:
                 throw new IllegalArgumentException("Wrong URI: " + uri);
         }
@@ -357,6 +375,19 @@ public class CacheContentProvider extends ContentProvider {
                 } else {
                     rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_MESSAGE, values,
                             CacheHelper.MESSAGE_ID + " = " + id + " and " + selection, selectionArgs);
+                }
+                break;
+            case SKIP:
+                rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_SKIP, values, selection, selectionArgs);
+                break;
+            case SKIP_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_SKIP, values,
+                            CacheHelper.SKIP_OPPORTUNITIES_ID + " = " + id, null);
+                } else {
+                    rowsUpdated = sqLiteDatabase.update(CacheHelper.TABLE_SKIP, values,
+                            CacheHelper.SKIP_OPPORTUNITIES_ID + " = " + id + " and " + selection, selectionArgs);
                 }
                 break;
             default:

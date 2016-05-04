@@ -60,11 +60,15 @@ public class ApiRetrofit {
         return installation.install(installationRequest, token);
     }
 
+    public static Call<Bids.ModelBids> apply(BidRequest bidRequest, String token) {
+        ApplyInterface applyInterface = retrofit.create(ApplyInterface.class);
+        return applyInterface.apply(bidRequest, token);
+    }
+
     private interface OpportunitiesInterface {
         @GET("/api/Opportunities?filter=%7B%22include%22%3A%20%22owner%22%2C%22where%22%3A%7B%22state%22%3A%22published%22%7D%7D")
         Call<List<Opportunities.ModelOpportunity>> opportunitiesInfo(@Query("access_token") String access_token);
     }
-
 
     private interface BidsInterface {
         @GET("/api/Bids")
@@ -84,6 +88,11 @@ public class ApiRetrofit {
         })
         @POST("/api/Installations")
         Call<Installation> install(@Body InstallationRequest installationRequest, @Query("access_token") String access_token);
+    }
+
+    private interface ApplyInterface {
+        @POST("/api/Bids")
+        Call<Bids.ModelBids> apply(@Body BidRequest bidRequest, @Query("access_token") String access_token);
     }
 
 }

@@ -61,6 +61,7 @@ public class MessagingFragment extends UpdateReceiverFragment implements View.On
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.CHANGE_MESSAGE_LOADER, null, changeMessageLoader);
+        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.CHANGE_BIDS_LOADER, null, changeMessageLoader);
         return view;
     }
 
@@ -120,8 +121,9 @@ public class MessagingFragment extends UpdateReceiverFragment implements View.On
             Timber.i("onCreateLoader id = %s", id);
             switch (id) {
                 case StaticKeys.LoaderId.CHANGE_MESSAGE_LOADER:
-                    String[] projection = new String[]{CacheHelper.MESSAGE_ID + " as _id "};
-                    return new CursorLoader(getActivity(), CacheContentProvider.MESSAGE_URI, projection, null, null, null);
+                    return new CursorLoader(getActivity(), CacheContentProvider.MESSAGE_URI, null, null, null, null);
+                case StaticKeys.LoaderId.CHANGE_BIDS_LOADER:
+                    return new CursorLoader(getActivity(), CacheContentProvider.BIDS_URI, null, null, null, null);
                 default:
                     return null;
             }
@@ -132,6 +134,7 @@ public class MessagingFragment extends UpdateReceiverFragment implements View.On
             Timber.i("onLoadFinished loader.getId() = %s", loader.getId());
             switch (loader.getId()) {
                 case StaticKeys.LoaderId.CHANGE_MESSAGE_LOADER:
+                case StaticKeys.LoaderId.CHANGE_BIDS_LOADER:
                     if (getActivity() != null) {
                         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER, null, allBidsLoader);
                     }

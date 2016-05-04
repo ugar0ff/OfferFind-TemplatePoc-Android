@@ -58,7 +58,7 @@ public class RegistrationIntentService extends IntentService {
         Installation installation = null;
         try {
             installation = ApiRetrofit.install(new InstallationRequest(PreferencesUtils.getAppId(getApplicationContext()), token, "android",
-                    PreferencesUtils.getUserEmail(getApplicationContext())), PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
+                    PreferencesUtils.getUserId(getApplicationContext())), PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
             PreferencesUtils.setSendToken(getApplicationContext(), true);
         } catch (Exception e) {
             e.printStackTrace();

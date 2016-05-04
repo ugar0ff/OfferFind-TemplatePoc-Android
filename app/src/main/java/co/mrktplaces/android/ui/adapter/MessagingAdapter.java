@@ -76,6 +76,8 @@ public class MessagingAdapter extends BaseAdapter {
         if (list != null) {
             if (list.get(position).getTitle() != null) {
                 viewHolder.title.setText(list.get(position).getTitle());
+            } else {
+                viewHolder.title.setText("");
             }
             Date date = null;
             try {
@@ -90,6 +92,8 @@ public class MessagingAdapter extends BaseAdapter {
             }
             if (list.get(position).getOwner() != null) {
                 viewHolder.provider.setText(list.get(position).getOwner().getName());
+            } else {
+                viewHolder.provider.setText("");
             }
             switch (list.get(position).getState()) {
                 case StaticKeys.State.PUBLISHED:

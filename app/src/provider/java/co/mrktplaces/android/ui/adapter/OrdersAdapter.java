@@ -88,7 +88,7 @@ public class OrdersAdapter extends BaseAdapter {
         if (list != null) {
             viewHolder.apply.setTag(position);
             viewHolder.skip.setTag(position);
-            if (list.get(position).getAccounts().getName() != null) {
+            if (list.get(position).getAccounts() != null && list.get(position).getAccounts().getName() != null) {
                 String text = "<font color=#666666>" + context.getString(R.string.name_colon) + "</font> <font color=#000000> " + list.get(position).getAccounts().getName() + "</font>";
                 viewHolder.name.setText(Html.fromHtml(text));
             } else {
@@ -99,7 +99,7 @@ public class OrdersAdapter extends BaseAdapter {
             } else {
                 viewHolder.title.setText("");
             }
-            if (list.get(position).getLocation().getAddress() != null) {
+            if (list.get(position).getLocation() != null && list.get(position).getLocation().getAddress() != null) {
                 String text = "<font color=#666666>" + context.getString(R.string.address_colon) + "</font> <font color=#000000> " + list.get(position).getLocation().getAddress() + "</font>";
                 viewHolder.address.setText(Html.fromHtml(text));
             } else {
@@ -117,7 +117,7 @@ public class OrdersAdapter extends BaseAdapter {
             } else {
                 viewHolder.date.setText("");
             }
-            if (list.get(position).getAccounts().getAvatar() != null && list.get(position).getAccounts().getAvatar().length() > 3) {
+            if (list.get(position).getAccounts() != null && list.get(position).getAccounts().getAvatar() != null && list.get(position).getAccounts().getAvatar().length() > 3) {
                 Picasso.with(context).load(list.get(position).getAccounts().getAvatar()).placeholder(R.drawable.placeholder_user_photo).into(viewHolder.picture);
             } else {
                 Picasso.with(context).load(R.drawable.placeholder_user_photo).into(viewHolder.picture);

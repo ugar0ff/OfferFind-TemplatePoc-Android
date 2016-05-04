@@ -1,6 +1,7 @@
 package co.mrktplaces.android.ui.fragment;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -11,21 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import co.mrktplaces.android.R;
+import co.mrktplaces.android.core.api.retrofit.ApiRetrofit;
+import co.mrktplaces.android.core.api.retrofit.BidRequest;
+import co.mrktplaces.android.core.api.strongloop.Bids;
 import co.mrktplaces.android.core.api.strongloop.Opportunities;
-import co.mrktplaces.android.core.api.retrofit.Account;
 import co.mrktplaces.android.core.api.strongloop.Location;
 import co.mrktplaces.android.core.cache.CacheContentProvider;
 import co.mrktplaces.android.core.cache.CacheHelper;
 import co.mrktplaces.android.core.loader.OpportunitiesAsyncTaskLoader;
 import co.mrktplaces.android.ui.adapter.OrdersAdapter;
 import co.mrktplaces.android.ui.fragment.base.UpdateReceiverFragment;
+import co.mrktplaces.android.utils.PreferencesUtils;
 import co.mrktplaces.android.utils.StaticKeys;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -33,10 +40,11 @@ import timber.log.Timber;
  */
 public class OrdersFragment extends UpdateReceiverFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private List<Opportunities.ModelOpportunity> adapterList;
+    private ArrayList<Opportunities.ModelOpportunity> adapterList;
     private OrdersAdapter adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private final static String OPPORTUNITIES_LIST = "opportunities_list";
+    private FrameLayout progressBar;
 
     public static OrdersFragment newInstance() {
         return new OrdersFragment();
@@ -69,6 +77,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
+        progressBar = (FrameLayout) view.findViewById(R.id.progress_bar);
         getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
         return view;
     }
@@ -77,6 +86,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
     public void onResume() {
         super.onResume();
         mSwipeRefreshLayout.setRefreshing(false);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -138,7 +148,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
                     }
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList(OPPORTUNITIES_LIST, opportunities);
-                    getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.ALL_BIDS_LOADER, bundle, ownerLoader);
+                    getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OWNER_LOADER, bundle, ownerLoader);
                 }
                 break;
         }
@@ -174,16 +184,52 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
     private View.OnClickListener adapterClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int position = (int) v.getTag();
+            final int position = (int) v.getTag();
             switch (v.getId()) {
                 case R.id.btnApply:
+                    progressBar.setVisibility(View.VISIBLE);
+                    hideKeyboard();
                     Opportunities.ModelOpportunity opportunity = adapterList.get(position);
+                    if (opportunity.getMessage() == null) {
+                        showDialog(getString(R.string.enter_your_message));
+                        return;
+                    }
+                    if (opportunity.getPrice() == null) {
+                        showDialog(getString(R.string.enter_price));
+                        return;
+                    }
+                    Call<Bids.ModelBids> call = ApiRetrofit.apply(new BidRequest(opportunity.getMessage(), Float.valueOf(opportunity.getPrice()), opportunity.getId(),
+                            PreferencesUtils.getUserId(getActivity())), PreferencesUtils.getUserToken(getActivity()));
+                    call.enqueue(new Callback<Bids.ModelBids>() {
+                        @Override
+                        public void onResponse(Call<Bids.ModelBids> call, Response<Bids.ModelBids> response) {
+                            Timber.i("onResponse %s", response.toString());
+                            addToSkip(adapterList.get(position).getId());
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onFailure(Call<Bids.ModelBids> call, Throwable t) {
+                            Timber.e("onFailure %s", t.toString());
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
                     break;
                 case R.id.btnSkip:
+                    addToSkip(adapterList.get(position).getId());
                     break;
             }
         }
     };
+
+    private void addToSkip(int id) {
+        if (getActivity() != null) {
+            ContentValues values = new ContentValues();
+            values.put(CacheHelper.SKIP_OPPORTUNITIES_ID, id);
+            getActivity().getContentResolver().insert(CacheContentProvider.SKIP_URI, values);
+            getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
+        }
+    }
 
 
 }

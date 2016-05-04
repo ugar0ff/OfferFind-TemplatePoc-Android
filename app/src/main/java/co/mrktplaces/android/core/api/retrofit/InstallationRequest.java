@@ -13,9 +13,9 @@ public class InstallationRequest {
     @SerializedName("deviceType")
     private String deviceType;
     @SerializedName("userId")
-    private String userId;
+    private int userId;
 
-    public InstallationRequest(String appId, String deviceToken, String deviceType, String userId) {
+    public InstallationRequest(String appId, String deviceToken, String deviceType, int userId) {
         this.appId = appId;
         this.deviceToken = deviceToken;
         this.deviceType = deviceType;
@@ -46,11 +46,11 @@ public class InstallationRequest {
         this.deviceType = deviceType;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 }

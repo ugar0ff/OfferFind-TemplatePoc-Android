@@ -3,6 +3,7 @@ package co.mrktplaces.android.core.service;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -161,7 +162,7 @@ public class StreamService extends Service {
     private void updateBid(MessageEvent message) {
         ContentValues values = new ContentValues();
         values.put(CacheHelper.BIDS_ID, message.getMessageData().getData().getId());
-        values.put(CacheHelper.BIDS_TITLE, message.getMessageData().getData().getTitle());
+        values.put(CacheHelper.BIDS_TITLE, getBidsTitle(message.getMessageData().getData().getOpportunityId()));
         values.put(CacheHelper.BIDS_DESCRIPTION, message.getMessageData().getData().getDescription());
         values.put(CacheHelper.BIDS_OPPORTUNITIES_ID, message.getMessageData().getData().getOpportunityId());
         values.put(CacheHelper.BIDS_PRICE, message.getMessageData().getData().getPrice());
@@ -212,6 +213,21 @@ public class StreamService extends Service {
                 });
             }
         });
+    }
+
+    private String getBidsTitle(int opportunitiesId) {
+        String title = null;
+        String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as " + CacheHelper._ID, CacheHelper.OPPORTUNITIES_TITLE};
+        String selection = CacheHelper.OPPORTUNITIES_ID + " =? ";
+        String[] selectionArg = new String[]{String.valueOf(opportunitiesId)};
+        Cursor cursor = getContentResolver().query(CacheContentProvider.OPPORTUNITIES_URI, projection, selection, selectionArg, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                title = cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE));
+            }
+            cursor.close();
+        }
+        return title;
     }
 
 }

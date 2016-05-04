@@ -1,8 +1,10 @@
 package co.mrktplaces.android.core.loader;
 
+import android.annotation.TargetApi;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 
 import co.mrktplaces.android.core.api.strongloop.Bids;
 import co.mrktplaces.android.core.api.strongloop.Messages;
@@ -11,6 +13,8 @@ import co.mrktplaces.android.core.cache.CacheContentProvider;
 import co.mrktplaces.android.core.cache.CacheHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by ugar on 05.03.16.
@@ -42,7 +46,7 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
                 do {
                     int opportunitiesId = cursorOpportunities.getInt(cursorOpportunities.getColumnIndex(CacheHelper.OPPORTUNITIES_ID));
                     String opportunitiesStatus = cursorOpportunities.getString(cursorOpportunities.getColumnIndex(CacheHelper.OPPORTUNITIES_STATUS));
-                    String[] projection = new String[]{CacheHelper.BIDS_ID + " as _id ",
+                    String[] projection = new String[]{CacheHelper.BIDS_ID + " as " + CacheHelper._ID,
                             CacheHelper.BIDS_TITLE,
                             CacheHelper.BIDS_DESCRIPTION,
                             CacheHelper.OWNER_ID,
@@ -83,6 +87,7 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
             }
             cursorOpportunities.close();
         }
+        Collections.sort(list, new FishNameComparator());
         return list;
     }
 
@@ -105,5 +110,12 @@ public class MessagingAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Bids.Mod
             cursor.close();
         }
         return messagesList;
+    }
+
+    public class FishNameComparator implements Comparator<Bids.ModelBids> {
+        @TargetApi(Build.VERSION_CODES.KITKAT)
+        public int compare(Bids.ModelBids left, Bids.ModelBids right) {
+            return Long.compare(right.getId(), left.getId());
+        }
     }
 }

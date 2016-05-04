@@ -63,9 +63,6 @@ public class UpdateService extends IntentService {
             Timber.i("onSuccess response=s");
             long currentTime = System.currentTimeMillis();
             providerOperations = new ArrayList<>();
-            if (opportunities.size() == 0) {
-                deleteOldData(currentTime);
-            }
             for (int i = 0; i < opportunities.size(); i++) {
                 providerOperations.add(ContentProviderOperation.newInsert(CacheContentProvider.OPPORTUNITIES_URI)
                         .withValue(CacheHelper.OPPORTUNITIES_ID, opportunities.get(i).getId())
@@ -87,12 +84,14 @@ public class UpdateService extends IntentService {
             try {
                 getContentResolver().applyBatch(CacheContentProvider.AUTHORITY, providerOperations);
                 deleteOldData(currentTime);
+                requestStatus = RequestStatus.TASK_OK;
             } catch (RemoteException e) {
                 e.printStackTrace();
+                requestStatus = RequestStatus.TASK_ERROR;
             } catch (OperationApplicationException e) {
                 e.printStackTrace();
+                requestStatus = RequestStatus.TASK_ERROR;
             }
-            requestStatus = RequestStatus.TASK_OK;
         } else {
             requestStatus = RequestStatus.TASK_ERROR;
         }
@@ -100,9 +99,6 @@ public class UpdateService extends IntentService {
     }
 
     private void updateBids(List<Bids.ModelBids> modelBids, String title, long currentTime) {
-        if (modelBids.size() == 0) {
-            deleteOldData(currentTime);
-        }
         for (int j = 0; j < modelBids.size(); j++) {
             providerOperations.add(ContentProviderOperation.newInsert(CacheContentProvider.BIDS_URI)
                     .withValue(CacheHelper.BIDS_ID, modelBids.get(j).getId())

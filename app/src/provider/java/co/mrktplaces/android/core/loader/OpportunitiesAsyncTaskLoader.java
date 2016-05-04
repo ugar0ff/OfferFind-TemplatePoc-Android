@@ -3,13 +3,11 @@ package co.mrktplaces.android.core.loader;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Parcelable;
-import android.support.v4.app.FragmentActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import co.mrktplaces.android.core.api.retrofit.Account;
-import co.mrktplaces.android.core.api.strongloop.Location;
 import co.mrktplaces.android.core.api.strongloop.Opportunities;
 import co.mrktplaces.android.core.cache.CacheContentProvider;
 import co.mrktplaces.android.core.cache.CacheHelper;
@@ -40,8 +38,13 @@ public class OpportunitiesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Oppo
 
     @Override
     public ArrayList<Opportunities.ModelOpportunity> loadInBackground() {
-        for (Opportunities.ModelOpportunity opportunity : opportunities) {
-            opportunity.setAccounts(getAccount(opportunity.getOwnerId()));
+        List<Integer> skipList = skipOpportunities();
+        for (int i = opportunities.size() - 1; i >= 0; i--) {
+            if (skipList.contains(opportunities.get(i).getId())) {
+                opportunities.remove(i);
+            } else {
+                opportunities.get(i).setAccounts(getAccount(opportunities.get(i).getOwnerId()));
+            }
         }
         return opportunities;
     }
@@ -60,5 +63,19 @@ public class OpportunitiesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Oppo
             cursor.close();
         }
         return account;
+    }
+
+    private List<Integer> skipOpportunities() {
+        List<Integer> list = new ArrayList<>();
+        Cursor cursor = getContext().getContentResolver().query(CacheContentProvider.SKIP_URI, null, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    list.add(cursor.getInt(cursor.getColumnIndex(CacheHelper.SKIP_OPPORTUNITIES_ID)));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return list;
     }
 }

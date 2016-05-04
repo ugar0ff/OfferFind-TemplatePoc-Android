@@ -79,6 +79,11 @@ public class CacheHelper extends SQLiteOpenHelper {
             MESSAGE_TEXT + " text, " + MESSAGE_CREATE_AT + " text, " + MESSAGE_BID_ID + " integer, " + MESSAGE_OWNER_ID + " integer, " + MESSAGE_SENDER_ID + " integer, " + TIMESTAMP + " integer);";
     private final String DROP_MESSAGE = "DROP TABLE IF EXISTS " + TABLE_MESSAGE + ";";
 
+    public static final String TABLE_SKIP = "skip";
+    public static final String SKIP_OPPORTUNITIES_ID = "skip_opportunities_id";
+    private final String CREATE_SKIP = "CREATE TABLE " + TABLE_SKIP + " (" + SKIP_OPPORTUNITIES_ID + " integer primary key);";
+    private final String DROP_SKIP = "DROP TABLE IF EXISTS " + TABLE_SKIP + ";";
+
     public CacheHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -90,6 +95,7 @@ public class CacheHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_WORK_CATEGORY);
         db.execSQL(CREATE_OWNER);
         db.execSQL(CREATE_MESSAGE);
+        db.execSQL(CREATE_SKIP);
         setCategory(db);
     }
 

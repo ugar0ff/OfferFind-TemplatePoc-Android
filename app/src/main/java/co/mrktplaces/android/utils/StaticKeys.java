@@ -29,6 +29,8 @@ public class StaticKeys {
         public static final int ACCEPT_STATE_LOADER = 6;
         public static final int MESSAGE_LOADER = 7;
         public static final int CHANGE_MESSAGE_LOADER = 8;
+        public static final int OWNER_LOADER = 9;
+        public static final int CHANGE_BIDS_LOADER = 10;
     }
 
     public class State {

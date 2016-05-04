@@ -130,7 +130,7 @@ public class CacheContentProvider extends ContentProvider {
         if (cursor != null && getContext() != null) {
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
             if (_uri != null) {
-                getContext().getContentResolver().notifyChange(MESSAGE_URI, null);
+                getContext().getContentResolver().notifyChange(_uri, null);
             }
         }
         return cursor;
