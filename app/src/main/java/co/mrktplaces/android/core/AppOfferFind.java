@@ -4,11 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import com.crashlytics.android.Crashlytics;
+
 import co.mrktplaces.android.BuildConfig;
 import co.mrktplaces.android.core.api.strongloop.RestAdapter;
 import co.mrktplaces.android.core.service.StreamService;
 import co.mrktplaces.android.utils.PreferencesUtils;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
@@ -37,7 +40,7 @@ public class AppOfferFind extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
-
+            Fabric.with(this, new Crashlytics());
         }
     }
 

@@ -30,7 +30,7 @@ public class Utilities {
                 md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
                 String something = new String(Base64.encode(md.digest(), 0));
-                Timber.i("hash key = '%s'", something);
+                Timber.v("hash key = '%s'", something);
             }
         } catch (Exception e) {
             e.printStackTrace();

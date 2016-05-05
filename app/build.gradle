@@ -1,4 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+def versionBuild = 1
 
 android {
     compileSdkVersion 'Google Inc.:Google APIs:23'
@@ -7,15 +13,24 @@ android {
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
-
+        versionCode versionMajor * 1000 + versionMinor * 100 + versionPatch * 10 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         multiDexEnabled true
     }
-    buildTypes {
+
+    signingConfigs {
+        debug {
+            storeFile file("conf/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            storeFile file("conf/release.jks")
+            storePassword "3EBC42DB6D599387A57D83BD4D675"
+            keyAlias "market place"
+            keyPassword "217D2CFCA1A2DE7FF1A23944E68FF"
         }
     }
 
@@ -71,6 +86,29 @@ android {
         }
     }
 
+    buildTypes {
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable true
+            zipAlignEnabled true
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each {
+            output ->
+                output.outputFile = new File(
+                        output.outputFile.parent,
+                        output.outputFile.name.replace(".apk", "-${variant.versionCode}.apk"))
+        }
+    }
+
 }
 
 dependencies {
@@ -100,6 +138,9 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.0.1'
 
     compile files('libs/GeocoderPlus.jar')
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true;
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
