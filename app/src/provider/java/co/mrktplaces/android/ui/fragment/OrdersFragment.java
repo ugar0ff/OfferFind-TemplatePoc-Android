@@ -188,7 +188,6 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
             final int position = (int) v.getTag();
             switch (v.getId()) {
                 case R.id.btnApply:
-                    progressBar.setVisibility(View.VISIBLE);
                     hideKeyboard();
                     Opportunities.ModelOpportunity opportunity = adapterList.get(position);
                     if (opportunity.getMessage() == null) {
@@ -199,6 +198,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
                         showDialog(getString(R.string.enter_price));
                         return;
                     }
+                    progressBar.setVisibility(View.VISIBLE);
                     Call<Bids.ModelBids> call = ApiRetrofit.apply(new BidRequest(opportunity.getMessage(), Float.valueOf(opportunity.getPrice()), opportunity.getId(),
                             PreferencesUtils.getUserId(getActivity())), PreferencesUtils.getUserToken(getActivity()));
                     call.enqueue(new Callback<Bids.ModelBids>() {

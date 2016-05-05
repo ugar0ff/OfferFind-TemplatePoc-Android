@@ -5,9 +5,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Switch;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import co.mrktplaces.android.R;
@@ -60,26 +59,26 @@ public class PagerItemFragment extends BaseFragment implements View.OnClickListe
         }
         TextView location = (TextView) view.findViewById(R.id.locationText);
         if (itemModel.getAddress() == null || itemModel.getAddress().length() == 0) {
-            location.setVisibility(View.GONE);
+            location.setVisibility(View.INVISIBLE);
         } else {
             location.setText(itemModel.getAddress());
             location.setVisibility(View.VISIBLE);
         }
-        ImageButton mapButton = (ImageButton) view.findViewById(R.id.maps);
-        Switch switchTest = (Switch) view.findViewById(R.id.switchTest);
-        mapButton.setOnClickListener(this);
+        LinearLayout mapLayout = (LinearLayout) view.findViewById(R.id.mapsLayout);
+        LinearLayout switchTestLayout = (LinearLayout) view.findViewById(R.id.switchTestLayout);
+        view.findViewById(R.id.maps).setOnClickListener(this);
         switch (itemModel.getType()) {
             case StaticKeys.CategoryType.MAP:
-                mapButton.setVisibility(View.VISIBLE);
-                switchTest.setVisibility(View.GONE);
+                mapLayout.setVisibility(View.VISIBLE);
+                switchTestLayout.setVisibility(View.GONE);
                 break;
             case StaticKeys.CategoryType.CHECKED:
-                mapButton.setVisibility(View.GONE);
-                switchTest.setVisibility(View.VISIBLE);
+                mapLayout.setVisibility(View.GONE);
+                switchTestLayout.setVisibility(View.VISIBLE);
                 break;
             default:
-                mapButton.setVisibility(View.GONE);
-                switchTest.setVisibility(View.GONE);
+                mapLayout.setVisibility(View.GONE);
+                switchTestLayout.setVisibility(View.GONE);
 
         }
     }

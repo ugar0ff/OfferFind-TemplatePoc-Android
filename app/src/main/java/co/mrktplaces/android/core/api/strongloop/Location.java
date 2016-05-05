@@ -30,7 +30,11 @@ public class Location implements Parcelable {
     }
 
     public void setAddress(String address) {
-        this.address = address.replaceAll("\n", " ");
+        if (address != null) {
+            this.address = address.replaceAll("\n", " ");
+        } else {
+            this.address = null;
+        }
     }
 
     public double getLatitude() {

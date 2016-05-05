@@ -8,6 +8,7 @@
     <string name="new_order">New order</string>
     <string name="address_found">Address found</string>
     <string name="no_bids_available">No bids yet. Please be patient, someone will respond to you shortly</string>
+    <string name="optional_colon">Optional:</string>
 
     <string name="tag_status">tag state</string>
 </resources>
