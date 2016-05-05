@@ -83,6 +83,8 @@ public class ProposalFragment extends BaseFragment implements LoaderManager.Load
         price = (TextView) view.findViewById(R.id.price);
         price.setText(String.format("$ %s", itemModel.getPrice()));
 
+        setAcceptButtonState();
+
         ImageView picture = (ImageView) view.findViewById(R.id.picture);
         if (itemModel.getOwner() != null && itemModel.getOwner().getAvatar() != null && !itemModel.getOwner().getAvatar().isEmpty()) {
             Picasso.with(getActivity()).load(itemModel.getOwner().getAvatar()).into(picture);
@@ -90,7 +92,7 @@ public class ProposalFragment extends BaseFragment implements LoaderManager.Load
             Picasso.with(getActivity()).load(R.drawable.placeholder_proposal_item).into(picture);
         }
 
-//        setFade((ImageView) view.findViewById(R.id.blur));
+        setFade((ImageView) view.findViewById(R.id.blur));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             title.setTransitionName(String.format("title%s", itemModel.getId()));
@@ -178,6 +180,22 @@ public class ProposalFragment extends BaseFragment implements LoaderManager.Load
             tr.commit();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setAcceptButtonState() {
+        boolean access;
+        if (itemModel.getState().equals(StaticKeys.State.CLOSED)) {
+            access = false;
+        } else if (itemModel.getState().equals(StaticKeys.State.ACCEPTED)) {
+            access = true;
+        } else {
+            access = statusOpportunities.equals(itemModel.getState());
+        }
+        if (chatFragment == null) {
+            setChatFragment(itemModel.getId());
+        } else {
+            chatFragment.setAccessToWriteMessage(access);
         }
     }
 

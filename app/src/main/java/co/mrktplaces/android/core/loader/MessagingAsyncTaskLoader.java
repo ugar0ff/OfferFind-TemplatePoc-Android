@@ -6,15 +6,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Build;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import co.mrktplaces.android.core.api.strongloop.Bids;
 import co.mrktplaces.android.core.api.strongloop.Messages;
 import co.mrktplaces.android.core.api.strongloop.Owner;
 import co.mrktplaces.android.core.cache.CacheContentProvider;
 import co.mrktplaces.android.core.cache.CacheHelper;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Created by ugar on 05.03.16.
