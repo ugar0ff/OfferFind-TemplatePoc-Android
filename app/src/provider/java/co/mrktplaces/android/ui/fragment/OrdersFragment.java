@@ -62,6 +62,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
         View view = inflater.inflate(R.layout.fragment_orders, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list);
         adapter = new OrdersAdapter(getActivity(), adapterList, adapterClickListener);
+        listView.setEmptyView(view.findViewById(R.id.empty));
         listView.setAdapter(adapter);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
