@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.content.OperationApplicationException;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.RemoteException;
 
@@ -85,8 +86,10 @@ public class UpdateService extends IntentService {
                         .withYieldAllowed(true)
                         .build());
             }
-            updateBids();
             try {
+                getContentResolver().applyBatch(CacheContentProvider.AUTHORITY, providerOperations);
+                providerOperations.clear();
+                updateBids();
                 getContentResolver().applyBatch(CacheContentProvider.AUTHORITY, providerOperations);
                 deleteOldData(currentTime);
                 requestStatus = RequestStatus.TASK_OK;
@@ -116,7 +119,7 @@ public class UpdateService extends IntentService {
             for (int j = 0; j < bids.size(); j++) {
                 providerOperations.add(ContentProviderOperation.newInsert(CacheContentProvider.BIDS_URI)
                         .withValue(CacheHelper.BIDS_ID, bids.get(j).getId())
-                        .withValue(CacheHelper.BIDS_TITLE, bids.get(j).getTitle())
+                        .withValue(CacheHelper.BIDS_TITLE, getTitleBids(bids.get(j).getOpportunityId()))
                         .withValue(CacheHelper.BIDS_DESCRIPTION, bids.get(j).getDescription())
                         .withValue(CacheHelper.BIDS_OPPORTUNITIES_ID, bids.get(j).getOpportunityId())
                         .withValue(CacheHelper.BIDS_PRICE, bids.get(j).getPrice())
@@ -129,6 +132,26 @@ public class UpdateService extends IntentService {
                 updateMessages(bids.get(j).getMessages(), currentTime);
             }
         }
+    }
+
+    private String getTitleBids(int opportunitiesId) {
+        String title = null;
+        String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as " + CacheHelper._ID, CacheHelper.OPPORTUNITIES_TITLE};
+        String selection = CacheHelper.OPPORTUNITIES_ID + " =? ";
+        String[] selectionArg = new String[]{String.valueOf(opportunitiesId)};
+        Cursor cursor = getContentResolver().query(CacheContentProvider.OPPORTUNITIES_URI, projection, selection, selectionArg, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    if (cursor.getInt(cursor.getColumnIndex(CacheHelper._ID)) == opportunitiesId) {
+                        title = cursor.getString(cursor.getColumnIndex(CacheHelper.OPPORTUNITIES_TITLE));
+                        break;
+                    }
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return title;
     }
 
     private void updateMessages(ArrayList<Messages> messages, long currentTime) {
