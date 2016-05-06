@@ -4,21 +4,27 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import co.mrktplaces.android.core.AppOfferFind;
+import co.mrktplaces.android.core.api.retrofit.ApiRetrofit;
 import co.mrktplaces.android.core.api.strongloop.Account;
 import co.mrktplaces.android.core.api.strongloop.AccountGetRepository;
+import co.mrktplaces.android.core.api.strongloop.Owner;
+import co.mrktplaces.android.core.api.strongloop.StreamModel;
 import co.mrktplaces.android.core.cache.CacheContentProvider;
 import co.mrktplaces.android.core.cache.CacheHelper;
+import co.mrktplaces.android.ui.activity.MainActivity;
 import co.mrktplaces.android.ui.views.eventsource_android.EventSource;
 import co.mrktplaces.android.ui.views.eventsource_android.EventSourceHandler;
 import co.mrktplaces.android.ui.views.eventsource_android.MessageEvent;
 import co.mrktplaces.android.utils.PreferencesUtils;
 import co.mrktplaces.android.utils.StaticKeys;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
@@ -31,6 +37,7 @@ import timber.log.Timber;
 public class StreamService extends Service {
 
     private EventSource eventSource;
+    private EventSource eventSourceOpportunities;
 
     public StreamService() {
         Timber.v("StreamService");
@@ -76,6 +83,18 @@ public class StreamService extends Service {
             }
         });
         eventThread.start();
+        //TODO: for demo
+        Thread eventThreadOpportunities = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (getBaseContext() != null) {
+                    eventSourceOpportunities = new EventSource(URI.create(AppOfferFind.API + "Opportunities/change-stream?&_format=event-stream&access_token="
+                            + PreferencesUtils.getUserToken(getBaseContext())), new SSEHandlerOpportunities(), null, true);
+                    eventSourceOpportunities.connect();
+                }
+            }
+        });
+        eventThreadOpportunities.start();
     }
 
     @Override
@@ -83,6 +102,10 @@ public class StreamService extends Service {
         Timber.v("onDestroy");
         if (eventSource != null && eventSource.isConnected()) {
             eventSource.close();
+        }
+        //TODO: for demo
+        if (eventSourceOpportunities != null && eventSourceOpportunities.isConnected()) {
+            eventSourceOpportunities.close();
         }
         super.onDestroy();
     }
@@ -112,6 +135,27 @@ public class StreamService extends Service {
             }
             if (message.getMessageData().getClassName().equals("Opportunity")) {
                 updateOpportunities(message);
+                //TODO: for demo
+                if (!message.getMessageData().getType().equals("create")) {
+                    return;
+                }
+                Owner owner = new Owner();
+                Bundle bundle = new Bundle();
+                StreamModel.ModelMessages modelMessages = message.getMessageData().getData();
+                try {
+                    Owner account = ApiRetrofit.getAccount(message.getMessageData().getData().getOwnerId(), PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
+                    owner.setId(account.getId());
+                    owner.setName(account.getName());
+                    owner.setAddress(account.getAddress());
+                    modelMessages.setOwner(owner);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                bundle.putParcelable("ModelMessages", modelMessages);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra(MainActivity.START_INTENT, bundle);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             } else if (message.getMessageData().getClassName().equals("Bid")) {
                 updateBid(message);
             } else if (message.getMessageData().getClassName().equals("Message")) {
@@ -119,6 +163,85 @@ public class StreamService extends Service {
                     updateMessage(message);
                 }
             }
+        }
+
+        @Override
+        public void onComment(String comment) {
+            //comments only received if exposeComments turned on
+            Timber.v("SSE Comment %s", comment);
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            Timber.v("SSE Error");
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            t.printStackTrace(pw);
+            Timber.v("SSE Stacktrace %s", sw.toString());
+
+        }
+
+        @Override
+        public void onClosed(boolean willReconnect) {
+            Timber.v("SSE Closed reconnect? %s", willReconnect);
+        }
+    }
+
+    //TODO: for demo
+    private class SSEHandlerOpportunities implements EventSourceHandler {
+
+        public SSEHandlerOpportunities() {
+            Timber.v("SSE SSEHandler");
+        }
+
+        @Override
+        public void onConnect() {
+            Timber.v("SSE Connected");
+        }
+
+        @Override
+        public void onMessage(String event, MessageEvent message) {
+            if (message == null) {
+                return;
+            }
+            Timber.v("SSE Messages %s", event);
+            Timber.v("SSE Messages: %s", message.lastEventId);
+            Timber.v("SSE Messages: %s", message.data);
+            Timber.v("SSE hashCode: %s, eventSource: %s", hashCode(), eventSourceOpportunities.hashCode());
+            if (!message.getMessageData().getType().equals("create")) {
+                return;
+            }
+            Owner owner = new Owner();
+            Bundle bundle = new Bundle();
+            StreamModel.ModelMessages modelMessages = message.getMessageData().getData();
+            try {
+                Owner account = ApiRetrofit.getAccount(message.getMessageData().getData().getOwnerId(), PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
+                owner.setId(account.getId());
+                owner.setName(account.getName());
+                owner.setAddress(account.getAddress());
+                modelMessages.setOwner(owner);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bundle.putParcelable("ModelMessages", modelMessages);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra(MainActivity.START_INTENT, bundle);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+            ContentValues values = new ContentValues();
+            values.put(CacheHelper.OPPORTUNITIES_ID, modelMessages.getId());
+            values.put(CacheHelper.OPPORTUNITIES_TITLE, modelMessages.getTitle());
+            values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, modelMessages.getDescription());
+            values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, modelMessages.getOwnerId());
+            values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, modelMessages.getCreatedAt());
+            values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, modelMessages.getCategoryId());
+            values.put(CacheHelper.OPPORTUNITIES_STATUS, modelMessages.getState());
+            values.put(CacheHelper.OPPORTUNITIES_ADDRESS, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getAddress());
+            values.put(CacheHelper.OPPORTUNITIES_LATITUDE, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getLatitude());
+            values.put(CacheHelper.OPPORTUNITIES_LONGITUDE, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getLongitude());
+            getBaseContext().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
+            updateOwner(modelMessages.getOwnerId());
         }
 
         @Override

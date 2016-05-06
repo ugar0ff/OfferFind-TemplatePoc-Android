@@ -23,6 +23,9 @@ public class Owner implements Parcelable {
     @SerializedName("avatar")
     private String avatar;
 
+    public Owner() {
+    }
+
     public Owner(int accountId, String name, String avatar) {
         this.id = accountId;
         this.name = name;

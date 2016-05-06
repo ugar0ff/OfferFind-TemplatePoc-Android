@@ -6,6 +6,7 @@ import co.mrktplaces.android.core.AppOfferFind;
 import co.mrktplaces.android.core.api.strongloop.Bids;
 import co.mrktplaces.android.core.api.strongloop.Messages;
 import co.mrktplaces.android.core.api.strongloop.Opportunities;
+import co.mrktplaces.android.core.api.strongloop.Owner;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -65,6 +66,11 @@ public class ApiRetrofit {
         return applyInterface.apply(bidRequest, token);
     }
 
+    public static Call<Owner> getAccount(int id, String token) {
+        AccountInterface accountInterface = retrofit.create(AccountInterface.class);
+        return accountInterface.getAccount(id, token);
+    }
+
     private interface OpportunitiesInterface {
         @GET("/api/Opportunities?filter=%7B%22include%22%3A%20%22owner%22%2C%22where%22%3A%7B%22state%22%3A%22published%22%7D%7D")
         Call<List<Opportunities.ModelOpportunity>> opportunitiesInfo(@Query("access_token") String access_token);
@@ -93,6 +99,11 @@ public class ApiRetrofit {
     private interface ApplyInterface {
         @POST("/api/Bids")
         Call<Bids.ModelBids> apply(@Body BidRequest bidRequest, @Query("access_token") String access_token);
+    }
+
+    private interface AccountInterface {
+        @GET("/api/Accounts/{id}")
+        Call<Owner> getAccount(@Path("id") int id, @Query("access_token") String access_token);
     }
 
 }

@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import co.mrktplaces.android.core.api.retrofit.ApiRetrofit;
 import co.mrktplaces.android.core.api.retrofit.BidRequest;
 import co.mrktplaces.android.core.api.strongloop.Bids;
 import co.mrktplaces.android.core.api.strongloop.Opportunities;
+import co.mrktplaces.android.core.api.strongloop.StreamModel;
 import co.mrktplaces.android.core.cache.CacheContentProvider;
 import co.mrktplaces.android.core.cache.CacheHelper;
 import co.mrktplaces.android.ui.activity.base.BaseActivity;
@@ -108,9 +111,21 @@ public class MainActivity extends BaseActivity implements MessageCountController
         tabLayout.setMessageCount(messageCount);
     }
 
-    private void showNewOpportunitiesDialog() {
+    private void showNewOpportunitiesDialog(final StreamModel.ModelMessages modelMessages) {
         final View dialogView = getLayoutInflater().inflate(R.layout.dialog_new_opportunities, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        TextView address = (TextView) dialogView.findViewById(R.id.address);
+        if (modelMessages.getLocation() != null && modelMessages.getLocation().getAddress() != null) {
+            address.setText(Html.fromHtml("<font color=#666666>" + getString(R.string.address_colon) + "</font> <font color=#000000> " + modelMessages.getLocation().getAddress() + "</font>"));
+        }
+        TextView title = (TextView) dialogView.findViewById(R.id.title);
+        if (modelMessages.getTitle() != null) {
+            title.setText(Html.fromHtml("<font color=#666666>" + getString(R.string.title_colon) + "</font> <font color=#000000> " + modelMessages.getTitle() + "</font>"));
+        }
+        TextView name = (TextView) dialogView.findViewById(R.id.name);
+        if (modelMessages.getOwner() != null && modelMessages.getOwner().getName() != null) {
+            name.setText(Html.fromHtml("<font color=#666666>" + getString(R.string.name_colon) + "</font> <font color=#000000> " + modelMessages.getOwner().getName() + "</font>"));
+        }
         builder.setView(dialogView).create();
         final AlertDialog dialog = builder.show();
         dialogView.findViewById(R.id.btnClose).setOnClickListener(new View.OnClickListener() {
@@ -122,27 +137,27 @@ public class MainActivity extends BaseActivity implements MessageCountController
         dialogView.findViewById(R.id.btnSkip).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                addToSkip(id);
+                addToSkip(modelMessages.getId());
                 dialog.dismiss();
             }
         });
         dialogView.findViewById(R.id.btnAccept).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Call<Bids.ModelBids> call = ApiRetrofit.apply(new BidRequest(getString(R.string.i_can), 0, id,
-//                        PreferencesUtils.getUserId(MainActivity.this)), PreferencesUtils.getUserToken(MainActivity.this));
-//                call.enqueue(new Callback<Bids.ModelBids>() {
-//                    @Override
-//                    public void onResponse(Call<Bids.ModelBids> call, Response<Bids.ModelBids> response) {
-//                        Timber.i("onResponse %s", response.toString());
-//                        addToSkip(id);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<Bids.ModelBids> call, Throwable t) {
-//                        Timber.e("onFailure %s", t.toString());
-//                    }
-//                });
+                Call<Bids.ModelBids> call = ApiRetrofit.apply(new BidRequest(getString(R.string.i_can), 0, modelMessages.getId(),
+                        PreferencesUtils.getUserId(MainActivity.this)), PreferencesUtils.getUserToken(MainActivity.this));
+                call.enqueue(new Callback<Bids.ModelBids>() {
+                    @Override
+                    public void onResponse(Call<Bids.ModelBids> call, Response<Bids.ModelBids> response) {
+                        Timber.i("onResponse %s", response.toString());
+                        addToSkip(modelMessages.getId());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Bids.ModelBids> call, Throwable t) {
+                        Timber.e("onFailure %s", t.toString());
+                    }
+                });
                 dialog.dismiss();
             }
         });
@@ -159,11 +174,6 @@ public class MainActivity extends BaseActivity implements MessageCountController
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     private void addToSkip(int id) {
         ContentValues values = new ContentValues();
         values.put(CacheHelper.SKIP_OPPORTUNITIES_ID, id);
@@ -174,7 +184,7 @@ public class MainActivity extends BaseActivity implements MessageCountController
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent.hasExtra(START_INTENT) && intent.getBundleExtra(START_INTENT) != null) {
-            showNewOpportunitiesDialog();
+            showNewOpportunitiesDialog((StreamModel.ModelMessages) intent.getBundleExtra(START_INTENT).getParcelable("ModelMessages"));
         }
     }
 }
