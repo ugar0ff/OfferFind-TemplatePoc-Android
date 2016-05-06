@@ -79,7 +79,8 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorPrimary);
         progressBar = (FrameLayout) view.findViewById(R.id.progress_bar);
-        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
+//        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
+        getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.SKIP_LOADER, null, this);
         return view;
     }
 
@@ -114,6 +115,8 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Timber.i("onCreateLoader");
         switch (id) {
+            case StaticKeys.LoaderId.SKIP_LOADER:
+                return new CursorLoader(getActivity(), CacheContentProvider.SKIP_URI, null, null, null, null);
             case StaticKeys.LoaderId.OPPORTUNITIES_LOADER:
                 String[] projection = new String[]{CacheHelper.OPPORTUNITIES_ID + " as " + CacheHelper._ID,
                         CacheHelper.OPPORTUNITIES_TITLE,
@@ -131,6 +134,9 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         Timber.i("onLoadFinished, loader.getId() = %s", loader.getId());
         switch (loader.getId()) {
+            case StaticKeys.LoaderId.SKIP_LOADER:
+                getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
+                break;
             case StaticKeys.LoaderId.OPPORTUNITIES_LOADER:
                 if (getActivity() != null) {
                     ArrayList<Opportunities.ModelOpportunity> opportunities = new ArrayList<>();
@@ -228,7 +234,7 @@ public class OrdersFragment extends UpdateReceiverFragment implements LoaderMana
             ContentValues values = new ContentValues();
             values.put(CacheHelper.SKIP_OPPORTUNITIES_ID, id);
             getActivity().getContentResolver().insert(CacheContentProvider.SKIP_URI, values);
-            getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
+//            getActivity().getLoaderManager().restartLoader(StaticKeys.LoaderId.OPPORTUNITIES_LOADER, null, this);
         }
     }
 

@@ -31,6 +31,7 @@ public class StaticKeys {
         public static final int CHANGE_MESSAGE_LOADER = 8;
         public static final int OWNER_LOADER = 9;
         public static final int CHANGE_BIDS_LOADER = 10;
+        public static final int SKIP_LOADER = 11;
     }
 
     public class State {

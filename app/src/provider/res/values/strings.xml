@@ -6,4 +6,7 @@
     <string name="enter_your_message">Enter your message</string>
     <string name="enter_price">Enter price</string>
     <string name="no_opportunities_available">No opportunities yet. Please be patient</string>
+    <string name="close">Close</string>
+    <string name="title_colon">Title:</string>
+    <string name="i_can">I can</string>
 </resources>

@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "522136833466",
-    "project_id": "marketplacesclient"
+    "project_number": "875514358760",
+    "project_id": "marketplaceprovider-9fa8a"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:522136833466:android:25b9fd00d85bbe4d",
+        "mobilesdk_app_id": "1:875514358760:android:cb2185fe77dd5d4f",
         "android_client_info": {
-          "package_name": "co.mrktplaces.clients.android"
+          "package_name": "co.mrktplaces.providers.android"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD49NZrbiZeGfSiOld31ejFIU0K20O6hKM"
+          "current_key": "AIzaSyD3kTWW4sEYCdbMmM-e0sT8uxfA7KPGRVw"
         }
       ],
       "services": {

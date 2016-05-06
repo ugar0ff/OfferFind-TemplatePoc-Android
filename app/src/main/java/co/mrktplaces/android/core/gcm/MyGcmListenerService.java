@@ -30,6 +30,10 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         Timber.i("onMessageReceived");
         if (checkApp()) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra(MainActivity.START_INTENT, data);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             return;
         }
         String message = data.getString("message");

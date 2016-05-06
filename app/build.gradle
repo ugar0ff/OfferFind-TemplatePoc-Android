@@ -47,11 +47,11 @@ android {
 
         googleProviders {
             applicationId "co.mrktplaces.providers.android"
-//            copy {
-//                from 'src/provider/'
-//                include '*.json'
-//                into '.'
-//            }
+            copy {
+                from 'src/provider/'
+                include '*.json'
+                into '.'
+            }
         }
     }
 

@@ -8,6 +8,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.view.WindowManager;
 
 import co.mrktplaces.android.R;
 import co.mrktplaces.android.core.cache.CacheContentProvider;
@@ -24,6 +27,7 @@ import co.mrktplaces.android.utils.StaticKeys;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.mrktplaces.android.utils.Utilities;
 import timber.log.Timber;
 
 /**
@@ -125,4 +129,5 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     public void setMessageCount(int messageCount) {
         tabLayout.setMessageCount(messageCount);
     }
+
 }
