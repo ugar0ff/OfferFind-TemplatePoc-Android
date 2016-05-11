@@ -19,6 +19,7 @@ import co.mrktplaces.android.ui.activity.base.BaseActivity;
 import co.mrktplaces.android.ui.adapter.TabAdapter;
 import co.mrktplaces.android.ui.controller.MessageCountController;
 import co.mrktplaces.android.ui.fragment.AccountRootFragment;
+import co.mrktplaces.android.ui.fragment.NewOrdersFragment;
 import co.mrktplaces.android.ui.model.TabModel;
 import co.mrktplaces.android.ui.views.smarttablayout.SmartTabLayout;
 import co.mrktplaces.android.utils.PermissionHelper;
@@ -91,6 +92,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         super.onActivityResult(requestCode, resultCode, data);
         if (viewPager.getCurrentItem() == 2) {
             AccountRootFragment fragment = (AccountRootFragment) tabAdapter.getItem(2);
+            fragment.onActivityResult(requestCode, resultCode, data);
+        } else if (viewPager.getCurrentItem() == 0) {
+            NewOrdersFragment fragment = (NewOrdersFragment) tabAdapter.getRegisteredFragment(0);
             fragment.onActivityResult(requestCode, resultCode, data);
         }
     }

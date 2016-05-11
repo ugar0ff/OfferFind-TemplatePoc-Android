@@ -37,7 +37,7 @@ import timber.log.Timber;
 public class StreamService extends Service {
 
     private EventSource eventSource;
-    private EventSource eventSourceOpportunities;
+//    private EventSource eventSourceOpportunities;
 
     public StreamService() {
         Timber.v("StreamService");
@@ -84,17 +84,17 @@ public class StreamService extends Service {
         });
         eventThread.start();
         //TODO: for demo
-        Thread eventThreadOpportunities = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (getBaseContext() != null) {
-                    eventSourceOpportunities = new EventSource(URI.create(AppOfferFind.API + "Opportunities/change-stream?&_format=event-stream&access_token="
-                            + PreferencesUtils.getUserToken(getBaseContext())), new SSEHandlerOpportunities(), null, true);
-                    eventSourceOpportunities.connect();
-                }
-            }
-        });
-        eventThreadOpportunities.start();
+//        Thread eventThreadOpportunities = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (getBaseContext() != null) {
+//                    eventSourceOpportunities = new EventSource(URI.create(AppOfferFind.API + "Opportunities/change-stream?&_format=event-stream&access_token="
+//                            + PreferencesUtils.getUserToken(getBaseContext())), new SSEHandlerOpportunities(), null, true);
+//                    eventSourceOpportunities.connect();
+//                }
+//            }
+//        });
+//        eventThreadOpportunities.start();
     }
 
     @Override
@@ -104,9 +104,9 @@ public class StreamService extends Service {
             eventSource.close();
         }
         //TODO: for demo
-        if (eventSourceOpportunities != null && eventSourceOpportunities.isConnected()) {
-            eventSourceOpportunities.close();
-        }
+//        if (eventSourceOpportunities != null && eventSourceOpportunities.isConnected()) {
+//            eventSourceOpportunities.close();
+//        }
         super.onDestroy();
     }
 
@@ -136,26 +136,26 @@ public class StreamService extends Service {
             if (message.getMessageData().getClassName().equals("Opportunity")) {
                 updateOpportunities(message);
                 //TODO: for demo
-                if (!message.getMessageData().getType().equals("create")) {
-                    return;
-                }
-                Owner owner = new Owner();
-                Bundle bundle = new Bundle();
-                StreamModel.ModelMessages modelMessages = message.getMessageData().getData();
-                try {
-                    Owner account = ApiRetrofit.getAccount(message.getMessageData().getData().getOwnerId(), PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
-                    owner.setId(account.getId());
-                    owner.setName(account.getName());
-                    owner.setAddress(account.getAddress());
-                    modelMessages.setOwner(owner);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                bundle.putParcelable("ModelMessages", modelMessages);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra(MainActivity.START_INTENT, bundle);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+//                if (!message.getMessageData().getType().equals("create")) {
+//                    return;
+//                }
+//                Owner owner = new Owner();
+//                Bundle bundle = new Bundle();
+//                StreamModel.ModelMessages modelMessages = message.getMessageData().getData();
+//                try {
+//                    Owner account = ApiRetrofit.getAccount(message.getMessageData().getData().getOwnerId(), PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
+//                    owner.setId(account.getId());
+//                    owner.setName(account.getName());
+//                    owner.setAddress(account.getAddress());
+//                    modelMessages.setOwner(owner);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                bundle.putParcelable("ModelMessages", modelMessages);
+//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                intent.putExtra(MainActivity.START_INTENT, bundle);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
             } else if (message.getMessageData().getClassName().equals("Bid")) {
                 updateBid(message);
             } else if (message.getMessageData().getClassName().equals("Message")) {
@@ -188,83 +188,83 @@ public class StreamService extends Service {
     }
 
     //TODO: for demo
-    private class SSEHandlerOpportunities implements EventSourceHandler {
-
-        public SSEHandlerOpportunities() {
-            Timber.v("SSE SSEHandler");
-        }
-
-        @Override
-        public void onConnect() {
-            Timber.v("SSE Connected");
-        }
-
-        @Override
-        public void onMessage(String event, MessageEvent message) {
-            if (message == null) {
-                return;
-            }
-            Timber.v("SSE Messages %s", event);
-            Timber.v("SSE Messages: %s", message.lastEventId);
-            Timber.v("SSE Messages: %s", message.data);
-            Timber.v("SSE hashCode: %s, eventSource: %s", hashCode(), eventSourceOpportunities.hashCode());
-            if (!message.getMessageData().getType().equals("create")) {
-                return;
-            }
-            Owner owner = new Owner();
-            Bundle bundle = new Bundle();
-            StreamModel.ModelMessages modelMessages = message.getMessageData().getData();
-            try {
-                Owner account = ApiRetrofit.getAccount(message.getMessageData().getData().getOwnerId(), PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
-                owner.setId(account.getId());
-                owner.setName(account.getName());
-                owner.setAddress(account.getAddress());
-                modelMessages.setOwner(owner);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            bundle.putParcelable("ModelMessages", modelMessages);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra(MainActivity.START_INTENT, bundle);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-
-            ContentValues values = new ContentValues();
-            values.put(CacheHelper.OPPORTUNITIES_ID, modelMessages.getId());
-            values.put(CacheHelper.OPPORTUNITIES_TITLE, modelMessages.getTitle());
-            values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, modelMessages.getDescription());
-            values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, modelMessages.getOwnerId());
-            values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, modelMessages.getCreatedAt());
-            values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, modelMessages.getCategoryId());
-            values.put(CacheHelper.OPPORTUNITIES_STATUS, modelMessages.getState());
-            values.put(CacheHelper.OPPORTUNITIES_ADDRESS, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getAddress());
-            values.put(CacheHelper.OPPORTUNITIES_LATITUDE, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getLatitude());
-            values.put(CacheHelper.OPPORTUNITIES_LONGITUDE, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getLongitude());
-            getBaseContext().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
-            updateOwner(modelMessages.getOwnerId());
-        }
-
-        @Override
-        public void onComment(String comment) {
-            //comments only received if exposeComments turned on
-            Timber.v("SSE Comment %s", comment);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Timber.v("SSE Error");
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            t.printStackTrace(pw);
-            Timber.v("SSE Stacktrace %s", sw.toString());
-
-        }
-
-        @Override
-        public void onClosed(boolean willReconnect) {
-            Timber.v("SSE Closed reconnect? %s", willReconnect);
-        }
-    }
+//    private class SSEHandlerOpportunities implements EventSourceHandler {
+//
+//        public SSEHandlerOpportunities() {
+//            Timber.v("SSE SSEHandler");
+//        }
+//
+//        @Override
+//        public void onConnect() {
+//            Timber.v("SSE Connected");
+//        }
+//
+//        @Override
+//        public void onMessage(String event, MessageEvent message) {
+//            if (message == null) {
+//                return;
+//            }
+//            Timber.v("SSE Messages %s", event);
+//            Timber.v("SSE Messages: %s", message.lastEventId);
+//            Timber.v("SSE Messages: %s", message.data);
+//            Timber.v("SSE hashCode: %s, eventSource: %s", hashCode(), eventSourceOpportunities.hashCode());
+//            if (!message.getMessageData().getType().equals("create")) {
+//                return;
+//            }
+//            Owner owner = new Owner();
+//            Bundle bundle = new Bundle();
+//            StreamModel.ModelMessages modelMessages = message.getMessageData().getData();
+//            try {
+//                Owner account = ApiRetrofit.getAccount(message.getMessageData().getData().getOwnerId(), PreferencesUtils.getUserToken(getApplicationContext())).execute().body();
+//                owner.setId(account.getId());
+//                owner.setName(account.getName());
+//                owner.setAddress(account.getAddress());
+//                modelMessages.setOwner(owner);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            bundle.putParcelable("ModelMessages", modelMessages);
+//            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//            intent.putExtra(MainActivity.START_INTENT, bundle);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+//
+//            ContentValues values = new ContentValues();
+//            values.put(CacheHelper.OPPORTUNITIES_ID, modelMessages.getId());
+//            values.put(CacheHelper.OPPORTUNITIES_TITLE, modelMessages.getTitle());
+//            values.put(CacheHelper.OPPORTUNITIES_DESCRIPTION, modelMessages.getDescription());
+//            values.put(CacheHelper.OPPORTUNITIES_ACCOUNT_ID, modelMessages.getOwnerId());
+//            values.put(CacheHelper.OPPORTUNITIES_CREATE_AT, modelMessages.getCreatedAt());
+//            values.put(CacheHelper.OPPORTUNITIES_CATEGORY_ID, modelMessages.getCategoryId());
+//            values.put(CacheHelper.OPPORTUNITIES_STATUS, modelMessages.getState());
+//            values.put(CacheHelper.OPPORTUNITIES_ADDRESS, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getAddress());
+//            values.put(CacheHelper.OPPORTUNITIES_LATITUDE, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getLatitude());
+//            values.put(CacheHelper.OPPORTUNITIES_LONGITUDE, modelMessages.getLocation() == null ? null : modelMessages.getLocation().getLongitude());
+//            getBaseContext().getContentResolver().insert(CacheContentProvider.OPPORTUNITIES_URI, values);
+//            updateOwner(modelMessages.getOwnerId());
+//        }
+//
+//        @Override
+//        public void onComment(String comment) {
+//            //comments only received if exposeComments turned on
+//            Timber.v("SSE Comment %s", comment);
+//        }
+//
+//        @Override
+//        public void onError(Throwable t) {
+//            Timber.v("SSE Error");
+//            StringWriter sw = new StringWriter();
+//            PrintWriter pw = new PrintWriter(sw);
+//            t.printStackTrace(pw);
+//            Timber.v("SSE Stacktrace %s", sw.toString());
+//
+//        }
+//
+//        @Override
+//        public void onClosed(boolean willReconnect) {
+//            Timber.v("SSE Closed reconnect? %s", willReconnect);
+//        }
+//    }
 
     private void updateOpportunities(MessageEvent message) {
         ContentValues values = new ContentValues();

@@ -4,6 +4,8 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import co.mrktplaces.android.R;
 
@@ -27,6 +29,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
             R.drawable.selector_account
     };
     private boolean isOrdersFragment;
+    private SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
     public TabAdapter(FragmentManager fm, List<TabModel> list) {
         super(fm);
@@ -54,6 +57,13 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, position);
+        registeredFragments.put(position, fragment);
+        return fragment;
+    }
+
+    @Override
     public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
@@ -70,5 +80,15 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     public void setOrdersList(boolean isOrdersFragment) {
         this.isOrdersFragment = isOrdersFragment;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        registeredFragments.remove(position);
+        super.destroyItem(container, position, object);
+    }
+
+    public Fragment getRegisteredFragment(int position) {
+        return registeredFragments.get(position);
     }
 }

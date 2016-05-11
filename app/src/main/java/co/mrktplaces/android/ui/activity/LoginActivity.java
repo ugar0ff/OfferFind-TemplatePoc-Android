@@ -198,7 +198,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         //TODO: make one request with getAppId()
         final AccountsRepository userRepo = AppOfferFind.getRestAdapter(getApplicationContext()).createRepository(AccountsRepository.class);
         userRepo.createContract();
-        userRepo.accounts("user@mail.com", "password", new AccountsRepository.UserCallback() {
+        userRepo.accounts(PreferencesUtils.getUserEmail(this), "q", new AccountsRepository.UserCallback() {
             @Override
             public void onSuccess(Accounts user) {
                 Timber.i("onSuccess response=%s", user.toString());
